@@ -1,0 +1,18 @@
+services:
+  backend:
+    build:
+      context: ../backend
+    container_name: dsw2603-backend
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ../frontend
+    container_name: dsw2603-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
