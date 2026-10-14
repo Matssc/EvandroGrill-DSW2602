@@ -1,0 +1,27 @@
+<header class="topo" [class.aberto]="menuAberto()">
+  <a class="marca" href="#inicio" (click)="menuAberto.set(false)">
+    <img src="logo.jpg" alt="" width="56" height="56" />
+    <span class="nome">
+      <strong>Evandro's Grill</strong>
+      <small>Espetaria artesanal</small>
+    </span>
+  </a>
+
+  <nav id="menu-site" class="links" aria-label="Seções do site">
+    @for (s of secoes; track s.ancora) {
+      <a [href]="'#' + s.ancora" (click)="menuAberto.set(false)">{{ s.texto }}</a>
+    }
+    <a class="btn btn-whatsapp no-menu" [href]="whatsapp" target="_blank" rel="noopener">
+      <app-icone-whatsapp [size]="18" /> Pedir pelo WhatsApp
+    </a>
+  </nav>
+
+  <a class="btn btn-whatsapp pedir" [href]="whatsapp" target="_blank" rel="noopener">
+    <app-icone-whatsapp [size]="18" /> Pedir pelo WhatsApp
+  </a>
+
+  <button class="abrir-menu" type="button" aria-controls="menu-site" [attr.aria-expanded]="menuAberto()"
+    [attr.aria-label]="menuAberto() ? 'Fechar o menu' : 'Abrir o menu'" (click)="menuAberto.set(!menuAberto())">
+    <lucide-icon [img]="menuAberto() ? icones.X : icones.Menu" [size]="22" />
+  </button>
+</header>

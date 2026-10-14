@@ -1,0 +1,218 @@
+<header class="cabecalho-pagina">
+  <div>
+    <h1 class="t-h1">Produtos do site</h1>
+    <p class="t-sub">
+      {{ produtos().length }} {{ produtos().length === 1 ? 'produto' : 'produtos' }} ·
+      {{ qtdNoSite() }} {{ qtdNoSite() === 1 ? 'aparece' : 'aparecem' }} no cardápio da landing page
+    </p>
+  </div>
+  <div class="acoes">
+    <label class="busca">
+      <lucide-icon [img]="icones.Search" [size]="18" />
+      <input type="search" placeholder="Buscar produto" aria-label="Buscar produto pelo nome ou código" [value]="busca()" (input)="busca.set($any($event.target).value)" />
+    </label>
+    <a class="btn btn-secundario" href="/" target="_blank" rel="noopener">Ver no site</a>
+    <button class="btn btn-primario" type="button" [disabled]="carregando()" (click)="novoProduto()">
+      <lucide-icon [img]="icones.Plus" [size]="16" /> Novo produto
+    </button>
+  </div>
+</header>
+
+@if (erro(); as mensagem) {
+  <p class="aviso aviso-perigo erro-geral" role="alert">{{ mensagem }}</p>
+}
+
+<div class="filtros" role="group" aria-label="Filtrar por categoria">
+  <button type="button" class="pilula" [class.ativa]="filtro() === null" (click)="filtro.set(null)">Todos</button>
+  @for (c of categorias(); track c.id) {
+    <button type="button" class="pilula" [class.ativa]="filtro() === c.id" (click)="filtro.set(c.id)">{{ c.nome }}</button>
+  }
+</div>
+
+<section class="painel">
+  <div class="topo-card">
+    <h2 class="t-h2">Cardápio da landing page</h2>
+    <p class="t-sub">Mostrando {{ lista().length }} de {{ produtos().length }}</p>
+  </div>
+
+  @if (carregando() && !produtos().length) {
+    <p class="t-sub vazio">Carregando...</p>
+  } @else if (!lista().length) {
+    <p class="t-sub vazio">{{ produtos().length ? 'Nenhum produto com esse filtro.' : 'Nenhum produto cadastrado ainda.' }}</p>
+  } @else {
+    <div class="rolagem-x">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th class="col-categoria">Categoria</th>
+            <th class="num col-preco">Preço</th>
+            <th class="col-destaque">Destaque</th>
+            <th class="col-site">No site</th>
+            <th class="col-acoes"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of lista(); track p.id) {
+            <tr>
+              <td>
+                <div class="produto">
+                  <span class="miniatura">
+                    @if (p.fotoUrl) {
+                      <img [src]="p.fotoUrl" alt="" />
+                    } @else {
+                      <app-espeto [produto]="p.nome" [quantidade]="3" [inclinacao]="0" />
+                    }
+                  </span>
+                  <span class="textos">
+                    <strong>{{ p.nome }}</strong>
+                    <small>{{ p.codigo }}</small>
+                  </span>
+                </div>
+              </td>
+              <td>{{ nomeDaCategoria(p.categoriaId) }}</td>
+              <td class="num">{{ p.preco | currency }}</td>
+              <td>
+                @if (p.destaque) {
+                  <span class="badge badge-alerta">Mais pedido</span>
+                } @else {
+                  <span class="traco">—</span>
+                }
+              </td>
+              <td class="col-site">
+                <label class="interruptor">
+                  <input type="checkbox" role="switch" [checked]="p.mostrarNoSite" [disabled]="salvandoNoSite().includes(p.id)" [attr.aria-label]="'Mostrar ' + p.nome + ' no site'" (change)="trocarNoSite(p)" />
+                  <span></span>
+                </label>
+              </td>
+              <td class="acoes-linha">
+                <button type="button" (click)="editar(p)" [attr.aria-label]="'Editar ' + p.nome">
+                  <lucide-icon [img]="icones.Pencil" [size]="16" />
+                </button>
+                <button type="button" (click)="excluir(p)" [attr.aria-label]="'Excluir ' + p.nome">
+                  <lucide-icon [img]="icones.Trash2" [size]="16" />
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <p class="aviso aviso-info nota">
+    <lucide-icon [img]="icones.Info" [size]="18" />
+    Produto com "No site" desligado continua cadastrado, só não aparece no cardápio da landing page.
+  </p>
+</section>
+
+<!-- Modal Novo produto / Editar produto -->
+<dialog #dialogo class="modal" aria-labelledby="titulo-modal" (close)="aoFecharModal()">
+  <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+    <div class="topo-modal">
+      <div>
+        <h2 id="titulo-modal" class="t-h2">{{ editando() ? 'Editar produto' : 'Novo produto' }}</h2>
+        <p class="t-sub">Com "Mostrar no site" ligado, ele aparece no cardápio da landing page</p>
+      </div>
+      <button type="button" class="fechar" aria-label="Fechar" (click)="fecharModal()">
+        <lucide-icon [img]="icones.X" [size]="16" />
+      </button>
+    </div>
+
+    @if (erroModal(); as mensagem) {
+      <p class="aviso aviso-perigo" role="alert">{{ mensagem }}</p>
+    }
+
+    <div class="corpo">
+      <!-- Foto: por enquanto vai o link da imagem (o envio do arquivo depende do back) -->
+      <div class="coluna-foto">
+        <div class="foto">
+          @if (form.controls.fotoUrl.value.trim(); as link) {
+            <img [src]="link" alt="Prévia da foto do produto" />
+          } @else {
+            <span class="icone-foto"><lucide-icon [img]="icones.Upload" [size]="22" /></span>
+            <strong>Foto do produto</strong>
+            <small>Cole o link da imagem abaixo</small>
+          }
+        </div>
+        <div class="campo">
+          <label for="fotoUrl">Link da foto <small>(opcional)</small></label>
+          <input id="fotoUrl" type="url" formControlName="fotoUrl" placeholder="https://" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="campos">
+        <div class="nome-codigo">
+          <div class="campo">
+            <label for="nome">Nome do produto</label>
+            <input id="nome" formControlName="nome" autocomplete="off" autofocus />
+            @if (form.controls.nome.touched && form.controls.nome.invalid) {
+              <span class="erro">Digite o nome do produto.</span>
+            }
+          </div>
+          <div class="campo">
+            <label for="codigo">Código</label>
+            <input id="codigo" formControlName="codigo" autocomplete="off" />
+            @if (form.controls.codigo.touched && form.controls.codigo.invalid) {
+              <span class="erro">Digite o código.</span>
+            }
+          </div>
+        </div>
+
+        <div class="duas-colunas">
+          <div class="campo">
+            <label for="categoria">Categoria</label>
+            <select id="categoria" formControlName="categoriaId">
+              @for (c of categorias(); track c.id) {
+                <option [ngValue]="c.id">{{ c.nome }}</option>
+              }
+            </select>
+          </div>
+          <div class="campo">
+            <label for="preco">Preço</label>
+            <input id="preco" formControlName="preco" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off" />
+            @if (form.controls.preco.touched && form.controls.preco.invalid) {
+              <span class="erro">Digite um preço maior que zero.</span>
+            }
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="descricao">Descrição</label>
+          <input id="descricao" formControlName="descricao" autocomplete="off" />
+        </div>
+      </div>
+    </div>
+
+    <!-- A faixa inteira é o label: clicar no texto também liga e desliga -->
+    <div class="opcoes-site">
+      <label class="opcao">
+        <span class="interruptor">
+          <input type="checkbox" role="switch" formControlName="mostrarNoSite" />
+          <span></span>
+        </span>
+        <span class="textos">
+          <strong>Mostrar no site</strong>
+          <span class="t-xs">O produto entra no cardápio com foto, descrição e preço</span>
+        </span>
+      </label>
+      <label class="opcao">
+        <span class="interruptor">
+          <input type="checkbox" role="switch" formControlName="destaque" />
+          <span></span>
+        </span>
+        <span class="textos">
+          <strong>Marcar como mais pedido</strong>
+          <span class="t-xs">Ganha o selo de destaque no cardápio</span>
+        </span>
+      </label>
+    </div>
+
+    <div class="rodape-modal">
+      <button type="button" class="btn btn-secundario" (click)="fecharModal()">Cancelar</button>
+      <button type="submit" class="btn btn-primario" [disabled]="salvando()">
+        {{ editando() ? 'Salvar alteração' : 'Salvar produto' }}
+      </button>
+    </div>
+  </form>
+</dialog>

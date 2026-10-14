@@ -1,0 +1,68 @@
+@use '../site';
+
+.rodape {
+  @include site.secao(64px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  padding-bottom: 32px;
+  background: var(--carvao);
+  color: var(--creme);
+}
+
+.colunas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px 48px;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  img { border-radius: 50%; }
+  strong { display: block; font: 400 48px/48px var(--fonte-display); letter-spacing: 0.005em; }
+  small { display: block; font: 400 18px/24px var(--fonte-script); color: var(--ambar); }
+}
+
+.coluna {
+  display: grid;
+  gap: 12px;
+  font-size: 16px;
+  line-height: 24px;
+
+  a,
+  p:not(.titulo) { color: inherit; opacity: 0.85; text-decoration: none; }
+  a:hover { opacity: 1; color: var(--ambar); }
+  .link-painel { text-decoration: underline; }
+}
+.titulo { @include site.sobretitulo(var(--creme)); opacity: 0.5; }
+
+.creditos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding-top: 32px;
+  border-top: 1px solid var(--carvao-3);
+
+  p { line-height: 20px; opacity: 0.5; }
+}
+
+@media (max-width: site.$celular) {
+  .rodape { gap: 24px; padding-top: 40px; }
+  .colunas { display: grid; gap: 12px; }
+  .marca {
+    margin-bottom: 12px;
+    img { width: 56px; height: 56px; }
+    strong { font-size: 30px; line-height: 32px; }
+  }
+  // no celular fica só o contato e o link do painel, como no frame
+  .navegacao,
+  .titulo { display: none; }
+  .creditos { padding-top: 20px; }
+  .creditos p:last-child { display: none; }
+}

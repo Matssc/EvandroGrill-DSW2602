@@ -1,0 +1,52 @@
+// O que se repete nas seções da landing page (frames 15-1514 no computador e 10-1514 no celular).
+// Em cada componente: @use '../site'; e depois @include site.secao; etc.
+
+$computador: 1100px;
+$celular: 600px;
+
+// Fundo de ponta a ponta e o conteúdo em 1280px no meio (80px de margem no Figma)
+@mixin secao($vertical: 112px) {
+  padding: $vertical max(80px, calc((100% - 1280px) / 2));
+  scroll-margin-top: 88px; // a âncora não fica escondida atrás da navbar fixa
+
+  @media (max-width: $computador) { padding-inline: 40px; }
+  @media (max-width: $celular) { padding: 64px 20px; }
+}
+
+// Sobretítulo: "NOSSA HISTÓRIA", "CARDÁPIO"...
+@mixin sobretitulo($cor: var(--brasa)) {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $cor;
+}
+
+// Display/L (68px), que vira Display/M (48px) no celular
+@mixin titulo {
+  font-family: var(--fonte-display);
+  font-weight: 400;
+  font-size: 68px;
+  line-height: 66px;
+  letter-spacing: 0.005em;
+
+  @media (max-width: $celular) { font-size: 48px; line-height: 48px; }
+}
+
+// Texto/L do Figma
+@mixin texto-grande {
+  font-size: 18px;
+  line-height: 30px;
+
+  @media (max-width: $celular) { font-size: 16px; line-height: 26px; }
+}
+
+// Botão G do Figma (os grandes da landing page)
+@mixin botao-grande {
+  padding: 16px 28px;
+  border-radius: var(--raio-12);
+  font-size: 16px;
+  line-height: 24px;
+  gap: 10px;
+}

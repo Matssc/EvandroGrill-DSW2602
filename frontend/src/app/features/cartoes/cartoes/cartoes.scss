@@ -1,0 +1,111 @@
+.erro-geral { margin-bottom: 20px; }
+.periodo { cursor: default; }
+small { font-size: 12px; }
+
+// Cards com cara de cartão (frame 35-1407)
+.cartoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.cartao,
+.novo-cartao { height: 200px; border-radius: var(--raio-16); font: inherit; text-align: left; cursor: pointer; }
+.cartao {
+  flex: 0 1 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px;
+  border: 0;
+  background: linear-gradient(90deg, var(--brasa), var(--brasa-escura));
+  box-shadow: var(--sombra-elevada);
+  color: var(--branco);
+
+  &.grafite { background: linear-gradient(90deg, var(--carvao-3), var(--carvao)); }
+  &.inativo { opacity: 0.55; }
+  &:focus-visible { outline: 2px solid var(--ambar); outline-offset: 3px; }
+  small { opacity: 0.75; }
+}
+.topo-cartao,
+.rodape-cartao { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.topo-cartao strong { font-size: 16px; }
+.rodape-cartao { align-items: flex-end; }
+.rodape-cartao > span { display: grid; gap: 2px; }
+.rodape-cartao strong { font-size: 20px; }
+.chip { width: 34px; height: 26px; border-radius: 5px; background: var(--madeira); }
+.numero { font-size: 18px; line-height: 30px; }
+.novo-cartao {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1.5px dashed var(--n-300);
+  background: none;
+  color: var(--n-900);
+
+  &:hover { border-color: var(--brasa); }
+  small { color: var(--n-500); }
+}
+.icone { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: var(--raio-10); background: var(--n-100); color: var(--n-900); }
+
+.grade { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
+.topo-card { display: grid; gap: 2px; margin-bottom: 16px; }
+.vazio { padding: 24px 0; text-align: center; }
+.forma { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.tabela td { white-space: nowrap; }
+.total-cartao td { color: var(--brasa-escura); font-weight: 600; }
+.nota { margin-top: 16px; color: var(--n-900); }
+
+.ciclos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--n-100); }
+  li:last-child { border-bottom: 0; }
+  .icone { width: 36px; height: 36px; }
+  .textos { display: grid; gap: 2px; flex: 1; }
+  small { color: var(--n-600); }
+}
+
+// Modal
+.modal {
+  width: min(560px, calc(100% - 32px));
+  padding: 28px;
+  border: 0;
+  border-radius: var(--raio-20);
+  box-shadow: var(--sombra-elevada);
+  color: var(--n-900);
+
+  &::backdrop { background: color-mix(in srgb, var(--carvao) 55%, transparent); }
+  form { display: grid; gap: 20px; }
+}
+.topo-modal { display: flex; align-items: flex-start; gap: 12px; > div { flex: 1; } }
+.fechar { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--n-200); border-radius: var(--raio-8); background: var(--branco); cursor: pointer; }
+.duas-colunas,
+.tres-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tres-colunas { grid-template-columns: 1fr 1fr 1fr; }
+.ativo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+
+  input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--brasa); }
+  span { display: grid; gap: 2px; }
+  small { color: var(--n-600); }
+}
+.rodape-modal { display: flex; justify-content: flex-end; gap: 12px; }
+
+@media (max-width: 1100px) {
+  .grade { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .cartao { flex-basis: 100%; }
+  .duas-colunas,
+  .tres-colunas { grid-template-columns: 1fr; }
+  .modal { padding: 20px; }
+}

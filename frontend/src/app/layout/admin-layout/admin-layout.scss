@@ -1,0 +1,110 @@
+.shell {
+    display: grid;
+    grid-template-columns: 264px 1fr;
+    min-height: 100vh;
+  }
+  
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px 16px;
+    background: var(--carvao);
+    color: var(--n-300);
+  }
+  
+  .topo { display: flex; align-items: center; justify-content: space-between; }
+  
+  .marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px;
+    color: var(--branco);
+    text-decoration: none;
+  
+    img { border-radius: 50%; }
+    strong { display: block; font-size: 16px; font-weight: 600; }
+    small { font-size: 12px; color: var(--n-300); }
+  }
+  
+  .abrir-menu { display: none; }
+  
+  nav { flex: 1; overflow-y: auto; margin-top: 12px; }
+  
+  .grupo {
+    margin: 16px 12px 4px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--n-500);
+  }
+  
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: var(--raio-10);
+    color: var(--n-200);
+    text-decoration: none;
+    font-size: 14px;
+  
+    &:hover { background: var(--carvao-2); color: var(--branco); }
+    &.ativo { background: var(--brasa); color: var(--branco); font-weight: 600; }
+  }
+  
+  .rodape { display: grid; gap: 16px; padding-top: 16px; }
+  
+  .ver-site {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--carvao-3);
+    border-radius: var(--raio-10);
+    color: var(--branco);
+    text-decoration: none;
+  
+    .seta { margin-left: auto; color: var(--n-300); }
+    &:hover { border-color: var(--n-600); }
+  }
+  
+  .usuario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px;
+  
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ambar);
+      color: var(--carvao);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .quem { flex: 1; min-width: 0; }
+    strong { display: block; color: var(--branco); font-size: 14px; font-weight: 600; }
+    small { font-size: 12px; }
+    button { padding: 6px; border: 0; background: none; color: var(--n-200); cursor: pointer; }
+  }
+  
+  .conteudo { min-width: 0; padding: 32px; }
+  
+  // Celular e tablet: a sidebar vira uma barra no topo com o menu escondido
+  @media (max-width: 960px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; padding: 12px 16px; }
+    .abrir-menu { display: block; padding: 8px; border: 0; background: none; color: var(--branco); }
+    nav, .rodape { display: none; }
+    .menu-aberto nav, .menu-aberto .rodape { display: grid; }
+    .conteudo { padding: 20px 16px; }
+  }

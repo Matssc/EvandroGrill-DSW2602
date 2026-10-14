@@ -1,10 +1,43 @@
 services:
+  # Banco MySQL. Os dados ficam no volume "dados-mysql" e não somem quando o container para.
+  # Pra abrir no Workbench: localhost, porta 3307, usuário root, senha grill123.
+  db:
+    image: mysql:8.4
+    container_name: dsw2603-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_SENHA:-grill123}
+      MYSQL_DATABASE: evandros_grill
+      TZ: America/Sao_Paulo
+    ports:
+      - "3307:3306"
+    volumes:
+      - dados-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    restart: unless-stopped
+
   backend:
     build:
       context: ../backend
     container_name: dsw2603-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/evandros_grill?createDatabaseIfNotExist=true&sslMode=DISABLED&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${DB_SENHA:-grill123}
+      APP_JWT_SECRET: ${JWT_SEGREDO:-AF63VLUkHBLbKT8CKcnHda+KRtXZmWuRNFOOPwWHQ0AMAG4O4AMJN+FF5W6VDIJR}
+      # Usuário criado na primeira subida, com o banco vazio
+      APP_ADMIN_EMAIL: evandro@evandrosgrill.com.br
+      APP_ADMIN_SENHA: ${ADMIN_SENHA:-grill123}
+      TZ: America/Sao_Paulo
     ports:
       - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:
@@ -16,3 +49,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  dados-mysql:

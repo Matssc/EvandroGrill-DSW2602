@@ -1,0 +1,190 @@
+<header class="cabecalho-pagina">
+  <div>
+    <h1 class="t-h1">Pró-labore</h1>
+    <p class="t-sub">Seu salário sai das vendas: {{ regraDoSalario() }}</p>
+  </div>
+  <div class="acoes">
+    @if (escolhendoMes()) {
+      <input #mesEscolhido class="escolher-mes" type="month" aria-label="Escolher o mês" [max]="mesAtual" [value]="mes()" (change)="trocarMes(mesEscolhido.value)" />
+    }
+    <button class="btn btn-secundario" type="button" (click)="escolhendoMes.set(!escolhendoMes())">{{ mesPorExtenso() }}</button>
+    <button class="btn btn-secundario" type="button" [disabled]="carregando() || !linhas().length" (click)="exportar()">Exportar</button>
+  </div>
+</header>
+
+@if (erro(); as mensagem) {
+  <p class="aviso aviso-perigo erro-geral" role="alert">{{ mensagem }}</p>
+}
+
+<!-- RN05: dias trabalhados e o salário que saiu deles -->
+@if (resumo(); as r) {
+  <div class="indicadores">
+    <section class="painel indicador">
+      <div class="topo-indicador">
+        <span>Dias trabalhados</span>
+        <span class="icone"><lucide-icon [img]="icones.CalendarCheck" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.diasTrabalhados }} {{ r.diasTrabalhados === 1 ? 'dia' : 'dias' }}</p>
+      <p class="linha-selo">
+        <span class="selo">{{ folgas() === 0 ? 'Sem folga' : folgas() === 1 ? '1 folga' : folgas() + ' folgas' }}</span>
+        {{ ehMesAtual() ? 'até ' + (ontem | date: 'dd/MM') : 'no mês' }}
+      </p>
+    </section>
+    <section class="painel indicador">
+      <div class="topo-indicador">
+        <span>Salário do mês</span>
+        <span class="icone"><lucide-icon [img]="icones.Banknote" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.salario | currency }}</p>
+      <p class="linha-selo"><span class="selo">{{ percentualSalario() }}%</span> da retirada</p>
+    </section>
+    <section class="painel indicador">
+      <div class="topo-indicador">
+        <span>Média por dia</span>
+        <span class="icone"><lucide-icon [img]="icones.Calculator" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ mediaPorDia() | currency }}</p>
+      @if (variacaoDaMedia(); as v) {
+        <p class="linha-selo">
+          <span class="selo" [class.alta]="v > 0" [class.baixa]="v < 0">{{ v > 0 ? '+' : '−' }}{{ v > 0 ? v : -v }}%</span>
+          vs. {{ nomeDoMesAnterior() }}
+        </p>
+      } @else if (variacaoDaMedia() === 0) {
+        <p class="linha-selo"><span class="selo">0%</span> vs. {{ nomeDoMesAnterior() }}</p>
+      }
+    </section>
+    <section class="painel indicador">
+      <div class="topo-indicador">
+        <span>Retirada total</span>
+        <span class="icone"><lucide-icon [img]="icones.Percent" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.retiradas | currency }}</p>
+      <p class="linha-selo"><span class="selo">{{ percentualRetirada() }}%</span> das vendas fechadas</p>
+    </section>
+  </div>
+}
+
+<div class="grade">
+  <section class="painel">
+    <div class="topo-card">
+      <h2 class="t-h2">Calendário de {{ nomeDoMes() }}</h2>
+      <p class="t-xs">Cada dia fechado conta como dia trabalhado</p>
+    </div>
+
+    <div class="calendario">
+      @for (s of semana; track s) {
+        <span class="dia-semana">{{ s }}</span>
+      }
+      @for (v of vazios(); track $index) {
+        <span></span>
+      }
+      @for (d of dias(); track d.data) {
+        <div [class]="'dia ' + d.estado">
+          <strong>{{ d.numero }}</strong>
+          @switch (d.estado) {
+            @case ('fechado') { <span>{{ d.fechamento!.valorSalario | number: '1.2-2' }}</span> }
+            @case ('folga') { <span>folga</span> }
+            @case ('aberto') { <span>{{ vendidoHoje() ? 'aberto' : 'hoje' }}</span> }
+          }
+        </div>
+      }
+    </div>
+
+    <p class="legenda">
+      <span><span class="ponto fechado"></span>Dia trabalhado (salário do dia)</span>
+      <span><span class="ponto folga"></span>Folga</span>
+      @if (ehMesAtual()) {
+        <span><span class="ponto aberto"></span>Hoje, em aberto</span>
+      }
+    </p>
+
+    @if (exemplo(); as f) {
+      <p class="aviso aviso-info nota">
+        <lucide-icon [img]="icones.Info" [size]="18" />
+        <span>
+          Exemplo do dia {{ f.data | date: 'dd' }}: vendeu {{ f.totalVendido | currency }}, a retirada de {{ f.percentualRetirada }}% deu
+          {{ f.valorRetirada | currency }},
+          @if (f.valorReserva > 0) {
+            e isso virou {{ f.valorSalario | currency }} de salário e {{ f.valorReserva | currency }} pra reserva.
+          } @else {
+            e tudo isso virou salário.
+          }
+        </span>
+      </p>
+    }
+  </section>
+
+  <section class="painel">
+    <div class="topo-card linha">
+      <h2 class="t-h2">Retiradas por dia</h2>
+      <span class="t-sub">{{ mesPorExtenso() }}</span>
+    </div>
+
+    @if (carregando() && !fechamentos().length) {
+      <p class="t-sub vazio">Carregando...</p>
+    } @else if (!linhas().length) {
+      <p class="t-sub vazio">O mês ainda não começou.</p>
+    } @else {
+      <div class="rolagem-x">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th>Dia</th>
+              <th class="num">Vendido</th>
+              <th class="num">Retirada</th>
+              <th class="num">Salário</th>
+              <th class="num">Reserva</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (d of linhas(); track d.data) {
+              <tr>
+                <td>{{ d.numero }} · {{ d.semana }}</td>
+                @if (d.fechamento; as f) {
+                  <td class="num">{{ f.totalVendido | currency }}</td>
+                  <td class="num">{{ f.valorRetirada | currency }}</td>
+                  <td class="num">{{ f.valorSalario | currency }}</td>
+                  <td class="num">{{ f.valorReserva | currency }}</td>
+                } @else {
+                  <td class="num">
+                    @if (d.estado === 'aberto') {
+                      <span class="badge badge-alerta">Em aberto</span>
+                    } @else {
+                      <span class="badge badge-neutro">Folga</span>
+                    }
+                  </td>
+                  <td class="num">—</td>
+                  <td class="num">—</td>
+                  <td class="num">—</td>
+                }
+              </tr>
+            }
+          </tbody>
+          @if (resumo(); as r) {
+            <tfoot>
+              <tr>
+                <td>{{ r.diasTrabalhados }} {{ r.diasTrabalhados === 1 ? 'dia' : 'dias' }}</td>
+                <td class="num">{{ r.vendas | currency }}</td>
+                <td class="num">{{ r.retiradas | currency }}</td>
+                <td class="num">{{ r.salario | currency }}</td>
+                <td class="num">{{ r.reserva | currency }}</td>
+              </tr>
+            </tfoot>
+          }
+        </table>
+      </div>
+    }
+
+    @if (hojeEmAberto()) {
+      <p class="aviso aviso-alerta nota">
+        <lucide-icon [img]="icones.TriangleAlert" [size]="18" />
+        <span>
+          O dia de hoje entra na conta quando você fechar o caixa em Vendas do dia.
+          @if (vendidoHoje()) {
+            Até agora: {{ vendidoHoje() | currency }} lançados.
+          }
+        </span>
+      </p>
+    }
+  </section>
+</div>

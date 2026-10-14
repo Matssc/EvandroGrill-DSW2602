@@ -1,0 +1,13 @@
+<div class="faixa">
+  <div class="trilho">
+    <!-- duas cópias iguais: quando a primeira sai da tela, a segunda está no lugar dela -->
+    @for (copia of [1, 2]; track copia) {
+      <p class="grupo" [attr.aria-hidden]="copia === 2 ? 'true' : null">
+        @for (frase of frases; track frase) {
+          <span>{{ frase }}</span>
+          <lucide-icon [img]="chama" [size]="22" />
+        }
+      </p>
+    }
+  </div>
+</div>

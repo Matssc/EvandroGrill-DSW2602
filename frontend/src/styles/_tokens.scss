@@ -1,0 +1,78 @@
+// Tokens do design system do Figma ("Guia de estilo").
+// Mudou no Figma? Muda aqui e o site inteiro acompanha.
+:root {
+    // Marca
+    --brasa: #d0352d;
+    --brasa-escura: #a9271f;
+    --brasa-clara: #fbe7e4;
+    --ambar: #f2a33a;
+    --carvao: #17161c;
+    --carvao-2: #201e26;
+    --carvao-3: #2e2b34;
+    --creme: #f5efe6;
+    --madeira: #c9a27a;
+  
+    // Neutros
+    --branco: #ffffff;
+    --n-50: #f7f6f4;
+    --n-100: #efedea;
+    --n-200: #e3e0dc;
+    --n-300: #cfcbc6;
+    --n-500: #8e8983;
+    --n-600: #66615c;
+    --n-900: #1d1b1a;
+  
+    // Feedback
+    --sucesso: #15803d;
+    --sucesso-bg: #dcfce7;
+    --alerta: #b45309;
+    --alerta-bg: #fef3c7;
+    --perigo: #c81e1e;
+    --perigo-bg: #fee2e2;
+    --info: #1d4ed8;
+    --info-bg: #dbeafe;
+    --whatsapp: #25d366;
+    --instagram: #e1306c;
+
+    // Ilustração: as peças dos espetos (coleção "ilustracao" do Figma)
+    --ilustracao-carne: #7b2d1e;
+    --ilustracao-tostado: #3b160f;
+    --ilustracao-pimentao: #4f8a3a;
+    --ilustracao-cebola: #e9d9c3;
+    --ilustracao-frango: #d49a5a;
+    --ilustracao-bacon: #b54a35;
+    --ilustracao-queijo: #f0cf86;
+    --ilustracao-linguica: #9e3a28;
+    --ilustracao-coracao: #6e2219;
+    --ilustracao-kafta: #8b4a2e;
+    --ilustracao-pao: #ddb06a;
+    --mapa-fundo: #e7e1d8;
+    --mapa-avenida: #f3d9a6;
+    --mapa-praca: #cfe3c0;
+    --instagram-gradiente: linear-gradient(135deg, #f58529 0%, #dd2a7b 50%, #8134af 100%);
+  
+    // Espaçamentos e raios
+    --esp-4: 4px;
+    --esp-8: 8px;
+    --esp-12: 12px;
+    --esp-16: 16px;
+    --esp-20: 20px;
+    --esp-24: 24px;
+    --esp-32: 32px;
+    --esp-48: 48px;
+    --raio-8: 8px;
+    --raio-10: 10px;
+    --raio-12: 12px;
+    --raio-16: 16px;
+    --raio-20: 20px;
+    --raio-pill: 999px;
+  
+    // Tipografia
+    --fonte-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
+    --fonte-script: 'Kaushan Script', cursive;
+    --fonte-texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  
+    // Sombras
+    --sombra-card: 0 1px 2px rgb(23 22 28 / 6%), 0 4px 12px rgb(23 22 28 / 6%);
+    --sombra-elevada: 0 16px 40px rgb(23 22 28 / 18%);
+  }
