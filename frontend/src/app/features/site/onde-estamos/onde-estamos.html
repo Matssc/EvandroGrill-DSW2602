@@ -1,0 +1,53 @@
+<section id="onde-estamos" class="onde-estamos">
+  <div class="informacoes">
+    <p class="sobretitulo">Onde estamos</p>
+    <h2>Vem pra brasa</h2>
+
+    <ul class="itens">
+      <li>
+        <span class="icone"><lucide-icon [img]="icones.MapPin" [size]="20" /></span>
+        <span>
+          <strong>Endereço</strong>
+          {{ contato.endereco }}<br />{{ contato.bairro }} · {{ contato.cidade }}
+        </span>
+      </li>
+      <li>
+        <span class="icone"><lucide-icon [img]="icones.Clock" [size]="20" /></span>
+        <span>
+          <strong>Horário</strong>
+          @for (h of contato.horarios; track h; let ultimo = $last) {
+            {{ h }}
+            @if (!ultimo) {
+              <br />
+            }
+          }
+        </span>
+      </li>
+      <li>
+        <span class="icone"><app-icone-whatsapp [size]="20" /></span>
+        <span>
+          <strong>WhatsApp</strong>
+          {{ contato.whatsappNaTela }}
+        </span>
+      </li>
+    </ul>
+
+    <div class="acoes">
+      <a class="btn btn-whatsapp" [href]="whatsapp" target="_blank" rel="noopener">
+        <app-icone-whatsapp [size]="20" /> Fazer pedido
+      </a>
+      <a class="btn btn-secundario" [href]="comoChegar" target="_blank" rel="noopener">Como chegar</a>
+    </div>
+  </div>
+
+  <!-- Mapa do Google com o pino da espetaria -->
+  <div class="mapa">
+    <iframe
+      [src]="mapa"
+      title="Mapa do Google com a localização da Evandro's Grill"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen
+    ></iframe>
+  </div>
+</section>

@@ -1,0 +1,50 @@
+<div class="shell" [class.menu-aberto]="menuAberto()">
+    <aside class="sidebar">
+      <div class="topo">
+        <a class="marca" routerLink="/admin/dashboard">
+          <img src="logo.jpg" alt="" width="40" height="40" />
+          <span>
+            <strong>Evandro's Grill</strong>
+            <small>Painel administrativo</small>
+          </span>
+        </a>
+        <button class="abrir-menu" type="button" (click)="menuAberto.set(!menuAberto())" aria-label="Menu">
+          <lucide-icon [img]="icones.Menu" [size]="22" />
+        </button>
+      </div>
+  
+      <nav (click)="menuAberto.set(false)">
+        @for (grupo of menu; track grupo.titulo) {
+          <p class="grupo">{{ grupo.titulo }}</p>
+          @for (item of grupo.itens; track item.rota) {
+            <a class="item" [routerLink]="item.rota" routerLinkActive="ativo">
+              <lucide-icon [img]="item.icone" [size]="18" />
+              {{ item.texto }}
+            </a>
+          }
+        }
+      </nav>
+  
+      <div class="rodape">
+        <a class="ver-site" href="/" target="_blank" rel="noopener">
+          <lucide-icon [img]="icones.Globe" [size]="18" />
+          Ver site
+          <lucide-icon class="seta" [img]="icones.ExternalLink" [size]="16" />
+        </a>
+        <div class="usuario">
+          <span class="avatar">{{ iniciais() }}</span>
+          <span class="quem">
+            <strong>{{ usuario()?.nome }}</strong>
+            <small>{{ usuario()?.nomeNegocio }}</small>
+          </span>
+          <button type="button" (click)="auth.sair()" aria-label="Sair" title="Sair">
+            <lucide-icon [img]="icones.LogOut" [size]="18" />
+          </button>
+        </div>
+      </div>
+    </aside>
+  
+    <main class="conteudo">
+      <router-outlet />
+    </main>
+  </div>

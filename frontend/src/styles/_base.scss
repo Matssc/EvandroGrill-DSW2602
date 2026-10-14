@@ -1,0 +1,261 @@
+// Estilos globais: os "componentes" do Guia de estilo em forma de classe.
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--fonte-texto);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--n-900);
+  background: var(--n-50);
+  -webkit-font-smoothing: antialiased;
+}
+
+// No papel o fundo é sempre branco (relatório da contadora e qualquer tela impressa)
+@media print {
+  body { background: var(--branco); }
+}
+
+// Âncoras da landing page (#cardapio, #sobre...) rolam suave, menos pra quem pediu menos movimento
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+h1, h2, h3, p {
+  margin: 0;
+}
+
+// Tipografia (Texto/Título/H1, H2, H3 e Número/KPI no Figma)
+.t-h1 { font-size: 28px; font-weight: 700; line-height: 1.25; }
+.t-h2 { font-size: 20px; font-weight: 600; line-height: 1.3; }
+.t-h3 { font-size: 16px; font-weight: 600; }
+.t-kpi { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.t-display { font-family: var(--fonte-display); font-weight: 400; letter-spacing: 0.01em; }
+.t-sub { color: var(--n-600); font-size: 14px; }
+.t-xs { font-size: 12px; color: var(--n-600); }
+
+// Botões (componente Botão: Primário, Secundário, Fantasma, Claro)
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-8);
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--raio-10);
+  font: 600 14px/1 var(--fonte-texto);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s, border-color 0.15s;
+
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+  &:focus-visible { outline: 2px solid var(--ambar); outline-offset: 2px; }
+}
+.btn-primario { background: var(--brasa); color: var(--branco); &:hover:not(:disabled) { background: var(--brasa-escura); } }
+.btn-secundario { background: var(--branco); color: var(--n-900); border-color: var(--n-200); &:hover:not(:disabled) { border-color: var(--n-300); } }
+.btn-claro { background: var(--creme); color: var(--n-900); }
+.btn-fantasma { background: transparent; color: var(--brasa); }
+// Variantes da landing page: WhatsApp (verde) e Contorno (borda clara sobre fundo escuro)
+.btn-whatsapp { background: var(--whatsapp); color: var(--carvao); &:hover:not(:disabled) { filter: brightness(0.94); } }
+.btn-contorno {
+  background: transparent;
+  color: var(--creme);
+  border-color: color-mix(in srgb, var(--creme) 28%, transparent);
+  &:hover:not(:disabled) { border-color: color-mix(in srgb, var(--creme) 55%, transparent); }
+}
+.btn-g { padding: 16px 22px; font-size: 16px; }
+.btn-bloco { width: 100%; }
+
+// Campos (componente Campo: Padrão e Foco)
+.campo {
+  display: grid;
+  gap: 6px;
+
+  label { font-size: 14px; font-weight: 600; }
+
+  input,
+  select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--n-200);
+    border-radius: var(--raio-10);
+    background: var(--branco);
+    font: 400 16px/1.5 var(--fonte-texto);
+    color: var(--n-900);
+
+    &:focus { outline: none; border-color: var(--brasa); box-shadow: 0 0 0 3px var(--brasa-clara); }
+  }
+
+  // seta do select igual à do Figma
+  select {
+    appearance: none;
+    padding-right: 40px;
+    background: var(--branco) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2366615c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E") no-repeat right 14px center;
+  }
+
+  .erro { font-size: 12px; color: var(--perigo); }
+}
+
+// Interruptor (componente Interruptor do Figma): <label class="interruptor"><input type="checkbox" role="switch" /><span></span></label>
+.interruptor {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  cursor: pointer;
+
+  input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+  span {
+    width: 36px;
+    height: 20px;
+    border-radius: var(--raio-pill);
+    background: var(--n-300);
+    transition: background-color 0.15s;
+  }
+  span::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--branco);
+    box-shadow: var(--sombra-card);
+    transition: transform 0.15s;
+  }
+  input:checked + span { background: var(--brasa); }
+  input:checked + span::after { transform: translateX(16px); }
+  input:focus-visible + span { outline: 2px solid var(--ambar); outline-offset: 2px; }
+  input:disabled { cursor: wait; }
+}
+
+// Painel (os cards brancos das telas do painel)
+.painel {
+  background: var(--branco);
+  border: 1px solid var(--n-200);
+  border-radius: var(--raio-16);
+  box-shadow: var(--sombra-card);
+  padding: var(--esp-20);
+}
+.painel-escuro {
+  background: var(--carvao);
+  color: var(--branco);
+  border-radius: var(--raio-16);
+  padding: var(--esp-20);
+}
+
+// Badge (Sucesso, Alerta, Perigo, Info, Neutro)
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--raio-pill);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+
+  &::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+}
+.badge-sucesso { background: var(--sucesso-bg); color: var(--sucesso); }
+.badge-alerta { background: var(--alerta-bg); color: var(--alerta); }
+.badge-perigo { background: var(--perigo-bg); color: var(--perigo); }
+.badge-info { background: var(--info-bg); color: var(--info); }
+.badge-neutro { background: var(--n-100); color: var(--n-600); }
+
+// Ícones do lucide-angular alinhados com o texto
+lucide-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+// Cabeçalho de toda tela do painel: título + subtítulo à esquerda, botões à direita
+.cabecalho-pagina {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--esp-16);
+  margin-bottom: var(--esp-24);
+
+  .acoes { display: flex; flex-wrap: wrap; gap: var(--esp-8); }
+}
+
+// Card de KPI (componente KPI do Figma): use junto com .painel
+// <section class="painel kpi"> .kpi-topo (título + .kpi-icone) · .t-kpi · .kpi-rodape (.selo + texto)
+.kpi { display: grid; align-content: start; gap: 10px; min-width: 0; border-radius: 14px; }
+.kpi-topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--n-600); }
+.kpi-icone {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: var(--raio-8);
+  background: var(--n-100);
+  color: var(--n-900);
+}
+.kpi-rodape { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--n-500); }
+.selo {
+  padding: 2px 8px;
+  border-radius: var(--raio-pill);
+  background: var(--n-100);
+  color: var(--n-600);
+  font-size: 12px;
+  font-weight: 500;
+
+  &.bom { background: var(--sucesso-bg); color: var(--sucesso); }
+  &.ruim { background: var(--perigo-bg); color: var(--perigo); }
+}
+
+// Avisos (as caixas azul, amarela e vermelha das telas)
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--raio-12);
+  font-size: 14px;
+}
+.aviso-info { background: var(--info-bg); color: #1e3a8a; }
+.aviso-alerta { background: var(--alerta-bg); color: #78350f; }
+.aviso-perigo { background: var(--perigo-bg); color: #7f1d1d; }
+
+// Filtros em pílula (Todas, Entradas, Saídas...)
+.pilula {
+  padding: 8px 14px;
+  border: 1px solid var(--n-200);
+  border-radius: var(--raio-pill);
+  background: var(--branco);
+  font: 500 14px/1 var(--fonte-texto);
+  color: var(--n-900);
+  cursor: pointer;
+
+  &.ativa { background: var(--carvao); border-color: var(--carvao); color: var(--branco); }
+}
+
+// Tabela larga no celular: rola de lado dentro do card em vez de alargar a página
+.rolagem-x { overflow-x: auto; }
+
+// Tabela padrão do painel
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--n-50);
+    color: var(--n-500);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  td { padding: 11px 12px; border-bottom: 1px solid var(--n-100); }
+  .num { text-align: right; }
+  tfoot td { font-weight: 600; background: var(--n-50); border-bottom: 0; }
+}

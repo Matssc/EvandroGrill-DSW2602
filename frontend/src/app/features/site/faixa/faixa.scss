@@ -1,0 +1,30 @@
+.faixa {
+  overflow: hidden;
+  padding: 18px 0;
+  background: var(--brasa);
+  color: var(--creme);
+}
+
+.trilho {
+  display: flex;
+  width: max-content;
+  animation: rolar 40s linear infinite;
+}
+
+.grupo {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding-right: 28px;
+
+  span { font: 400 30px/32px var(--fonte-display); letter-spacing: 0.008em; white-space: nowrap; }
+  lucide-icon { opacity: 0.85; }
+}
+
+@keyframes rolar {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trilho { animation: none; padding-left: 20px; }
+}

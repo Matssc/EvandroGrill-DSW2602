@@ -1,0 +1,9 @@
+EvandrosGrill/target
+EvandrosGrill/.mvn
+EvandrosGrill/mvnw
+EvandrosGrill/mvnw.cmd
+EvandrosGrill/.idea
+EvandrosGrill/*.iml
+# No Docker as configurações vêm do docker-compose, não do arquivo local de cada um
+EvandrosGrill/src/main/resources/application-local.properties
+*.sql

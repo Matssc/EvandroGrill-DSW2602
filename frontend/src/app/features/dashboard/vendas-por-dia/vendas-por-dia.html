@@ -1,0 +1,24 @@
+<div class="topo">
+  <h2 class="t-h2">Vendas por dia · {{ nomeDoMes() }}</h2>
+  <p class="legenda">
+    <span><span class="ponto fechado"></span>Dia fechado</span>
+    <span><span class="ponto aberto"></span>Hoje, em aberto</span>
+    <span><span class="ponto folga"></span>Folga</span>
+  </p>
+</div>
+
+<div class="grafico" [class.compacto]="!mostrarValores()" role="img" [attr.aria-label]="'Vendas por dia de ' + nomeDoMes()">
+  @for (d of dias(); track d.data) {
+    <div [class]="'coluna ' + d.estado" [title]="d.numero + ': ' + (d.estado === 'folga' ? 'folga' : (d.vendido | currency))">
+      @if (d.estado === 'folga') {
+        <span class="caixa-folga">folga</span>
+      } @else {
+        @if (mostrarValores()) {
+          <span class="valor">{{ d.vendido | currency: 'BRL' : 'symbol' : '1.0-0' }}</span>
+        }
+        <span class="barra" [style.height.%]="(d.vendido / maiorVenda()) * 100"></span>
+      }
+      <span class="dia">{{ d.numero }}{{ d.estado === 'aberto' && mostrarValores() ? ' · hoje' : '' }}</span>
+    </div>
+  }
+</div>

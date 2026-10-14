@@ -1,0 +1,32 @@
+<section id="sobre" class="historia">
+  <figure class="foto">
+    @if (foto) {
+      <img [src]="foto" alt="O ambiente da Evandro's Grill" loading="lazy" />
+    } @else {
+      <lucide-icon [img]="imagem" [size]="40" />
+      <figcaption>Foto do ambiente</figcaption>
+    }
+  </figure>
+
+  <div class="texto">
+    <p class="sobretitulo">Nossa história</p>
+    <h2>Tradição na brasa, feita à mão</h2>
+    <p class="paragrafo">
+      A Evandro's Grill nasceu da paixão pelo churrasco de verdade. Cada espeto é montado à mão, com carnes
+      selecionadas e tempero da casa, e assado na brasa até o ponto certo.
+    </p>
+    <p class="paragrafo">Aqui o clima é de encontro: família, amigos e aquela conversa boa em volta da churrasqueira.</p>
+
+    <ul class="diferenciais">
+      @for (d of diferenciais; track d.titulo) {
+        <li>
+          <span class="icone"><lucide-icon [img]="d.icone" [size]="22" /></span>
+          <span>
+            <strong>{{ d.titulo }}</strong>
+            <small>{{ d.texto }}</small>
+          </span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

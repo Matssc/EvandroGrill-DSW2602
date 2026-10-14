@@ -1,0 +1,154 @@
+// Tela cheia, fora do layout com sidebar (frame 35-2002)
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--carvao-2);
+}
+
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  background: var(--carvao);
+  color: var(--branco);
+}
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--branco) 20%, transparent);
+  border-radius: var(--raio-10);
+  color: var(--branco);
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover { border-color: var(--branco); }
+}
+.arquivo { display: flex; flex: 1; align-items: center; gap: 10px; min-width: 0; strong { overflow-wrap: anywhere; } }
+.botoes { display: flex; gap: 12px; }
+
+.visualizacao { display: grid; justify-items: center; gap: 16px; padding: 28px 16px 48px; }
+.erro { width: min(620px, 100%); }
+
+// A folha: proporção de A4 na tela
+.folha {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(620px, 100%);
+  min-height: 877px;
+  padding: 36px 44px 28px;
+  border-radius: 4px;
+  background: var(--branco);
+  box-shadow: var(--sombra-elevada);
+  color: var(--n-900);
+  font-size: 12px;
+  line-height: 16px;
+}
+small { font-size: 12px; color: var(--n-500); }
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--n-200);
+
+  img { border-radius: 50%; object-fit: cover; }
+  .empresa { display: grid; flex: 1; gap: 2px; strong { font-size: 14px; line-height: 20px; } }
+}
+.titulo {
+  display: grid;
+  gap: 2px;
+
+  h1 { font-size: 16px; line-height: 24px; font-weight: 600; }
+  p { color: var(--n-600); }
+}
+.vazio { padding: 32px 0; text-align: center; color: var(--n-500); }
+
+.resumo {
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: var(--raio-8);
+  background: var(--n-50);
+
+  div { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--n-200); }
+  div:last-child { border-bottom: 0; }
+  dt { color: var(--n-600); }
+  dd { margin: 0; white-space: nowrap; }
+  .forte { font-weight: 500; dt { color: var(--n-900); } }
+}
+
+.secao {
+  display: grid;
+  gap: 6px;
+
+  h2 { font-size: 14px; line-height: 20px; font-weight: 600; break-after: avoid; }
+}
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th {
+  padding: 5px 8px;
+  background: var(--n-100);
+  color: var(--n-600);
+  font-weight: 500;
+  text-align: left;
+
+  &:first-child { border-radius: 4px 0 0 4px; }
+  &:last-child { border-radius: 0 4px 4px 0; }
+}
+td { padding: 6px 8px; border-bottom: 1px solid var(--n-100); }
+tr { break-inside: avoid; }
+tfoot td { border-bottom: 0; font-weight: 600; }
+.data { width: 44px; }
+.extra { width: 120px; }
+.valor { width: 92px; text-align: right; white-space: nowrap; }
+
+.rodape {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--n-200);
+  color: var(--n-500);
+}
+
+@media (max-width: 600px) {
+  .barra { padding: 12px 16px; }
+  .arquivo { display: none; }
+  .botoes { width: 100%; .btn { flex: 1; } }
+  .folha { min-height: 0; padding: 24px 16px; }
+  .extra { width: auto; }
+}
+
+// "Baixar PDF": só a folha vai pro papel
+@page {
+  size: A4;
+  margin: 14mm 14mm 16mm;
+
+  // número da página na margem do papel (Chrome e Edge; os outros navegadores ignoram)
+  @bottom-right {
+    content: 'Página ' counter(page) ' de ' counter(pages);
+    font-size: 9px;
+  }
+}
+@media print {
+  :host { display: block; min-height: 0; background: none; }
+  .barra,
+  .erro { display: none; }
+  .visualizacao { display: block; padding: 0; }
+  // o cabeçalho da tabela repete em cada página; o subtotal só aparece no fim
+  tfoot { display: table-row-group; }
+  .folha {
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

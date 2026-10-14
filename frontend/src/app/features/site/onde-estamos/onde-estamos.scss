@@ -1,0 +1,68 @@
+@use '../site';
+
+.onde-estamos {
+  @include site.secao;
+  display: grid;
+  grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+  align-items: center;
+  gap: 64px;
+  background: var(--creme);
+}
+
+.informacoes { display: grid; justify-items: start; gap: 28px; }
+.sobretitulo { @include site.sobretitulo; }
+h2 { @include site.titulo; color: var(--carvao); }
+
+.itens {
+  display: grid;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li { display: flex; align-items: flex-start; gap: 16px; font-size: 16px; line-height: 24px; color: var(--n-600); }
+  strong { display: block; margin-bottom: 2px; font-weight: 600; color: var(--carvao); }
+}
+
+.icone {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border: 1px solid var(--n-200);
+  border-radius: var(--raio-12);
+  background: var(--branco);
+  color: var(--brasa);
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 8px;
+
+  .btn { @include site.botao-grande; }
+  .btn-secundario { border-color: var(--n-300); }
+}
+
+// Mapa do Google: mesma altura e cantos do mapa do Figma
+.mapa {
+  height: 460px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--mapa-fundo);
+
+  iframe { display: block; width: 100%; height: 100%; border: 0; }
+}
+
+@media (max-width: site.$computador) {
+  .onde-estamos { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+}
+
+@media (max-width: site.$celular) {
+  .informacoes { gap: 20px; }
+  .itens { gap: 16px; }
+  .acoes { display: grid; width: 100%; }
+  .mapa { height: 300px; border-radius: 16px; }
+}

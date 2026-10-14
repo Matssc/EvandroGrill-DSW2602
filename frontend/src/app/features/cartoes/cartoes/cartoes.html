@@ -1,0 +1,211 @@
+<header class="cabecalho-pagina">
+  <div>
+    <h1 class="t-h1">Cartões PJ</h1>
+    <p class="t-sub">Quanto saiu em cada cartão da empresa, mês a mês</p>
+  </div>
+  <div class="acoes">
+    <span class="btn btn-secundario periodo">{{ mesPorExtenso }}</span>
+    <button class="btn btn-primario" type="button" (click)="novoCartao()">
+      <lucide-icon [img]="icones.Plus" [size]="16" /> Adicionar cartão
+    </button>
+  </div>
+</header>
+
+@if (erro(); as mensagem) {
+  <p class="aviso aviso-perigo erro-geral" role="alert">{{ mensagem }}</p>
+}
+
+<div class="cartoes">
+  @for (c of cards(); track c.cartao.id) {
+    <button type="button" class="cartao" [class.grafite]="c.grafite" [class.inativo]="!c.cartao.ativo" [attr.aria-label]="'Editar o cartão ' + c.cartao.apelido" (click)="editar(c.cartao)">
+      <span class="topo-cartao">
+        <strong>{{ c.cartao.apelido }}</strong>
+        <small>{{ c.cartao.ativo ? (c.cartao.bandeira ?? '') : 'Inativo' }}</small>
+      </span>
+      <span class="chip"></span>
+      <span class="numero">••••&nbsp;&nbsp;••••&nbsp;&nbsp;••••&nbsp;&nbsp;{{ c.cartao.finalCartao }}</span>
+      <span class="rodape-cartao">
+        <span>
+          <small>Lançado em {{ nomeDoMesAtual }}</small>
+          <strong>{{ c.lancado | currency }}</strong>
+        </span>
+        <small class="ciclo">{{ c.ciclo }}</small>
+      </span>
+    </button>
+  }
+  <button type="button" class="novo-cartao" (click)="novoCartao()">
+    <span class="icone"><lucide-icon [img]="icones.Plus" [size]="20" /></span>
+    <strong>Adicionar cartão</strong>
+    <small>Cadastre quantos cartões PJ precisar</small>
+  </button>
+</div>
+
+<div class="grade">
+  <!-- RN07: quanto saiu em cada forma de pagamento -->
+  <section class="painel">
+    <div class="topo-card">
+      <h2 class="t-h2">Gasto por cartão · últimos 3 meses</h2>
+      <p class="t-xs">Quanto saiu em cada forma de pagamento, mês a mês</p>
+    </div>
+
+    @if (carregando() && !cartoes().length) {
+      <p class="t-sub vazio">Carregando...</p>
+    } @else {
+      <div class="rolagem-x">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th>Forma de pagamento</th>
+              @for (col of colunas; track col.mes) {
+                <th class="num">{{ col.titulo }}@if (col.atual) { (até {{ hoje | date: 'dd/MM' }})}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (l of tabela().linhas; track l.cartao.id) {
+              <tr>
+                <td><span class="forma"><lucide-icon [img]="icones.CreditCard" [size]="16" /> {{ l.cartao.apelido }} · final {{ l.cartao.finalCartao }}</span></td>
+                @for (v of l.valores; track $index) {
+                  <td class="num">{{ v | currency }}</td>
+                }
+              </tr>
+            }
+            <tr class="total-cartao">
+              <td>Total no cartão PJ</td>
+              @for (v of tabela().noCartao; track $index) {
+                <td class="num">{{ v | currency }}</td>
+              }
+            </tr>
+            <tr>
+              <td><span class="forma"><lucide-icon [img]="icones.Banknote" [size]="16" /> À vista (fora do cartão)</span></td>
+              @for (v of tabela().aVista; track $index) {
+                <td class="num">{{ v | currency }}</td>
+              }
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Total de compras</td>
+              @for (v of tabela().total; track $index) {
+                <td class="num">{{ v | currency }}</td>
+              }
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    }
+
+    <p class="aviso aviso-info nota">
+      <lucide-icon [img]="icones.Info" [size]="18" />
+      Nenhum cartão cobre 100% dos gastos da empresa. Por isso o sistema soma os dois cartões PJ e também as compras à vista.
+    </p>
+  </section>
+
+  <section class="painel">
+    <div class="topo-card">
+      <h2 class="t-h2">Ciclo das faturas</h2>
+      <p class="t-xs">Hoje é {{ hoje | date: 'dd/MM' }}</p>
+    </div>
+
+    @if (!ciclos().length) {
+      <p class="t-sub vazio">Nenhum cartão ativo com dia de fechamento.</p>
+    } @else {
+      <ul class="ciclos">
+        @for (c of ciclos(); track c.cartao.id) {
+          <li>
+            <span class="icone"><lucide-icon [img]="icones.CreditCard" [size]="18" /></span>
+            <span class="textos">
+              <strong>{{ c.cartao.apelido }} · {{ c.cartao.finalCartao }}</strong>
+              <small>Fecha {{ c.fecha | date: 'dd/MM' }}@if (c.vence) { · vence {{ c.vence | date: 'dd/MM' }}}</small>
+            </span>
+            <span class="badge" [class.badge-alerta]="c.dias <= diasPraAvisar" [class.badge-neutro]="c.dias > diasPraAvisar">{{ quandoFecha(c.dias) }}</span>
+          </li>
+        }
+      </ul>
+    }
+
+    @for (c of fechandoLogo(); track c.cartao.id) {
+      <p class="aviso aviso-alerta nota">
+        <lucide-icon [img]="icones.TriangleAlert" [size]="18" />
+        A fatura do {{ c.cartao.apelido }} {{ quandoFecha(c.dias).toLowerCase() }}: confira se todas as compras desse cartão já foram lançadas.
+      </p>
+    }
+  </section>
+</div>
+
+<!-- Modal Adicionar / Editar cartão -->
+<dialog #dialogo class="modal" aria-labelledby="titulo-modal" (close)="aoFecharModal()">
+  <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+    <div class="topo-modal">
+      <div>
+        <h2 id="titulo-modal" class="t-h2">{{ editando() ? 'Editar cartão' : 'Adicionar cartão' }}</h2>
+        <p class="t-sub">Só os 4 últimos números: o número inteiro não fica salvo</p>
+      </div>
+      <button type="button" class="fechar" aria-label="Fechar" (click)="fecharModal()">
+        <lucide-icon [img]="icones.X" [size]="16" />
+      </button>
+    </div>
+
+    @if (erroModal(); as mensagem) {
+      <p class="aviso aviso-perigo" role="alert">{{ mensagem }}</p>
+    }
+
+    <div class="duas-colunas">
+      <div class="campo">
+        <label for="apelido">Apelido</label>
+        <input id="apelido" formControlName="apelido" placeholder="PJ Compras" autocomplete="off" />
+        @if (form.controls.apelido.touched && form.controls.apelido.invalid) {
+          <span class="erro">Dê um apelido pro cartão.</span>
+        }
+      </div>
+      <div class="campo">
+        <label for="bandeira">Bandeira</label>
+        <input id="bandeira" formControlName="bandeira" list="bandeiras" autocomplete="off" />
+        <datalist id="bandeiras">
+          @for (b of bandeiras; track b) {
+            <option [value]="b"></option>
+          }
+        </datalist>
+      </div>
+    </div>
+
+    <div class="tres-colunas">
+      <div class="campo">
+        <label for="finalCartao">Final</label>
+        <input id="finalCartao" formControlName="finalCartao" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off" />
+        @if (form.controls.finalCartao.touched && form.controls.finalCartao.invalid) {
+          <span class="erro">Os 4 últimos números.</span>
+        }
+      </div>
+      <div class="campo">
+        <label for="diaFechamento">Dia de fechamento</label>
+        <input id="diaFechamento" type="number" min="1" max="31" formControlName="diaFechamento" />
+        @if (form.controls.diaFechamento.invalid) {
+          <span class="erro">De 1 a 31.</span>
+        }
+      </div>
+      <div class="campo">
+        <label for="diaVencimento">Dia de vencimento</label>
+        <input id="diaVencimento" type="number" min="1" max="31" formControlName="diaVencimento" />
+        @if (form.controls.diaVencimento.invalid) {
+          <span class="erro">De 1 a 31.</span>
+        }
+      </div>
+    </div>
+
+    <label class="ativo">
+      <input type="checkbox" formControlName="ativo" />
+      <span>
+        <strong>Cartão ativo</strong>
+        <small>Cartão inativo não aparece na hora de lançar uma compra</small>
+      </span>
+    </label>
+
+    <div class="rodape-modal">
+      <button type="button" class="btn btn-secundario" (click)="fecharModal()">Cancelar</button>
+      <button type="submit" class="btn btn-primario" [disabled]="salvando()">
+        {{ editando() ? 'Salvar alteração' : 'Adicionar cartão' }}
+      </button>
+    </div>
+  </form>
+</dialog>

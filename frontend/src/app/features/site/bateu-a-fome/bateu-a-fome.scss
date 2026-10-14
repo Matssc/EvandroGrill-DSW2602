@@ -1,0 +1,21 @@
+@use '../site';
+
+.cta {
+  @include site.secao(72px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: var(--brasa);
+  color: var(--creme);
+}
+
+.textos { display: grid; gap: 8px; }
+h2 { @include site.titulo; }
+p { @include site.texto-grande; opacity: 0.9; }
+.btn { @include site.botao-grande; }
+
+@media (max-width: site.$celular) {
+  .cta { flex-direction: column; align-items: stretch; padding-block: 48px; text-align: center; }
+}

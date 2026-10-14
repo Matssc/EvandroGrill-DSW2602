@@ -1,0 +1,265 @@
+<header class="cabecalho-pagina">
+    <div>
+      <h1 class="t-h1">Vendas do dia</h1>
+      <p class="t-sub subtitulo">{{ data() | date: 'EEEE, dd/MM/yyyy' }} · lance cada venda ou só o total do dia</p>
+    </div>
+    <div class="acoes">
+      @if (escolhendoDia()) {
+        <input #dia class="escolher-dia" type="date" [max]="hoje" [value]="data()" (change)="trocarDia(dia.value)" />
+      }
+      @if (data() !== hoje) {
+        <button class="btn btn-secundario" type="button" (click)="trocarDia(hoje)">Voltar pra hoje</button>
+      }
+      <button class="btn btn-secundario" type="button" (click)="escolhendoDia.set(!escolhendoDia())">Dias anteriores</button>
+    </div>
+  </header>
+  
+  @if (erro(); as mensagem) {
+    <p class="aviso aviso-perigo erro-geral" role="alert">{{ mensagem }}</p>
+  }
+  
+  <div class="grade">
+    <div class="coluna">
+      <!-- RN01: lançar venda a venda ou só o total do dia -->
+      @if (!fechamento()) {
+        <section class="painel">
+          <div class="topo-card">
+            <div>
+              <h2 class="t-h2">{{ editando() ? 'Editar venda' : 'Lançar venda' }}</h2>
+              <p class="t-xs">Registre cada venda na hora ou só o total no fim do dia</p>
+            </div>
+            <div class="segmentado" role="group" aria-label="Como lançar">
+              <button type="button" [class.ativo]="modo() === 'POR_VENDA'" (click)="modo.set('POR_VENDA')">Por venda</button>
+              <button type="button" [class.ativo]="modo() === 'TOTAL_DIA'" (click)="modo.set('TOTAL_DIA')">Total do dia</button>
+            </div>
+          </div>
+  
+          <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+            <div class="bloco-produtos">
+              <p class="rotulo">{{ modo() === 'POR_VENDA' ? 'Produtos da venda' : 'Produtos que saíram no dia (opcional)' }}</p>
+              <app-escolher-produtos
+                [produtos]="produtos()"
+                [categorias]="categorias()"
+                [precosDaVenda]="precosDaVenda()"
+                [(itens)]="itens"
+              />
+              @if (faltaProduto() && !itens().length) {
+                <span class="erro">Escolha pelo menos um produto.</span>
+              }
+            </div>
+
+            <div class="campos">
+              @if (modo() === 'POR_VENDA') {
+                <div class="campo">
+                  <span class="rotulo-campo">Valor da venda</span>
+                  <p class="valor-calculado" aria-live="polite">{{ somaItens() | currency }}</p>
+                </div>
+              } @else {
+                <div class="campo">
+                  <label for="valor">Total vendido no dia</label>
+                  <input id="valor" formControlName="valor" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off" />
+                  @if (form.controls.valor.touched && form.controls.valor.invalid) {
+                    <span class="erro">Digite um valor maior que zero.</span>
+                  } @else if (itens().length) {
+                    <small class="dica-soma">Os produtos escolhidos somam {{ somaItens() | currency }}</small>
+                  }
+                </div>
+              }
+              @if (modo() === 'POR_VENDA') {
+                <div class="campo">
+                  <label for="origem">Mesa ou origem</label>
+                  <select id="origem" formControlName="origem">
+                    @for (origem of origens; track origem) {
+                      <option [value]="origem">{{ origem }}</option>
+                    }
+                  </select>
+                </div>
+              }
+            </div>
+  
+            @if (modo() === 'POR_VENDA') {
+              <p class="rotulo">Forma de pagamento</p>
+            }
+            <div class="linha-pagamento">
+              @if (modo() === 'POR_VENDA') {
+                @for (f of formas; track f.valor) {
+                  <button
+                    type="button"
+                    class="forma"
+                    [class.ativa]="form.controls.forma.value === f.valor"
+                    (click)="form.controls.forma.setValue(f.valor)"
+                  >
+                    <lucide-icon [img]="f.icone" [size]="16" /> {{ f.texto }}
+                  </button>
+                }
+              }
+              <div class="botoes">
+                @if (editando()) {
+                  <button type="button" class="btn btn-secundario" (click)="cancelarEdicao()">Cancelar</button>
+                  <button type="submit" class="btn btn-primario" [disabled]="salvando()">Salvar alteração</button>
+                } @else {
+                  <button type="submit" class="btn btn-primario" [disabled]="salvando()">
+                    <lucide-icon [img]="icones.Plus" [size]="16" />
+                    {{ modo() === 'POR_VENDA' ? 'Adicionar venda' : 'Lançar total' }}
+                  </button>
+                }
+              </div>
+            </div>
+          </form>
+        </section>
+      }
+  
+      <section class="painel">
+        <div class="topo-card">
+          <h2 class="t-h2">{{ data() === hoje ? 'Vendas de hoje' : 'Vendas do dia' }}</h2>
+          @if (avulsas().length) {
+            <p class="t-sub">{{ avulsas().length }} {{ avulsas().length === 1 ? 'venda' : 'vendas' }} · ticket médio {{ ticketMedio() | currency }}</p>
+          }
+        </div>
+  
+        @if (carregando() && !vendas().length) {
+          <p class="t-sub vazio">Carregando...</p>
+        } @else if (!lista().length) {
+          <p class="t-sub vazio">Nenhuma venda lançada nesse dia.</p>
+        } @else {
+          <div class="rolagem-x">
+            <table class="tabela">
+              <thead>
+                <tr>
+                  <th>Hora</th>
+                  <th>Origem</th>
+                  <th>Itens</th>
+                  <th>Pagamento</th>
+                  <th class="num">Valor</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (v of lista(); track v.id) {
+                  <tr [class.editando]="editando()?.id === v.id">
+                    <td>{{ v.hora ? v.hora.slice(0, 5) : '—' }}</td>
+                    <td>{{ v.tipoLancamento === 'TOTAL_DIA' ? 'Total do dia' : v.origem }}</td>
+                    <td class="itens" [attr.title]="resumoDosItens(v.itens)">{{ v.itens.length ? resumoDosItens(v.itens) : '—' }}</td>
+                    <td>
+                      @if (forma(v.formaPagamento); as f) {
+                        <span class="pagamento"><lucide-icon [img]="f.icone" [size]="16" /> {{ f.texto }}</span>
+                      } @else {
+                        —
+                      }
+                    </td>
+                    <td class="num">{{ v.valor | currency }}</td>
+                    <td class="acoes-linha">
+                      @if (!fechamento()) {
+                        <button type="button" (click)="editar(v)" aria-label="Editar venda">
+                          <lucide-icon [img]="icones.Pencil" [size]="16" />
+                        </button>
+                        <button type="button" (click)="excluir(v)" aria-label="Excluir venda">
+                          <lucide-icon [img]="icones.Trash2" [size]="16" />
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td colspan="3">Total vendido {{ data() === hoje ? 'hoje' : 'no dia' }}</td>
+                  <td class="num">{{ total() | currency }}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        }
+      </section>
+    </div>
+  
+    <div class="coluna">
+      <section class="painel">
+        <h2 class="t-h2">{{ data() === hoje ? 'Hoje' : 'No dia' }} por pagamento</h2>
+        <ul class="por-pagamento">
+          @for (f of porPagamento(); track f.valor) {
+            <li>
+              <span class="icone"><lucide-icon [img]="f.icone" [size]="18" /></span>
+              <span class="nome">
+                <strong>{{ f.texto }}</strong>
+                <small>{{ f.quantidade }} {{ f.quantidade === 1 ? 'venda' : 'vendas' }}</small>
+              </span>
+              <strong>{{ f.total | currency }}</strong>
+            </li>
+          }
+        </ul>
+      </section>
+  
+      <section class="painel">
+        <h2 class="t-h2 titulo-mais">Mais vendidos {{ data() === hoje ? 'hoje' : 'no dia' }}</h2>
+        <app-mais-vendidos
+          [itens]="maisVendidosDoDia()"
+          [vazio]="data() === hoje ? 'Nenhum produto lançado hoje.' : 'Nenhum produto lançado nesse dia.'"
+        />
+      </section>
+
+      <!-- RN02, RN03 e RN05: retirada, divisão e dia trabalhado -->
+      @if (resumo(); as r) {
+        <section class="painel-escuro fechar">
+          <div class="topo-card">
+            <div>
+              <h2 class="t-h2">Fechar o dia</h2>
+              <p class="t-xs">Confira o cálculo antes de fechar o caixa</p>
+            </div>
+            @if (fechamento()) {
+              <span class="badge badge-sucesso">Fechado</span>
+            } @else {
+              <span class="badge badge-alerta">Em aberto</span>
+            }
+          </div>
+  
+          <div>
+            <p class="t-xs">Total vendido {{ data() === hoje ? 'hoje' : 'no dia' }}</p>
+            <p class="t-display total">{{ total() | currency }}</p>
+          </div>
+  
+          <dl class="conta">
+            <div class="forte">
+              <dt>Retirada ({{ r.percentualRetirada }}% do vendido)</dt>
+              <dd>{{ r.retirada | currency }}</dd>
+            </div>
+            <div>
+              <dt><span class="ponto salario"></span>Salário · pró-labore ({{ r.percentualSalario }}%)</dt>
+              <dd>{{ r.salario | currency }}</dd>
+            </div>
+            @if (r.percentualSalario < 100) {
+              <div>
+                <dt><span class="ponto reserva"></span>Reserva da empresa ({{ 100 - r.percentualSalario }}%)</dt>
+                <dd>{{ r.reserva | currency }}</dd>
+              </div>
+            }
+            <div class="forte">
+              <dt>Fica no caixa</dt>
+              <dd class="ambar">{{ r.ficaNoCaixa | currency }}</dd>
+            </div>
+          </dl>
+  
+          <p class="dia-trabalhado">
+            <lucide-icon [img]="icones.CalendarCheck" [size]="18" />
+            Conta como o {{ numeroDoDia() }}º dia trabalhado de {{ data() | date: 'MMMM' }}
+          </p>
+  
+          @if (fechamento(); as f) {
+            <p class="t-xs centro">Dia fechado em {{ f.fechadoEm | date: "dd/MM 'às' HH:mm" }}</p>
+          } @else {
+            <button
+              type="button"
+              class="btn btn-primario btn-g btn-bloco"
+              [disabled]="salvando() || total() === 0"
+              (click)="fecharDia()"
+            >
+              Confirmar fechamento
+            </button>
+          }
+          <p class="t-xs centro">Percentuais definidos em <a routerLink="/admin/configuracoes">Configurações</a></p>
+        </section>
+      }
+    </div>
+  </div>

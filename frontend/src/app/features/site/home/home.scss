@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  overflow-x: clip; // a faixa e a avenida do mapa passam da tela; nada de rolagem de lado
+  background: var(--carvao);
+}
+
+.whatsapp-flutuante {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--whatsapp);
+  color: var(--branco);
+  box-shadow: var(--sombra-elevada);
+  transition: transform 0.15s;
+
+  &:hover { transform: scale(1.06); }
+  &:focus-visible { outline: 3px solid var(--ambar); outline-offset: 3px; }
+}
+
+@media (max-width: 600px) {
+  .whatsapp-flutuante { right: 16px; bottom: 16px; width: 56px; height: 56px; }
+}

@@ -1,0 +1,19 @@
+<section id="instagram" class="instagram">
+  <div class="cabecalho">
+    <span class="icone"><lucide-icon [img]="icones.IconeInstagram" [size]="28" /></span>
+    <h2>&#64;{{ perfil }}</h2>
+    <p>Promoções, novidades e os bastidores da brasa. Siga a gente!</p>
+    <a class="btn btn-contorno" [href]="link" target="_blank" rel="noopener">
+      <lucide-icon [img]="icones.IconeInstagram" [size]="20" /> Seguir no Instagram
+    </a>
+  </div>
+
+  <div class="posts">
+    @for (post of posts; track post) {
+      <a class="post" [href]="link" target="_blank" rel="noopener" [attr.aria-label]="'Post ' + post + ' do Instagram'">
+        <lucide-icon [img]="icones.ImageIcon" [size]="32" />
+        <span>Post do Instagram</span>
+      </a>
+    }
+  </div>
+</section>

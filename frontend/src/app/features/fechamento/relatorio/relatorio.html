@@ -1,0 +1,104 @@
+<!-- Barra do documento: some na impressão -->
+<header class="barra">
+  <a class="voltar" routerLink="/admin/fechamento">
+    <lucide-icon [img]="icones.ArrowLeft" [size]="16" /> Voltar ao fechamento
+  </a>
+  <span class="arquivo">
+    <lucide-icon [img]="icones.FileText" [size]="18" />
+    <strong>{{ nomeDoArquivo() }}.pdf</strong>
+  </span>
+  <div class="botoes">
+    <button class="btn btn-claro" type="button" [disabled]="carregando() || gerandoPlanilha()" (click)="baixarPlanilha()">
+      {{ gerandoPlanilha() ? 'Gerando...' : 'Baixar planilha' }}
+    </button>
+    <button class="btn btn-primario" type="button" [disabled]="carregando()" (click)="baixarPdf()">Baixar PDF</button>
+  </div>
+</header>
+
+<main class="visualizacao">
+  @if (erro(); as mensagem) {
+    <p class="aviso aviso-perigo erro" role="alert">{{ mensagem }}</p>
+  }
+
+  <article class="folha" aria-label="Relatório de compras">
+    <header class="cabecalho">
+      <img src="logo.jpg" alt="" width="40" height="40" />
+      <span class="empresa">
+        <strong>{{ usuario()?.nomeNegocio ?? "Evandro's Grill" }}</strong>
+        @if (usuario(); as u) {
+          <small>Responsável: {{ u.nome }} · {{ u.email }}</small>
+        }
+      </span>
+      <small>Gerado em {{ geradoEm | date: 'dd/MM/yyyy' }}</small>
+    </header>
+
+    <div class="titulo">
+      <h1>Relatório de compras · {{ mesPorExtenso() }}</h1>
+      <p>Para a contadora: compras no cartão PJ e compras à vista, separadas</p>
+    </div>
+
+    @if (carregando() && !compras().length) {
+      <p class="vazio">Carregando...</p>
+    } @else if (!gastos().length) {
+      <p class="vazio">Nenhuma compra lançada em {{ nomeDoMes() }}.</p>
+    } @else {
+      <dl class="resumo">
+        @for (g of gastosNoCartao(); track g.cartaoPjId) {
+          <div>
+            <dt>Cartão {{ g.forma }} · final {{ g.finalCartao }} ({{ g.qtdCompras }} {{ g.qtdCompras === 1 ? 'compra' : 'compras' }})</dt>
+            <dd>{{ g.total | currency }}</dd>
+          </div>
+        }
+        <div class="forte">
+          <dt>Total no cartão PJ</dt>
+          <dd>{{ totalNoCartao() | currency }}</dd>
+        </div>
+        @if (gastoAVista(); as g) {
+          <div>
+            <dt>Compras à vista ({{ g.qtdCompras }} {{ g.qtdCompras === 1 ? 'compra' : 'compras' }})</dt>
+            <dd>{{ g.total | currency }}</dd>
+          </div>
+        }
+        <div class="forte">
+          <dt>Total de compras do mês</dt>
+          <dd>{{ totalDoMes() | currency }}</dd>
+        </div>
+      </dl>
+
+      @for (s of secoes(); track s.chave; let i = $index) {
+        <section class="secao">
+          <h2>{{ i + 1 }}. {{ s.titulo }}</h2>
+          <table>
+            <thead>
+              <tr>
+                <th class="data">Data</th>
+                <th>Descrição</th>
+                <th class="extra">{{ s.colunaExtra }}</th>
+                <th class="valor">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (l of s.linhas; track l.compra.id) {
+                <tr>
+                  <td>{{ l.compra.data | date: 'dd/MM' }}</td>
+                  <td>{{ l.compra.descricao }}</td>
+                  <td>{{ l.extra }}</td>
+                  <td class="valor">{{ l.compra.valor | currency }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td colspan="2">{{ s.linhas.length }} {{ s.linhas.length === 1 ? 'compra' : 'compras' }}</td>
+                <td class="valor">{{ s.total | currency }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </section>
+      }
+    }
+
+    <footer class="rodape">{{ usuario()?.nomeNegocio ?? "Evandro's Grill" }} · gerado pelo painel administrativo</footer>
+  </article>
+</main>

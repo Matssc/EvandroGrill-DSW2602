@@ -1,0 +1,143 @@
+@use '../site';
+
+.cardapio {
+  @include site.secao;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  background: var(--carvao);
+  color: var(--creme);
+}
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+.titulos { display: grid; gap: 12px; min-width: 0; }
+.sobretitulo { @include site.sobretitulo(var(--ambar)); }
+h2 { @include site.titulo; }
+.sub { @include site.texto-grande; opacity: 0.7; }
+
+.filtros { display: flex; flex-wrap: wrap; gap: 10px; min-width: 0; }
+.chip {
+  padding: 8px 16px;
+  border: 1px solid color-mix(in srgb, var(--creme) 22%, transparent);
+  border-radius: var(--raio-pill);
+  background: none;
+  font: 600 14px/20px var(--fonte-texto);
+  color: var(--creme);
+  cursor: pointer;
+
+  &.ativo { border-color: var(--brasa); background: var(--brasa); color: var(--branco); }
+  &:focus-visible { outline: 2px solid var(--ambar); outline-offset: 2px; }
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--carvao-3);
+  border-radius: var(--raio-16);
+  background: var(--carvao-2);
+}
+
+// Área da imagem: espeto sobre a brasa (ou a foto do produto, quando tiver)
+.imagem {
+  position: relative;
+  height: 188px;
+  background:
+    radial-gradient(75% 70% at 50% 95%, color-mix(in srgb, var(--brasa) 42%, transparent), transparent),
+    var(--carvao);
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+  app-espeto { position: absolute; left: 50%; top: 50%; width: 79%; transform: translate(-50%, -50%); }
+}
+.brasas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  circle { fill: var(--brasa); opacity: 0.75; }
+  .ambar { fill: var(--ambar); }
+}
+.mais-pedido {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 5px 10px;
+  border-radius: var(--raio-pill);
+  background: var(--brasa);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--branco);
+}
+
+.conteudo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+}
+.categoria { @include site.sobretitulo(var(--ambar)); }
+h3,
+.preco { font: 400 30px/32px var(--fonte-display); letter-spacing: 0.008em; }
+.descricao { line-height: 20px; opacity: 0.68; }
+.preco { color: var(--ambar); }
+.rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.chamada {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px 32px;
+  border: 1px solid var(--carvao-3);
+  border-radius: var(--raio-16);
+  background: var(--carvao-2);
+  text-align: center;
+
+  p { @include site.texto-grande; opacity: 0.85; }
+}
+.recado { @include site.texto-grande; opacity: 0.7; }
+.ver-tudo { display: none; }
+
+@media (max-width: site.$computador) {
+  .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: site.$celular) {
+  .cardapio { gap: 24px; }
+  // pílulas numa linha só, rolando de lado (como no frame do celular)
+  .filtros { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; margin-inline: -20px; padding: 0 20px 4px; scrollbar-width: none; }
+  .chip { flex-shrink: 0; }
+  .grade { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .grade:not(.completa) .card:nth-child(n + 5) { display: none; }
+  .ver-tudo { @include site.botao-grande; display: inline-flex; width: 100%; }
+  .sub { display: none; }
+  .so-computador { display: none; }
+}

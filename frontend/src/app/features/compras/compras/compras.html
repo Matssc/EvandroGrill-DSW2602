@@ -1,0 +1,269 @@
+<header class="cabecalho-pagina">
+  <div>
+    <h1 class="t-h1">Compras</h1>
+    <p class="t-sub">Tudo o que a empresa comprou no mês, no cartão PJ ou à vista</p>
+  </div>
+  <div class="acoes">
+    <label class="busca">
+      <lucide-icon [img]="icones.Search" [size]="18" />
+      <input type="search" placeholder="Buscar compra" aria-label="Buscar compra pela descrição" [value]="busca()" (input)="busca.set($any($event.target).value)" />
+    </label>
+    @if (escolhendoMes()) {
+      <input #mesEscolhido class="escolher-mes" type="month" aria-label="Escolher o mês" [max]="mesAtual" [value]="mes()" (change)="trocarMes(mesEscolhido.value)" />
+    }
+    <button class="btn btn-secundario" type="button" (click)="escolhendoMes.set(!escolhendoMes())">{{ mesPorExtenso() }}</button>
+    <button class="btn btn-primario" type="button" [disabled]="carregando()" (click)="novaCompra()">
+      <lucide-icon [img]="icones.Plus" [size]="16" /> Nova compra
+    </button>
+  </div>
+</header>
+
+@if (erro(); as mensagem) {
+  <p class="aviso aviso-perigo erro-geral" role="alert">{{ mensagem }}</p>
+}
+
+<!-- RN07: quanto foi em cada cartão PJ e à vista -->
+<div class="indicadores">
+  @for (k of indicadores(); track k.chave) {
+    <section class="painel indicador">
+      <div class="topo-indicador">
+        <span>{{ k.titulo }}</span>
+        <span class="icone"><lucide-icon [img]="k.icone" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ k.total | currency }}</p>
+      <p class="linha-selo">
+        <span class="selo">{{ k.percentual }}%</span>
+        {{ k.quantidade }} {{ k.quantidade === 1 ? 'compra' : 'compras' }}
+      </p>
+    </section>
+  }
+  <section class="painel indicador">
+    <div class="topo-indicador">
+      <span>Total de {{ nomeDoMes() }}</span>
+      <span class="icone"><lucide-icon [img]="icones.ShoppingCart" [size]="18" /></span>
+    </div>
+    <p class="t-kpi">{{ totalDoMes() | currency }}</p>
+    <p class="linha-selo">
+      <span class="selo">{{ compras().length }} {{ compras().length === 1 ? 'compra' : 'compras' }}</span>
+      @if (mes() === mesAtual) {
+        até {{ hoje | date: 'dd/MM' }}
+      }
+    </p>
+  </section>
+</div>
+
+<section class="painel">
+  <div class="topo-card">
+    <h2 class="t-h2">Compras de {{ nomeDoMes() }}</h2>
+    <div class="filtros" role="group" aria-label="Filtrar por forma de pagamento">
+      @for (f of filtros(); track f.valor) {
+        <button type="button" class="pilula" [class.ativa]="filtro() === f.valor" (click)="filtro.set(f.valor)">{{ f.texto }}</button>
+      }
+    </div>
+  </div>
+
+  @if (carregando() && !compras().length) {
+    <p class="t-sub vazio">Carregando...</p>
+  } @else if (!lista().length) {
+    <p class="t-sub vazio">{{ compras().length ? 'Nenhuma compra com esse filtro.' : 'Nenhuma compra lançada nesse mês.' }}</p>
+  } @else {
+    <div class="rolagem-x">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th class="col-data">Data</th>
+            <th>Descrição</th>
+            <th class="col-categoria">Categoria</th>
+            <th class="col-forma">Forma de pagamento</th>
+            <th class="num col-valor">Valor</th>
+            <th class="col-acoes"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of lista(); track c.id) {
+            <tr>
+              <td>{{ c.data | date: 'dd/MM' }}</td>
+              <td>{{ c.descricao }}</td>
+              <td>{{ nomeDaCategoria(c.categoriaId) }}</td>
+              <td>
+                <span class="forma">
+                  @if (c.formaPagamento === 'CARTAO') {
+                    <lucide-icon [img]="icones.CreditCard" [size]="16" />
+                    {{ cartao(c.cartaoPjId)?.apelido ?? 'Cartão PJ' }}
+                    @if (cartao(c.cartaoPjId); as k) {
+                      <small>final {{ k.finalCartao }}</small>
+                    }
+                  } @else {
+                    <lucide-icon [img]="icones.Banknote" [size]="16" />
+                    À vista <small>{{ meioNaFrase(c.meioAVista) }}</small>
+                  }
+                </span>
+              </td>
+              <td class="num">{{ c.valor | currency }}</td>
+              <td class="acoes-linha">
+                <button type="button" (click)="editar(c)" aria-label="Editar compra">
+                  <lucide-icon [img]="icones.Pencil" [size]="16" />
+                </button>
+                <button type="button" (click)="excluir(c)" aria-label="Excluir compra">
+                  <lucide-icon [img]="icones.Trash2" [size]="16" />
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <td></td>
+            <td>{{ lista().length }} {{ lista().length === 1 ? 'compra' : 'compras' }}</td>
+            <td></td>
+            <td>No cartão PJ: {{ totalNoCartao() | currency }}</td>
+            <td class="num">{{ totalDaLista() | currency }}</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  }
+
+  <p class="aviso aviso-info nota">
+    <lucide-icon [img]="icones.Info" [size]="18" />
+    Nenhum cartão cobre 100% dos gastos, por isso as compras à vista também entram aqui. No relatório da contadora elas saem separadas.
+  </p>
+
+  <!-- RN06: gasto do mês por categoria -->
+  @if (porCategoria().length) {
+    <h3 class="rotulo">Por categoria</h3>
+    <ul class="categorias">
+      @for (c of porCategoria(); track c.id) {
+        <li>
+          <span class="rotulos">
+            <span>{{ c.nome }}</span>
+            <small>{{ c.percentual | number: '1.0-1' }}%</small>
+          </span>
+          <strong>{{ c.total | currency }}</strong>
+          <span class="barra" aria-hidden="true"><span [class]="'cor-' + c.cor" [style.width.%]="c.percentual"></span></span>
+        </li>
+      }
+    </ul>
+  }
+</section>
+
+<!-- Modal Nova compra / Editar compra -->
+<dialog #dialogo class="modal" aria-labelledby="titulo-modal" (close)="aoFecharModal()">
+  <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+    <div class="topo-modal">
+      <div>
+        <h2 id="titulo-modal" class="t-h2">{{ editando() ? 'Editar compra' : 'Nova compra' }}</h2>
+        <p class="t-sub">Lance a compra e diga como foi paga: cartão PJ ou à vista</p>
+      </div>
+      <button type="button" class="fechar" aria-label="Fechar" (click)="fecharModal()">
+        <lucide-icon [img]="icones.X" [size]="16" />
+      </button>
+    </div>
+
+    @if (erroModal(); as mensagem) {
+      <p class="aviso aviso-perigo" role="alert">{{ mensagem }}</p>
+    }
+
+    <div class="campo">
+      <label for="descricao">Descrição</label>
+      <input id="descricao" formControlName="descricao" autocomplete="off" />
+      @if (form.controls.descricao.touched && form.controls.descricao.invalid) {
+        <span class="erro">Diga o que foi comprado.</span>
+      }
+    </div>
+
+    <div class="duas-colunas">
+      <div class="campo">
+        <label for="data">Data</label>
+        <input id="data" type="date" formControlName="data" [max]="hoje" />
+        @if (form.controls.data.touched && form.controls.data.invalid) {
+          <span class="erro">Escolha a data.</span>
+        }
+      </div>
+      <div class="campo">
+        <label for="valor">Valor</label>
+        <input id="valor" formControlName="valor" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off" />
+        @if (form.controls.valor.touched && form.controls.valor.invalid) {
+          <span class="erro">Digite um valor maior que zero.</span>
+        }
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="categoria">Categoria</label>
+      <select id="categoria" formControlName="categoriaId">
+        @for (c of categorias(); track c.id) {
+          <option [ngValue]="c.id">{{ c.nome }}</option>
+        }
+      </select>
+    </div>
+
+    <fieldset>
+      <legend class="rotulo">Forma de pagamento</legend>
+      <div class="opcoes">
+        <label class="opcao" [class.ativa]="form.controls.formaPagamento.value === 'CARTAO'">
+          <input type="radio" formControlName="formaPagamento" value="CARTAO" />
+          <span class="textos">
+            <strong>Cartão PJ</strong>
+            <small>Entra na fatura do cartão escolhido</small>
+          </span>
+        </label>
+        <label class="opcao" [class.ativa]="form.controls.formaPagamento.value === 'A_VISTA'">
+          <input type="radio" formControlName="formaPagamento" value="A_VISTA" />
+          <span class="textos">
+            <strong>À vista</strong>
+            <small>Pix, dinheiro ou débito na hora</small>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    @if (form.controls.formaPagamento.value === 'CARTAO') {
+      <fieldset>
+        <legend class="rotulo">Qual cartão PJ?</legend>
+        @if (cartoesDoModal().length) {
+          <div class="opcoes">
+            @for (k of cartoesDoModal(); track k.id) {
+              <label class="opcao" [class.ativa]="form.controls.cartaoPjId.value === k.id">
+                <input type="radio" formControlName="cartaoPjId" [value]="k.id" />
+                <span class="textos">
+                  <strong>{{ k.apelido }}</strong>
+                  <small>{{ k.bandeira ? k.bandeira + ' · ' : '' }}final {{ k.finalCartao }}</small>
+                </span>
+              </label>
+            }
+          </div>
+        } @else {
+          <p class="t-sub">Nenhum cartão PJ ativo. Cadastre um em Cartões PJ ou lance como à vista.</p>
+        }
+        @if (form.controls.cartaoPjId.touched && form.controls.cartaoPjId.invalid) {
+          <span class="erro-campo">Escolha qual cartão foi usado.</span>
+        }
+      </fieldset>
+      <p class="aviso aviso-info nota">
+        <lucide-icon [img]="icones.Info" [size]="18" />
+        Se escolher "À vista", o campo do cartão some e a compra vai pra lista separada da contadora.
+      </p>
+    } @else {
+      <fieldset>
+        <legend class="rotulo">Como foi pago?</legend>
+        <div class="opcoes tres">
+          @for (m of meios; track m.valor) {
+            <label class="opcao" [class.ativa]="form.controls.meioAVista.value === m.valor">
+              <input type="radio" formControlName="meioAVista" [value]="m.valor" />
+              <span class="textos"><strong>{{ m.texto }}</strong></span>
+            </label>
+          }
+        </div>
+      </fieldset>
+    }
+
+    <div class="rodape-modal">
+      <button type="button" class="btn btn-secundario" (click)="fecharModal()">Cancelar</button>
+      <button type="submit" class="btn btn-primario" [disabled]="salvando()">
+        {{ editando() ? 'Salvar alteração' : 'Salvar compra' }}
+      </button>
+    </div>
+  </form>
+</dialog>

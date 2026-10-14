@@ -1,0 +1,85 @@
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: block;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px max(80px, calc((100% - 1280px) / 2));
+  background: var(--carvao);
+  border-bottom: 1px solid var(--carvao-3);
+  color: var(--creme);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+
+  img { border-radius: 50%; }
+  .nome { display: grid; }
+  strong { font: 400 30px/32px var(--fonte-display); letter-spacing: 0.008em; }
+  small { font: 400 18px/24px var(--fonte-script); color: var(--ambar); }
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+
+  a:not(.btn) {
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--creme);
+    opacity: 0.82;
+    text-decoration: none;
+
+    &:hover { opacity: 1; color: var(--ambar); }
+  }
+}
+
+.pedir { white-space: nowrap; }
+.no-menu,
+.abrir-menu { display: none; }
+
+// Tablet e celular: logo + botão do menu; os links abrem embaixo da barra
+@media (max-width: 1100px) {
+  .topo { flex-wrap: wrap; padding: 12px 20px; }
+  .marca {
+    img { width: 40px; height: 40px; }
+    small { display: none; }
+  }
+  .pedir { display: none; }
+
+  .abrir-menu {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid color-mix(in srgb, var(--creme) 28%, transparent);
+    border-radius: var(--raio-10);
+    background: none;
+    color: var(--creme);
+    cursor: pointer;
+  }
+
+  .links {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 8px 0 12px;
+
+    a:not(.btn) { padding: 12px 4px; font-size: 16px; }
+  }
+  .aberto .links { display: flex; }
+  .no-menu { display: inline-flex; margin-top: 8px; padding: 14px; }
+}
