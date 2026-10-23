@@ -9,6 +9,10 @@ import { emReais, lerValor } from '../../../core/dinheiro';
 import { Categoria, NovoProduto, Produto } from '../../../core/models';
 import { Espeto } from '../../../shared/espeto/espeto';
 
+/** Foto do produto: o back aceita estes tipos e até 5 MB. */
+const TIPOS_DE_FOTO = ['image/jpeg', 'image/png', 'image/webp'];
+const TAMANHO_MAXIMO_DA_FOTO = 5 * 1024 * 1024;
+
 /** Prefixo do código pela categoria. O que não está aqui é espeto: ESP. */
 const PREFIXOS: Record<string, string> = { Acompanhamentos: 'ACO', Bebidas: 'BEB' };
 
@@ -46,6 +50,8 @@ export class Produtos {
   protected readonly editando = signal<Produto | null>(null);
   protected readonly salvando = signal(false);
   protected readonly erroModal = signal<string | null>(null);
+  protected readonly enviandoFoto = signal(false);
+  protected readonly erroFoto = signal<string | null>(null);
 
   protected readonly form = inject(NonNullableFormBuilder).group({
     nome: ['', Validators.required],
@@ -192,6 +198,42 @@ export class Produtos {
   protected aoFecharModal(): void {
     this.editando.set(null);
     this.erroModal.set(null);
+    this.erroFoto.set(null);
+  }
+
+  /** Escolheu um arquivo: confere o tipo e o tamanho aqui, envia pro back e guarda o endereço devolvido. */
+  protected escolherFoto(evento: Event): void {
+    const campo = evento.target as HTMLInputElement;
+    const arquivo = campo.files?.[0];
+    campo.value = ''; // deixa escolher o mesmo arquivo de novo depois de remover
+    if (!arquivo) return;
+
+    if (!TIPOS_DE_FOTO.includes(arquivo.type)) {
+      this.erroFoto.set('Escolha uma imagem JPG, PNG ou WebP.');
+      return;
+    }
+    if (arquivo.size > TAMANHO_MAXIMO_DA_FOTO) {
+      this.erroFoto.set('A foto passa de 5 MB. Escolha uma menor.');
+      return;
+    }
+
+    this.enviandoFoto.set(true);
+    this.erroFoto.set(null);
+    this.api.enviarFoto(arquivo).subscribe({
+      next: ({ url }) => {
+        this.form.controls.fotoUrl.setValue(url);
+        this.enviandoFoto.set(false);
+      },
+      error: (e) => {
+        this.enviandoFoto.set(false);
+        this.erroFoto.set(mensagemDeErro(e));
+      },
+    });
+  }
+
+  protected removerFoto(): void {
+    this.form.controls.fotoUrl.setValue('');
+    this.erroFoto.set(null);
   }
 
   protected salvar(): void {

@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.util.List;
 
@@ -52,6 +54,18 @@ public class TratadorDeExcecoes {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErroResponse> parametroInvalido(MethodArgumentTypeMismatchException e) {
         return responder(HttpStatus.BAD_REQUEST, "Valor inválido para o parâmetro '" + e.getName() + "'", List.of());
+    }
+
+    // Foto maior que o limite do application.properties (spring.servlet.multipart.max-file-size)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErroResponse> arquivoGrande(MaxUploadSizeExceededException e) {
+        return responder(HttpStatus.PAYLOAD_TOO_LARGE, "A foto é grande demais. O limite é 5 MB", List.of());
+    }
+
+    // Enviou o formulário sem o campo "arquivo"
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<ErroResponse> semArquivo(MissingServletRequestPartException e) {
+        return responder(HttpStatus.BAD_REQUEST, "Escolha uma foto para enviar", List.of());
     }
 
     // Último recurso: o banco recusou (valor duplicado numa coluna única, por exemplo)
