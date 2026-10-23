@@ -100,3 +100,11 @@ O fechamento do mês (RN08) e o relatório da contadora (RN09) são montados no 
 Os itens de cada venda ficam na tabela `venda_item` (produto, quantidade e o preço do produto no
 momento da venda). No "Por venda" os itens são obrigatórios e o back calcula o valor somando
 quantidade × preço; no "Total do dia" o valor é digitado e os itens são opcionais.
+
+## Deploy automático no Azure
+
+O workflow `.github/workflows/deploy.yml` atualiza a VM a cada push na `main` (ele faz `git pull` e
+`docker compose up --build -d` por SSH). Antes de funcionar, crie três segredos no GitHub, em
+Settings > Secrets and variables > Actions: `VM_HOST` (IP da VM), `VM_USER` (`azureuser`) e
+`VM_SSH_KEY` (o conteúdo do arquivo `.pem`). A VM precisa ter o projeto clonado em
+`~/EvandroGrill-DSW2602` e a porta 22 liberada. Dá pra rodar na mão na aba Actions (Run workflow).
