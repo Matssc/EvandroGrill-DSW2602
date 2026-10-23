@@ -32,7 +32,11 @@ services:
       # Usuário criado na primeira subida, com o banco vazio
       APP_ADMIN_EMAIL: evandro@evandrosgrill.com.br
       APP_ADMIN_SENHA: ${ADMIN_SENHA:-grill123}
+      # Fotos dos produtos: ficam no volume "fotos" e não somem quando o container é refeito
+      APP_UPLOAD_DIR: /data/fotos
       TZ: America/Sao_Paulo
+    volumes:
+      - fotos:/data/fotos
     ports:
       - "8080:8080"
     depends_on:
@@ -52,3 +56,4 @@ services:
 
 volumes:
   dados-mysql:
+  fotos:
