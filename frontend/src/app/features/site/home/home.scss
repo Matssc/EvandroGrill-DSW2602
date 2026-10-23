@@ -16,7 +16,6 @@
   border-radius: 50%;
   background: var(--whatsapp);
   color: var(--branco);
-  box-shadow: var(--sombra-elevada);
   transition: transform 0.15s;
 
   &:hover { transform: scale(1.06); }

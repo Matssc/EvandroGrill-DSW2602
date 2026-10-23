@@ -12,7 +12,7 @@
     justify-content: center;
     gap: 16px;
     padding: 32px 16px;
-    background: var(--n-50);
+    background: var(--n-100);
   }
   
   .cartao {
@@ -22,9 +22,7 @@
     max-width: 440px;
     padding: 40px 40px 32px;
     background: var(--branco);
-    border: 1px solid var(--n-200);
-    border-radius: var(--raio-20);
-    box-shadow: var(--sombra-elevada);
+    border-radius: var(--raio-12);
   
     .t-sub { margin-top: -8px; }
   }
@@ -47,8 +45,8 @@
     text-decoration: none;
   }
   
-  .rodape { font-size: 12px; color: var(--n-500); }
-  .dica { font-size: 12px; color: var(--n-500); text-align: center; }
+  .rodape { font-size: 13px; color: var(--n-500); }
+  .dica { font-size: 13px; color: var(--n-500); text-align: center; }
   
   @media (max-width: 900px) {
     :host { grid-template-columns: 1fr; }

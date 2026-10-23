@@ -1,24 +1,25 @@
+// Faixa de letreiro em creme, entre o hero e a história. O texto passa sozinho, em loop.
 .faixa {
   overflow: hidden;
-  padding: 18px 0;
-  background: var(--brasa);
-  color: var(--creme);
+  padding: 20px 0;
+  background: var(--creme);
+  color: var(--carvao);
 }
 
 .trilho {
   display: flex;
   width: max-content;
-  animation: rolar 40s linear infinite;
+  animation: rolar 45s linear infinite;
 }
 
 .grupo {
   display: flex;
   align-items: center;
-  gap: 28px;
-  padding-right: 28px;
+  gap: 32px;
+  padding-right: 32px;
 
-  span { font: 400 30px/32px var(--fonte-display); letter-spacing: 0.008em; white-space: nowrap; }
-  lucide-icon { opacity: 0.85; }
+  span { font: 400 44px/1 var(--fonte-display); letter-spacing: 0.01em; white-space: nowrap; }
+  lucide-icon { color: var(--brasa); }
 }
 
 @keyframes rolar {
@@ -27,4 +28,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .trilho { animation: none; padding-left: 20px; }
+}
+
+@media (max-width: 600px) {
+  .faixa { padding: 14px 0; }
+  .grupo span { font-size: 32px; }
 }
