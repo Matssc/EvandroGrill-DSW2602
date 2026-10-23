@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { Brasas } from '../../../shared/brasas/brasas';
 import { CONTATO, LINK_INSTAGRAM, linkWhatsApp } from '../../../core/contato';
 import { hoje } from '../../../core/datas';
@@ -8,7 +7,7 @@ import { SECOES } from '../topo/topo';
 // Rodapé da landing page (frame 15-2183), com o link pro painel administrativo.
 @Component({
   selector: 'app-rodape',
-  imports: [RouterLink, Brasas],
+  imports: [Brasas],
   templateUrl: './rodape.html',
   styleUrl: './rodape.scss',
 })

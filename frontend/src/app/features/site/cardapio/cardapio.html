@@ -18,10 +18,7 @@
     <p class="recado">Carregando o cardápio...</p>
   } @else if (falhou() || !produtos().length) {
     <div class="chamada">
-      <p>{{ falhou() ? 'Não deu pra carregar o cardápio agora.' : 'O cardápio está sendo atualizado.' }} Chama a gente no WhatsApp!</p>
-      <a class="btn btn-whatsapp" [href]="whatsapp" target="_blank" rel="noopener">
-        <app-icone-whatsapp [size]="18" /> Pedir pelo WhatsApp
-      </a>
+      <p>{{ falhou() ? 'Não deu pra carregar o cardápio agora.' : 'O cardápio está sendo atualizado.' }} Volte daqui a pouco!</p>
     </div>
   } @else {
     <ul class="grade" [class.completa]="verTudo()">
@@ -45,9 +42,6 @@
             }
             <div class="rodape">
               <strong class="preco">{{ p.preco | currency }}</strong>
-              <a class="btn btn-whatsapp" [href]="pedir(p)" target="_blank" rel="noopener" [attr.aria-label]="'Pedir ' + p.nome + ' pelo WhatsApp'">
-                <app-icone-whatsapp [size]="18" /> Pedir
-              </a>
             </div>
           </div>
         </li>
@@ -58,11 +52,5 @@
       <button type="button" class="btn btn-contorno ver-tudo" (click)="verTudo.set(true)">Ver cardápio completo</button>
     }
 
-    <div class="chamada so-computador">
-      <p>Não achou o que queria? Tem mais opções no cardápio completo.</p>
-      <a class="btn btn-whatsapp" [href]="whatsapp" target="_blank" rel="noopener">
-        <app-icone-whatsapp [size]="18" /> Pedir pelo WhatsApp
-      </a>
-    </div>
   }
 </section>

@@ -1,7 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { LucideAngularModule, Menu, X } from 'lucide-angular';
-import { linkWhatsApp } from '../../../core/contato';
-import { IconeWhatsapp } from '../../../shared/icone-whatsapp/icone-whatsapp';
+import { linkComoChegar } from '../../../core/contato';
 
 /** Âncoras das seções da landing page (o id de cada <section>). */
 export const SECOES = [
@@ -15,13 +14,13 @@ export const SECOES = [
 // Navbar fixa no topo. No celular os links viram um menu que abre no botão.
 @Component({
   selector: 'app-topo',
-  imports: [LucideAngularModule, IconeWhatsapp],
+  imports: [LucideAngularModule],
   templateUrl: './topo.html',
   styleUrl: './topo.scss',
 })
 export class Topo {
   protected readonly secoes = SECOES;
-  protected readonly whatsapp = linkWhatsApp();
+  protected readonly comoChegar = linkComoChegar();
   protected readonly icones = { Menu, X };
   protected readonly menuAberto = signal(false);
 }

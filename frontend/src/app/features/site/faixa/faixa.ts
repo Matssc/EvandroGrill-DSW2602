@@ -9,6 +9,6 @@ import { Flame, LucideAngularModule } from 'lucide-angular';
   styleUrl: './faixa.scss',
 })
 export class Faixa {
-  protected readonly frases = ['Espetos artesanais', 'Feitos na brasa', 'Pedidos pelo WhatsApp', 'Bragança Paulista'];
+  protected readonly frases = ['Espetos artesanais', 'Feitos na brasa', 'Venha nos visitar', 'Bragança Paulista'];
   protected readonly chama = Flame;
 }
