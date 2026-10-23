@@ -124,7 +124,7 @@
     }
 
     <div class="corpo">
-      <!-- Foto: por enquanto vai o link da imagem (o envio do arquivo depende do back) -->
+      <!-- Foto: o Evandro escolhe o arquivo e o back guarda; o endereço curto vai em fotoUrl -->
       <div class="coluna-foto">
         <div class="foto">
           @if (form.controls.fotoUrl.value.trim(); as link) {
@@ -132,13 +132,21 @@
           } @else {
             <span class="icone-foto"><lucide-icon [img]="icones.Upload" [size]="22" /></span>
             <strong>Foto do produto</strong>
-            <small>Cole o link da imagem abaixo</small>
+            <small>JPG, PNG ou WebP, até 5 MB</small>
           }
         </div>
-        <div class="campo">
-          <label for="fotoUrl">Link da foto <small>(opcional)</small></label>
-          <input id="fotoUrl" type="url" formControlName="fotoUrl" placeholder="https://" autocomplete="off" />
+        <div class="botoes-foto">
+          <label class="btn btn-secundario" [class.desligado]="enviandoFoto()">
+            {{ enviandoFoto() ? 'Enviando...' : form.controls.fotoUrl.value ? 'Trocar foto' : 'Escolher foto' }}
+            <input type="file" accept="image/jpeg,image/png,image/webp" [disabled]="enviandoFoto()" (change)="escolherFoto($event)" />
+          </label>
+          @if (form.controls.fotoUrl.value) {
+            <button type="button" class="btn btn-fantasma" (click)="removerFoto()" [disabled]="enviandoFoto()">Remover</button>
+          }
         </div>
+        @if (erroFoto(); as mensagem) {
+          <p class="erro-foto" role="alert">{{ mensagem }}</p>
+        }
       </div>
 
       <div class="campos">
@@ -210,7 +218,7 @@
 
     <div class="rodape-modal">
       <button type="button" class="btn btn-secundario" (click)="fecharModal()">Cancelar</button>
-      <button type="submit" class="btn btn-primario" [disabled]="salvando()">
+      <button type="submit" class="btn btn-primario" [disabled]="salvando() || enviandoFoto()">
         {{ editando() ? 'Salvar alteração' : 'Salvar produto' }}
       </button>
     </div>

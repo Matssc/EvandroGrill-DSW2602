@@ -78,7 +78,18 @@ small { font-size: 12px; font-weight: 400; color: var(--n-500); }
 .corpo { display: grid; grid-template-columns: 200px 1fr; gap: 20px; }
 .coluna-foto,
 .campos { display: grid; gap: 14px; }
-.coluna-foto { grid-template-rows: 1fr auto; }
+.coluna-foto { grid-template-rows: 1fr auto auto; }
+.botoes-foto {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  // o <input type=file> fica escondido: o clique no rótulo abre a escolha de arquivo
+  label { position: relative; cursor: pointer; }
+  label.desligado { opacity: 0.55; cursor: wait; }
+  input[type='file'] { position: absolute; inset: 0; opacity: 0; width: 100%; cursor: inherit; }
+}
+.erro-foto { font-size: 13px; color: var(--perigo); }
 .foto {
   position: relative;
   display: grid;
