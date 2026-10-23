@@ -150,6 +150,12 @@ export class ApiService {
       ? this.http.put<Produto>(`${this.url}/produtos/${id}`, corpo)
       : this.http.post<Produto>(`${this.url}/produtos`, corpo);
   }
+  /** Envia o arquivo da foto e devolve o endereço curto que vai em fotoUrl do produto. */
+  enviarFoto(arquivo: File) {
+    const corpo = new FormData();
+    corpo.append('arquivo', arquivo);
+    return this.http.post<{ url: string }>(`${this.url}/produtos/foto`, corpo);
+  }
   excluirProduto(id: number) {
     return this.http.delete<void>(`${this.url}/produtos/${id}`);
   }
@@ -247,6 +253,7 @@ export function mensagemDeErro(erro: unknown): string {
     }
 
     if (erro.status === 401) return 'Sua sessão acabou. Entre de novo.';
+    if (erro.status === 413) return 'A foto é grande demais. O limite é 5 MB.';
     if (erro.status === 404)
       return 'O back não tem essa rota (404). Confira se ele está atualizado.';
     // Proxy do ng serve ou nginx sem resposta do back: 500/502/504 sem o JSON de erro do Spring

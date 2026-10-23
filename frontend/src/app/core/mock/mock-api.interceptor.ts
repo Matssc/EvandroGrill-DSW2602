@@ -884,6 +884,13 @@ rota('GET', '/produtos', ({ usuarioId }) =>
   ok(doUsuario(banco.produtos, usuarioId).sort(porNome).map(produtoResponse)),
 );
 
+// Envio de foto: na API falsa não há disco, então a foto vira um endereço temporário do navegador
+rota('POST', '/produtos/foto', ({ corpo }) => {
+  const arquivo = corpo instanceof FormData ? corpo.get('arquivo') : null;
+  if (!(arquivo instanceof File)) return regra('Escolha uma foto para enviar');
+  return ok({ url: URL.createObjectURL(arquivo) }, 201);
+});
+
 rota('POST', '/produtos', ({ usuarioId, corpo }) => {
   const problema = validarProduto(corpo) ?? categoriaDeProduto(usuarioId, corpo.categoriaId);
   if (problema) return problema;
