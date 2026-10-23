@@ -2,12 +2,20 @@
 
 // Dois campos de cor lado a lado: o texto no carvão e a churrasqueira num campo de brasa que vai até a borda
 .hero {
+  position: relative;
+  overflow: hidden;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   min-height: min(780px, calc(100svh - 72px));
   background: var(--carvao);
   color: var(--creme);
 }
+
+.texto,
+.ilustracao { position: relative; }
+.texto { z-index: 2; }
+// as brasas passam por cima da churrasqueira e por baixo do texto
+app-brasas { z-index: 1; }
 
 .texto {
   display: grid;
