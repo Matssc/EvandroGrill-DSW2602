@@ -24,10 +24,6 @@ export function linkWhatsApp(mensagem = 'Oi! Quero fazer um pedido.'): string {
   return `https://wa.me/${CONTATO.whatsapp}?text=${encodeURIComponent(mensagem)}`;
 }
 
-/** Botão "Pedir" do cardápio: "Oi! Quero pedir: Espeto de Picanha". */
-export function linkPedido(produto: string): string {
-  return linkWhatsApp(`Oi! Quero pedir: ${produto}`);
-}
 
 /** Rota até a espetaria no Google Maps. */
 export function linkComoChegar(): string {

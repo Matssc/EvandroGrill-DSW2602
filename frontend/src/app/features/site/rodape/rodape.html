@@ -1,13 +1,6 @@
 <footer class="rodape">
+  <app-brasas />
   <div class="colunas">
-    <div class="marca">
-      <img src="logo.jpg" alt="" width="72" height="72" />
-      <span>
-        <strong>Evandro's Grill</strong>
-        <small>O verdadeiro sabor de Bragança Paulista</small>
-      </span>
-    </div>
-
     <nav class="coluna navegacao" aria-label="Navegação do rodapé">
       <p class="titulo">Navegação</p>
       @for (s of secoes; track s.ancora) {
@@ -21,15 +14,11 @@
       <a [href]="instagram" target="_blank" rel="noopener">&#64;{{ contato.instagram }}</a>
       <p>{{ contato.cidade }}</p>
     </div>
-
-    <div class="coluna">
-      <p class="titulo">Área restrita</p>
-      <a class="link-painel" routerLink="/admin/login">Acessar painel administrativo</a>
-    </div>
   </div>
+
+  <p class="nome-grande" aria-hidden="true">Evandro's Grill</p>
 
   <div class="creditos">
     <p>© {{ ano }} Evandro's Grill · Espetaria artesanal. Todos os direitos reservados.</p>
-    <p>Feito com Angular + Spring Boot</p>
   </div>
 </footer>

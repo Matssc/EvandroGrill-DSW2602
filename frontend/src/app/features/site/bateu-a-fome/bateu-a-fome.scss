@@ -1,21 +1,21 @@
 @use '../site';
 
 .cta {
-  @include site.secao(72px);
+  @include site.secao(96px);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  background: var(--brasa);
-  color: var(--creme);
+  gap: 32px;
+  background: var(--creme);
+  color: var(--carvao);
 }
 
-.textos { display: grid; gap: 8px; }
+.textos { display: grid; gap: 12px; }
 h2 { @include site.titulo; }
-p { @include site.texto-grande; opacity: 0.9; }
-.btn { @include site.botao-grande; }
+p { @include site.texto-grande; color: var(--n-600); }
+.btn { @include site.botao-grande; background: var(--brasa); color: var(--branco); &:hover { background: var(--brasa-escura); } }
 
 @media (max-width: site.$celular) {
-  .cta { flex-direction: column; align-items: stretch; padding-block: 48px; text-align: center; }
+  .cta { flex-direction: column; align-items: stretch; padding-block: 56px; }
 }

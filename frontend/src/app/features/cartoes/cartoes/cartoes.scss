@@ -18,11 +18,11 @@ small { font-size: 12px; }
   justify-content: space-between;
   padding: 22px;
   border: 0;
-  background: linear-gradient(90deg, var(--brasa), var(--brasa-escura));
+  background: var(--brasa);
   box-shadow: var(--sombra-elevada);
   color: var(--branco);
 
-  &.grafite { background: linear-gradient(90deg, var(--carvao-3), var(--carvao)); }
+  &.grafite { background: var(--carvao-3); }
   &.inativo { opacity: 0.55; }
   &:focus-visible { outline: 2px solid var(--ambar); outline-offset: 3px; }
   small { opacity: 0.75; }

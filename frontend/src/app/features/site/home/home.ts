@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { linkWhatsApp } from '../../../core/contato';
-import { IconeWhatsapp } from '../../../shared/icone-whatsapp/icone-whatsapp';
 import { BateuAFome } from '../bateu-a-fome/bateu-a-fome';
 import { Cardapio } from '../cardapio/cardapio';
 import { Faixa } from '../faixa/faixa';
@@ -16,10 +14,8 @@ import { Topo } from '../topo/topo';
 //        celular    https://www.figma.com/design/XbZ4u2NpkYQzJHD0sJ4X10?node-id=10-1514
 @Component({
   selector: 'app-home',
-  imports: [Topo, Hero, Faixa, Historia, Cardapio, Instagram, OndeEstamos, BateuAFome, Rodape, IconeWhatsapp],
+  imports: [Topo, Hero, Faixa, Historia, Cardapio, Instagram, OndeEstamos, BateuAFome, Rodape],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home {
-  protected readonly whatsapp = linkWhatsApp();
-}
+export class Home {}

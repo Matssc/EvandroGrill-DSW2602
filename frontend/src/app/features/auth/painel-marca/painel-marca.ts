@@ -8,9 +8,8 @@ import { Espeto, Peca } from '../../../shared/espeto/espeto';
   template: `
     <div class="conteudo">
       <img src="logo.jpg" alt="Evandro's Grill" width="128" height="128" />
-      <p class="script">Espetaria artesanal</p>
       <h2 class="t-display">Painel administrativo</h2>
-      <p class="texto">Vendas do dia, compras, pró-labore e reserva da empresa num lugar só.</p>
+      <p class="texto">Espetaria artesanal. Vendas do dia, compras, pró-labore e reserva da empresa num lugar só.</p>
     </div>
     <div class="espetos" aria-hidden="true">
       <app-espeto [pecas]="espetoDeCima" [quantidade]="5" [inclinacao]="-8" />
@@ -25,8 +24,7 @@ import { Espeto, Peca } from '../../../shared/espeto/espeto';
       padding: 48px 32px 24px;
       text-align: center;
       color: var(--creme);
-      background:
-        radial-gradient(ellipse 90% 45% at 50% 100%, rgb(208 53 45 / 38%), transparent), #000;
+      background: var(--carvao);
     }
     // logo e textos no meio do espaço que sobra; os espetos ficam embaixo, sem nunca passar por cima do texto
     .conteudo {
@@ -41,14 +39,9 @@ import { Espeto, Peca } from '../../../shared/espeto/espeto';
       border-radius: 50%;
       margin-bottom: 16px;
     }
-    .script {
-      font-family: var(--fonte-script);
-      font-size: 24px;
-      color: var(--ambar);
-    }
     h2 {
-      font-size: 56px;
-      line-height: 1;
+      font-size: 64px;
+      line-height: 0.95;
       text-transform: uppercase;
     }
     .texto {

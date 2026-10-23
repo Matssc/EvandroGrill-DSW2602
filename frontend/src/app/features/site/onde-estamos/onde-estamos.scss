@@ -3,66 +3,50 @@
 .onde-estamos {
   @include site.secao;
   display: grid;
-  grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
-  align-items: center;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: stretch;
   gap: 64px;
-  background: var(--creme);
+  background: var(--carvao);
+  color: var(--creme);
 }
 
-.informacoes { display: grid; justify-items: start; gap: 28px; }
-.sobretitulo { @include site.sobretitulo; }
-h2 { @include site.titulo; color: var(--carvao); }
+.informacoes { display: grid; align-content: center; justify-items: start; gap: 36px; }
+h2 { @include site.titulo; }
 
 .itens {
   display: grid;
-  gap: 28px;
+  gap: 24px;
   margin: 0;
-  padding: 0;
-  list-style: none;
 
-  li { display: flex; align-items: flex-start; gap: 16px; font-size: 16px; line-height: 24px; color: var(--n-600); }
-  strong { display: block; margin-bottom: 2px; font-weight: 600; color: var(--carvao); }
-}
-
-.icone {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  border: 1px solid var(--n-200);
-  border-radius: var(--raio-12);
-  background: var(--branco);
-  color: var(--brasa);
+  dt { margin-bottom: 4px; font-size: 14px; font-weight: 600; color: color-mix(in srgb, var(--creme) 70%, transparent); }
+  dd { margin: 0; font-size: 20px; line-height: 1.45; }
 }
 
 .acoes {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  padding-top: 8px;
 
   .btn { @include site.botao-grande; }
-  .btn-secundario { border-color: var(--n-300); }
 }
 
-// Mapa do Google: mesma altura e cantos do mapa do Figma
+// Mapa do Google
 .mapa {
-  height: 460px;
+  min-height: 460px;
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: var(--raio-8);
   background: var(--mapa-fundo);
 
-  iframe { display: block; width: 100%; height: 100%; border: 0; }
+  iframe { display: block; width: 100%; height: 100%; min-height: 460px; border: 0; }
 }
 
 @media (max-width: site.$computador) {
-  .onde-estamos { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .onde-estamos { grid-template-columns: minmax(0, 1fr); gap: 48px; }
 }
 
 @media (max-width: site.$celular) {
-  .informacoes { gap: 20px; }
-  .itens { gap: 16px; }
+  .informacoes { gap: 28px; }
+  .itens dd { font-size: 18px; }
   .acoes { display: grid; width: 100%; }
-  .mapa { height: 300px; border-radius: 16px; }
+  .mapa, .mapa iframe { min-height: 300px; }
 }
