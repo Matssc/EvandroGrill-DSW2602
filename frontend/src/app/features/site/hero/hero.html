@@ -1,12 +1,11 @@
 <section id="inicio" class="hero">
   <div class="texto">
-    <p class="etiqueta"><lucide-icon [img]="icones.Flame" [size]="16" /> Espetaria artesanal · Bragança Paulista</p>
-    <h1>O verdadeiro sabor de <span>Bragança Paulista</span></h1>
-    <p class="descricao">
-      Espetos artesanais feitos à mão, assados na brasa e servidos do jeito que Bragança gosta. Faça seu pedido
-      pelo WhatsApp ou venha nos visitar.
+    <h1 revelar>Espeto na brasa</h1>
+    <p class="descricao" revelar [atraso]="90">
+      Espetaria artesanal em Bragança Paulista. Espetos feitos à mão, assados na brasa e servidos do jeito que
+      Bragança gosta. Peça pelo WhatsApp ou venha nos visitar.
     </p>
-    <div class="acoes">
+    <div class="acoes" revelar [atraso]="180">
       <a class="btn btn-whatsapp" [href]="whatsapp" target="_blank" rel="noopener">
         <app-icone-whatsapp [size]="20" /> Pedir pelo WhatsApp
       </a>
@@ -14,17 +13,13 @@
         <lucide-icon [img]="icones.Instagram" [size]="20" /> Ver no Instagram
       </a>
     </div>
-    <ul class="destaques">
-      <li><lucide-icon [img]="icones.Utensils" [size]="18" /> Feito à mão todo dia</li>
-      <li><lucide-icon [img]="icones.Flame" [size]="18" /> Assado na brasa</li>
-      <li><app-icone-whatsapp [size]="18" /> Pedido pelo WhatsApp</li>
-    </ul>
   </div>
 
   <div class="ilustracao" aria-hidden="true">
-    <img class="grelha" src="grelha.png" alt="" width="480" height="480" />
-    <app-espeto class="espeto de-cima" [pecas]="espetoDeCima" [quantidade]="5" [inclinacao]="-14" />
-    <app-espeto class="espeto de-baixo" [pecas]="espetoDeBaixo" [quantidade]="5" [inclinacao]="-14" />
-    <img class="selo-logo" src="logo.jpg" alt="" width="140" height="140" />
+    <div class="quadro">
+      <img class="grelha" src="grelha.png" alt="" width="480" height="480" />
+      <app-espeto class="espeto de-cima" [pecas]="espetoDeCima" [quantidade]="5" [inclinacao]="-14" />
+      <app-espeto class="espeto de-baixo" [pecas]="espetoDeBaixo" [quantidade]="5" [inclinacao]="-14" />
+    </div>
   </div>
 </section>

@@ -1,12 +1,13 @@
 @use '../site';
 
+// O rodapé fecha a página com o nome da casa em largura total
 .rodape {
-  @include site.secao(64px);
+  @include site.secao(80px);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 40px;
+  gap: 56px;
   padding-bottom: 32px;
-  background: var(--carvao);
+  background: var(--carvao-2);
   color: var(--creme);
 }
 
@@ -14,18 +15,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 32px 48px;
-}
-
-.marca {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-
-  img { border-radius: 50%; }
-  strong { display: block; font: 400 48px/48px var(--fonte-display); letter-spacing: 0.005em; }
-  small { display: block; font: 400 18px/24px var(--fonte-script); color: var(--ambar); }
+  gap: 40px 96px;
 }
 
 .coluna {
@@ -35,34 +25,34 @@
   line-height: 24px;
 
   a,
-  p:not(.titulo) { color: inherit; opacity: 0.85; text-decoration: none; }
-  a:hover { opacity: 1; color: var(--ambar); }
-  .link-painel { text-decoration: underline; }
+  p:not(.titulo) { color: inherit; text-decoration: none; }
+  a:hover { color: var(--branco); text-decoration: underline; text-underline-offset: 4px; }
+  a:focus-visible { outline: 2px solid var(--ambar); outline-offset: 3px; }
+  .link-painel { text-decoration: underline; text-underline-offset: 4px; }
 }
-.titulo { @include site.sobretitulo(var(--creme)); opacity: 0.5; }
+.titulo { font-size: 14px; font-weight: 600; color: color-mix(in srgb, var(--creme) 70%, transparent); }
+
+.nome-grande {
+  font: 400 clamp(52px, 18.4vw, 262px) / 0.85 var(--fonte-display);
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--brasa);
+}
 
 .creditos {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 8px 24px;
-  padding-top: 32px;
-  border-top: 1px solid var(--carvao-3);
 
-  p { line-height: 20px; opacity: 0.5; }
+  p { font-size: 14px; line-height: 20px; color: color-mix(in srgb, var(--creme) 70%, transparent); }
 }
 
 @media (max-width: site.$celular) {
-  .rodape { gap: 24px; padding-top: 40px; }
-  .colunas { display: grid; gap: 12px; }
-  .marca {
-    margin-bottom: 12px;
-    img { width: 56px; height: 56px; }
-    strong { font-size: 30px; line-height: 32px; }
-  }
-  // no celular fica só o contato e o link do painel, como no frame
-  .navegacao,
-  .titulo { display: none; }
-  .creditos { padding-top: 20px; }
+  .rodape { gap: 36px; padding-top: 56px; }
+  .colunas { display: grid; gap: 24px; }
+  // no celular fica só o contato e o link do painel
+  .navegacao { display: none; }
   .creditos p:last-child { display: none; }
 }

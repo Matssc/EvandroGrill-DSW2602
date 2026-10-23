@@ -46,11 +46,13 @@ h1, h2, h3, p {
   gap: var(--esp-8);
   padding: 11px 18px;
   border: 1px solid transparent;
-  border-radius: var(--raio-10);
+  border-radius: var(--raio-botao);
   font: 600 14px/1 var(--fonte-texto);
   cursor: pointer;
   text-decoration: none;
-  transition: background-color 0.15s, border-color 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, transform 0.15s;
+
+  &:active:not(:disabled) { transform: translateY(1px); }
 
   &:disabled { opacity: 0.55; cursor: not-allowed; }
   &:focus-visible { outline: 2px solid var(--ambar); outline-offset: 2px; }
@@ -62,10 +64,9 @@ h1, h2, h3, p {
 // Variantes da landing page: WhatsApp (verde) e Contorno (borda clara sobre fundo escuro)
 .btn-whatsapp { background: var(--whatsapp); color: var(--carvao); &:hover:not(:disabled) { filter: brightness(0.94); } }
 .btn-contorno {
-  background: transparent;
+  background: color-mix(in srgb, var(--creme) 12%, transparent);
   color: var(--creme);
-  border-color: color-mix(in srgb, var(--creme) 28%, transparent);
-  &:hover:not(:disabled) { border-color: color-mix(in srgb, var(--creme) 55%, transparent); }
+  &:hover:not(:disabled) { background: color-mix(in srgb, var(--creme) 22%, transparent); }
 }
 .btn-g { padding: 16px 22px; font-size: 16px; }
 .btn-bloco { width: 100%; }
@@ -82,12 +83,12 @@ h1, h2, h3, p {
     width: 100%;
     padding: 11px 14px;
     border: 1px solid var(--n-200);
-    border-radius: var(--raio-10);
+    border-radius: var(--raio-8);
     background: var(--branco);
     font: 400 16px/1.5 var(--fonte-texto);
     color: var(--n-900);
 
-    &:focus { outline: none; border-color: var(--brasa); box-shadow: 0 0 0 3px var(--brasa-clara); }
+    &:focus { outline: 2px solid var(--brasa); outline-offset: 0; border-color: var(--brasa); }
   }
 
   // seta do select igual à do Figma
@@ -124,7 +125,6 @@ h1, h2, h3, p {
     height: 16px;
     border-radius: 50%;
     background: var(--branco);
-    box-shadow: var(--sombra-card);
     transition: transform 0.15s;
   }
   input:checked + span { background: var(--brasa); }
@@ -137,14 +137,13 @@ h1, h2, h3, p {
 .painel {
   background: var(--branco);
   border: 1px solid var(--n-200);
-  border-radius: var(--raio-16);
-  box-shadow: var(--sombra-card);
+  border-radius: var(--raio-12);
   padding: var(--esp-20);
 }
 .painel-escuro {
   background: var(--carvao);
   color: var(--branco);
-  border-radius: var(--raio-16);
+  border-radius: var(--raio-12);
   padding: var(--esp-20);
 }
 
@@ -186,20 +185,12 @@ lucide-icon {
 }
 
 // Card de KPI (componente KPI do Figma): use junto com .painel
-// <section class="painel kpi"> .kpi-topo (título + .kpi-icone) · .t-kpi · .kpi-rodape (.selo + texto)
-.kpi { display: grid; align-content: start; gap: 10px; min-width: 0; border-radius: 14px; }
+// <section class="painel kpi"> .kpi-topo (título) · .t-kpi · .kpi-rodape (.selo + texto)
+.kpi { display: grid; align-content: start; gap: 10px; min-width: 0; }
 .kpi-topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--n-600); }
-.kpi-icone {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: var(--raio-8);
-  background: var(--n-100);
-  color: var(--n-900);
-}
-.kpi-rodape { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--n-500); }
+// o ícone do KPI saiu do visual: a cor fica nos dados, não no enfeite
+.kpi-icone { display: none; }
+.kpi-rodape { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: var(--n-600); }
 .selo {
   padding: 2px 8px;
   border-radius: var(--raio-pill);
@@ -221,7 +212,7 @@ lucide-icon {
   border-radius: var(--raio-12);
   font-size: 14px;
 }
-.aviso-info { background: var(--info-bg); color: #1e3a8a; }
+.aviso-info { background: var(--n-100); color: var(--n-900); }
 .aviso-alerta { background: var(--alerta-bg); color: #78350f; }
 .aviso-perigo { background: var(--perigo-bg); color: #7f1d1d; }
 
@@ -250,12 +241,22 @@ lucide-icon {
   th {
     text-align: left;
     padding: 8px 12px;
-    background: var(--n-50);
-    color: var(--n-500);
-    font-size: 12px;
+    border-bottom: 1px solid var(--n-200);
+    color: var(--n-600);
+    font-size: 13px;
     font-weight: 500;
   }
   td { padding: 11px 12px; border-bottom: 1px solid var(--n-100); }
   .num { text-align: right; }
-  tfoot td { font-weight: 600; background: var(--n-50); border-bottom: 0; }
+  tfoot td { font-weight: 600; border-top: 1px solid var(--n-300); border-bottom: 0; }
 }
+
+// Entrada das seções: sobe 20px e aparece, uma vez, quando chega na tela (diretiva [revelar]).
+// A classe só existe se o script rodou, então sem script o conteúdo fica sempre visível.
+.revelar {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition-delay: var(--atraso, 0ms);
+}
+.revelar.entrou { opacity: 1; transform: none; }
