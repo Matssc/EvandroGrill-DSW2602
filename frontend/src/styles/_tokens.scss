@@ -9,7 +9,7 @@
     --carvao: #17161c;
     --carvao-2: #201e26;
     --carvao-3: #2e2b34;
-    --creme: #f5efe6;
+    --creme: #efebe4;
     --madeira: #c9a27a;
   
     // Neutros
@@ -49,7 +49,6 @@
     --mapa-fundo: #e7e1d8;
     --mapa-avenida: #f3d9a6;
     --mapa-praca: #cfe3c0;
-    --instagram-gradiente: linear-gradient(135deg, #f58529 0%, #dd2a7b 50%, #8134af 100%);
   
     // Espaçamentos e raios
     --esp-4: 4px;
@@ -66,13 +65,13 @@
     --raio-16: 16px;
     --raio-20: 20px;
     --raio-pill: 999px;
+    --raio-botao: 4px;
   
     // Tipografia
     --fonte-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
-    --fonte-script: 'Kaushan Script', cursive;
     --fonte-texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   
     // Sombras
-    --sombra-card: 0 1px 2px rgb(23 22 28 / 6%), 0 4px 12px rgb(23 22 28 / 6%);
+    --sombra-card: none;
     --sombra-elevada: 0 16px 40px rgb(23 22 28 / 18%);
   }

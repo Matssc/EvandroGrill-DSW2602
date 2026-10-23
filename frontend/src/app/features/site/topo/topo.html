@@ -1,24 +1,17 @@
 <header class="topo" [class.aberto]="menuAberto()">
   <a class="marca" href="#inicio" (click)="menuAberto.set(false)">
-    <img src="logo.jpg" alt="" width="56" height="56" />
-    <span class="nome">
-      <strong>Evandro's Grill</strong>
-      <small>Espetaria artesanal</small>
-    </span>
+    <img src="logo.jpg" alt="" width="48" height="48" />
+    <strong>Evandro's Grill</strong>
   </a>
 
   <nav id="menu-site" class="links" aria-label="Seções do site">
     @for (s of secoes; track s.ancora) {
       <a [href]="'#' + s.ancora" (click)="menuAberto.set(false)">{{ s.texto }}</a>
     }
-    <a class="btn btn-whatsapp no-menu" [href]="whatsapp" target="_blank" rel="noopener">
-      <app-icone-whatsapp [size]="18" /> Pedir pelo WhatsApp
-    </a>
+    <a class="btn btn-primario no-menu" [href]="comoChegar" target="_blank" rel="noopener">Como chegar</a>
   </nav>
 
-  <a class="btn btn-whatsapp pedir" [href]="whatsapp" target="_blank" rel="noopener">
-    <app-icone-whatsapp [size]="18" /> Pedir pelo WhatsApp
-  </a>
+  <a class="btn btn-primario pedir" [href]="comoChegar" target="_blank" rel="noopener">Como chegar</a>
 
   <button class="abrir-menu" type="button" aria-controls="menu-site" [attr.aria-expanded]="menuAberto()"
     [attr.aria-label]="menuAberto() ? 'Fechar o menu' : 'Abrir o menu'" (click)="menuAberto.set(!menuAberto())">

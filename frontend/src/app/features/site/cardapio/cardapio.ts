@@ -1,29 +1,20 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ApiService } from '../../../core/api/api.service';
-import { linkPedido, linkWhatsApp } from '../../../core/contato';
 import { ProdutoSite } from '../../../core/models';
 import { Espeto } from '../../../shared/espeto/espeto';
-import { IconeWhatsapp } from '../../../shared/icone-whatsapp/icone-whatsapp';
-
-// Brasas em volta do espeto no card, nas posições do Figma: [x, y, raio] num quadro de 300x188
-const BRASAS = [
-  [169, 114, 2], [25, 170, 2.5], [235, 154, 1.5], [202, 116, 1.5], [16, 176, 1.5], [287, 120, 2], [85, 118, 2.5],
-  [165, 130, 1.5], [106, 111, 2], [142, 124, 3], [196, 116, 3], [15, 136, 1], [99, 138, 3.5], [136, 138, 3],
-];
+import { Revelar } from '../../../shared/revelar/revelar';
 
 // Cardápio da landing page (frame 15-1703): o que o Evandro deixou "No site" em Produtos do site.
 @Component({
   selector: 'app-cardapio',
-  imports: [CurrencyPipe, Espeto, IconeWhatsapp],
+  imports: [CurrencyPipe, Espeto, Revelar],
   templateUrl: './cardapio.html',
   styleUrl: './cardapio.scss',
 })
 export class Cardapio {
   private api = inject(ApiService);
 
-  protected readonly brasas = BRASAS;
-  protected readonly whatsapp = linkWhatsApp('Oi! Queria ver o cardápio completo.');
 
   protected readonly produtos = signal<ProdutoSite[]>([]);
   protected readonly carregando = signal(true);
@@ -56,9 +47,5 @@ export class Cardapio {
   protected filtrar(categoria: string | null): void {
     this.categoria.set(categoria);
     this.verTudo.set(false);
-  }
-
-  protected pedir(produto: ProdutoSite): string {
-    return linkPedido(produto.nome);
   }
 }
