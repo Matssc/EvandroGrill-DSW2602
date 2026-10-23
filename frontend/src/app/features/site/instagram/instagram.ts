@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { Instagram as IconeInstagram, LucideAngularModule } from 'lucide-angular';
 import { CONTATO, LINK_INSTAGRAM } from '../../../core/contato';
+import { Brasas } from '../../../shared/brasas/brasas';
 import { Revelar } from '../../../shared/revelar/revelar';
 
 // Seção do Instagram (frame 15-2080): o perfil em letras grandes e o botão que leva pra ele.
 @Component({
   selector: 'app-instagram',
-  imports: [LucideAngularModule, Revelar],
+  imports: [LucideAngularModule, Revelar, Brasas],
   templateUrl: './instagram.html',
   styleUrl: './instagram.scss',
 })

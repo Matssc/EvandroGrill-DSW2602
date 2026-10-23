@@ -3,6 +3,8 @@
 // O perfil vira o título da seção, grande, num campo cheio de brasa
 .instagram {
   @include site.secao(112px);
+  position: relative;
+  overflow: hidden;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 40px;
@@ -11,12 +13,14 @@
 }
 
 h2 {
-  font: 400 clamp(36px, 8vw, 124px) / 0.95 var(--fonte-display);
+  position: relative;
+  font: 400 clamp(28px, 5.2vw, 76px) / 1 var(--fonte-display);
   letter-spacing: -0.005em;
   overflow-wrap: anywhere;
 }
 
 .rodape-secao {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;

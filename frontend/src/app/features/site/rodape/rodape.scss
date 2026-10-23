@@ -3,6 +3,8 @@
 // O rodapé fecha a página com o nome da casa em largura total
 .rodape {
   @include site.secao(80px);
+  position: relative;
+  overflow: hidden;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 56px;
@@ -10,6 +12,10 @@
   background: var(--carvao-2);
   color: var(--creme);
 }
+
+.colunas,
+.nome-grande,
+.creditos { position: relative; }
 
 .colunas {
   display: flex;
@@ -33,7 +39,7 @@
 .titulo { font-size: 14px; font-weight: 600; color: color-mix(in srgb, var(--creme) 70%, transparent); }
 
 .nome-grande {
-  font: 400 clamp(52px, 18.4vw, 262px) / 0.85 var(--fonte-display);
+  font: 400 clamp(40px, 10.5vw, 150px) / 0.85 var(--fonte-display);
   letter-spacing: -0.005em;
   text-transform: uppercase;
   white-space: nowrap;
