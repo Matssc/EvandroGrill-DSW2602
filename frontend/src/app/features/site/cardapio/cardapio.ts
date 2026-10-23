@@ -1,23 +1,20 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ApiService } from '../../../core/api/api.service';
-import { linkPedido, linkWhatsApp } from '../../../core/contato';
 import { ProdutoSite } from '../../../core/models';
 import { Espeto } from '../../../shared/espeto/espeto';
-import { IconeWhatsapp } from '../../../shared/icone-whatsapp/icone-whatsapp';
 import { Revelar } from '../../../shared/revelar/revelar';
 
 // Cardápio da landing page (frame 15-1703): o que o Evandro deixou "No site" em Produtos do site.
 @Component({
   selector: 'app-cardapio',
-  imports: [CurrencyPipe, Espeto, IconeWhatsapp, Revelar],
+  imports: [CurrencyPipe, Espeto, Revelar],
   templateUrl: './cardapio.html',
   styleUrl: './cardapio.scss',
 })
 export class Cardapio {
   private api = inject(ApiService);
 
-  protected readonly whatsapp = linkWhatsApp('Oi! Queria ver o cardápio completo.');
 
   protected readonly produtos = signal<ProdutoSite[]>([]);
   protected readonly carregando = signal(true);
@@ -50,9 +47,5 @@ export class Cardapio {
   protected filtrar(categoria: string | null): void {
     this.categoria.set(categoria);
     this.verTudo.set(false);
-  }
-
-  protected pedir(produto: ProdutoSite): string {
-    return linkPedido(produto.nome);
   }
 }

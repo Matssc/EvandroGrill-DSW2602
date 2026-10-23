@@ -4,15 +4,11 @@
     <h1 revelar>Espeto na brasa</h1>
     <p class="descricao" revelar [atraso]="90">
       Espetaria artesanal em Bragança Paulista. Espetos feitos à mão, assados na brasa e servidos do jeito que
-      Bragança gosta. Peça pelo WhatsApp ou venha nos visitar.
+      Bragança gosta. Venha nos visitar.
     </p>
     <div class="acoes" revelar [atraso]="180">
-      <a class="btn btn-whatsapp" [href]="whatsapp" target="_blank" rel="noopener">
-        <app-icone-whatsapp [size]="20" /> Pedir pelo WhatsApp
-      </a>
-      <a class="btn btn-contorno" [href]="instagram" target="_blank" rel="noopener">
-        <lucide-icon [img]="icones.Instagram" [size]="20" /> Ver no Instagram
-      </a>
+      <a class="btn btn-primario" href="#cardapio">Ver o cardápio</a>
+      <a class="btn btn-contorno" [href]="comoChegar" target="_blank" rel="noopener">Como chegar</a>
     </div>
   </div>
 
