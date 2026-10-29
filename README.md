@@ -25,6 +25,10 @@ Quando aparecer `Started EvandrosgrillApplication` no log:
 - API: http://localhost:8080/api
 - Banco no Workbench: `localhost`, porta `3307`, usuário `root`, senha `grill123`
 
+Pra usar outras portas (por exemplo, as que você liberou no firewall da nuvem), crie o arquivo `deploy/.env`
+com `PORTA_SITE=5898` (site e painel, padrão 4200) e `PORTA_API=8087` (API, padrão 8080) e suba de novo.
+O site chama a API pela própria porta dele, então só `PORTA_SITE` precisa estar liberada pra acessar de fora.
+
 Pra parar: `Ctrl+C` (ou `docker compose down`). Os dados ficam no volume `dados-mysql`;
 pra começar do zero, `docker compose down -v`. Mudou o código? Rode `docker compose up --build` de novo.
 

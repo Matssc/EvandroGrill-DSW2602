@@ -38,7 +38,8 @@ services:
     volumes:
       - fotos:/data/fotos
     ports:
-      - "8080:8080"
+      # Porta da API no computador. Pra mudar, ponha PORTA_API=8087 no deploy/.env (o padrão é 8080)
+      - "${PORTA_API:-8080}:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -49,7 +50,8 @@ services:
       context: ../frontend
     container_name: dsw2603-frontend
     ports:
-      - "4200:80"
+      # Porta do site e do painel. Pra mudar, ponha PORTA_SITE=5898 no deploy/.env (o padrão é 4200)
+      - "${PORTA_SITE:-4200}:80"
     depends_on:
       - backend
     restart: unless-stopped
