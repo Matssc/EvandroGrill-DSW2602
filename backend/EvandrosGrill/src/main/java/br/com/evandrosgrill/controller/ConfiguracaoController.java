@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// Configuração do caixa: % de retirada, divisão salário/reserva e meta (RN02 a RN04).
 @RestController
 @RequestMapping("/api/configuracao")
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class ConfiguracaoController {
 
     private final ConfiguracaoService configuracaoService;
 
+    // Devolve a configuração (cria a padrão na primeira vez).
     @GetMapping
     public ConfiguracaoResponse buscar(@AuthenticationPrincipal Jwt jwt) {
         return configuracaoService.buscar(Autenticacao.usuarioId(jwt));

@@ -44,6 +44,7 @@ export class Cardapio {
     });
   }
 
+  // Filtra o cardápio por categoria (null = todas).
   protected filtrar(categoria: string | null): void {
     this.categoria.set(categoria);
     this.verTudo.set(false);

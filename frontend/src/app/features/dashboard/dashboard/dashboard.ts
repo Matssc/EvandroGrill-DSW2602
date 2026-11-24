@@ -136,6 +136,7 @@ export class Dashboard {
     this.carregar();
   }
 
+  // Busca em paralelo o resumo do mês, as vendas de hoje, a reserva, os gastos e o ranking.
   protected carregar(): void {
     this.carregando.set(true);
     forkJoin({

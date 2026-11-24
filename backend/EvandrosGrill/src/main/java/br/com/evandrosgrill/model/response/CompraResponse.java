@@ -7,6 +7,7 @@ import br.com.evandrosgrill.model.enums.MeioAVista;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+// Compra como a API devolve (com nomes da categoria e do cartão).
 public record CompraResponse(
         Long id,
         LocalDate data,
@@ -21,6 +22,7 @@ public record CompraResponse(
         String cartaoPjFinal
 ) {
 
+    // Converte a entidade em resposta.
     public static CompraResponse de(Compra c) {
         boolean temCartao = c.getCartaoPj() != null;
         return new CompraResponse(

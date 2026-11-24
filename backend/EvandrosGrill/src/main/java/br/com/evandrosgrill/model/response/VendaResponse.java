@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+// Venda como a API devolve, com os itens e se o dia já foi fechado.
 public record VendaResponse(
         Long id,
         LocalDate data,
@@ -21,6 +22,7 @@ public record VendaResponse(
         List<ItemVendaResponse> itens
 ) {
 
+    // Converte a entidade em resposta.
     public static VendaResponse de(Venda v) {
         return new VendaResponse(
                 v.getId(),

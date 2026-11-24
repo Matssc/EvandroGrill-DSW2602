@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "fechamento_diario",
         uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "data"})
+// Tabela fechamento_diario: resultado do dia fechado, com os percentuais da época (um por dia).
 )
 @Getter
 @Setter

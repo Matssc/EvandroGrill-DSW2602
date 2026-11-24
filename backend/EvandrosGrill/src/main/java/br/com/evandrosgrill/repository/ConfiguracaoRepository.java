@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
+// Consultas de configuracao (uma por usuário).
 public interface ConfiguracaoRepository extends JpaRepository<Configuracao, Long> {
 
     // Cada usuário tem uma única configuração

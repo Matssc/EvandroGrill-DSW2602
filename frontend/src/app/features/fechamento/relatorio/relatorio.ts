@@ -107,6 +107,7 @@ export class Relatorio {
     });
   }
 
+  // Busca compras, cartões, categorias e gastos do mês para o relatório.
   private carregar(mes: string): void {
     this.carregando.set(true);
     this.erro.set(null);

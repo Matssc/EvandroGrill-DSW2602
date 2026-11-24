@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
+// Segurança da API: login por JWT (sem sessão), rotas públicas, BCrypt e CORS.
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -39,6 +40,7 @@ public class SecurityConfig {
     @Value("${app.cors.origens:http://localhost:4200}")
     private String[] origensPermitidas;
 
+    // Regras de acesso: login, cardápio, fotos e health são públicos; o resto exige token válido.
     @Bean
     public SecurityFilterChain filtros(HttpSecurity http) throws Exception {
         http
@@ -55,16 +57,19 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Hash das senhas com BCrypt (a senha nunca é guardada em texto).
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Assina os tokens gerados no login (HS256 com o segredo app.jwt.secret).
     @Bean
     public JwtEncoder jwtEncoder() {
         return new NimbusJwtEncoder(new ImmutableSecret<>(chave()));
     }
 
+    // Valida a assinatura e a validade do token que chega no cabeçalho Authorization.
     @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withSecretKey(chave())
@@ -72,6 +77,7 @@ public class SecurityConfig {
                 .build();
     }
 
+    // Origens, métodos e cabeçalhos que o navegador pode usar para chamar a API.
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
@@ -85,6 +91,7 @@ public class SecurityConfig {
         return fonte;
     }
 
+    // Monta a chave HMAC a partir do segredo; falha na subida se tiver menos de 32 bytes.
     private SecretKey chave() {
         byte[] bytes = segredoJwt.getBytes(StandardCharsets.UTF_8);
         if (bytes.length < 32) {

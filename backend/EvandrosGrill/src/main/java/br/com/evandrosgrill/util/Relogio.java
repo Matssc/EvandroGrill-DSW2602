@@ -14,14 +14,17 @@ public final class Relogio {
     private Relogio() {
     }
 
+    // Data de hoje em São Paulo.
     public static LocalDate hoje() {
         return LocalDate.now(ZONA);
     }
 
+    // Data e hora atuais em São Paulo.
     public static LocalDateTime agora() {
         return LocalDateTime.now(ZONA);
     }
 
+    // Hora atual em São Paulo, sem os milissegundos.
     public static LocalTime horaAtual() {
         return LocalTime.now(ZONA).truncatedTo(ChronoUnit.SECONDS);
     }

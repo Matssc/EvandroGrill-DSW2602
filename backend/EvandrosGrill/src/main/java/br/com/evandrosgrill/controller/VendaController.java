@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
+// Vendas do dia, resumo por forma de pagamento e ranking de produtos (RN01).
 @RestController
 @RequestMapping("/api/vendas")
 @RequiredArgsConstructor
@@ -58,18 +59,21 @@ public class VendaController {
         return vendaService.maisVendidos(Autenticacao.usuarioId(jwt), inicio, fim);
     }
 
+    // Lança uma venda ("Por venda" ou "Total do dia").
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public VendaResponse registrar(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody VendaRequest request) {
         return vendaService.registrar(Autenticacao.usuarioId(jwt), request);
     }
 
+    // Altera uma venda de um dia que ainda não foi fechado.
     @PutMapping("/{id}")
     public VendaResponse atualizar(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id,
                                    @Valid @RequestBody VendaRequest request) {
         return vendaService.atualizar(Autenticacao.usuarioId(jwt), id, request);
     }
 
+    // Remove uma venda de um dia que ainda não foi fechado.
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id) {

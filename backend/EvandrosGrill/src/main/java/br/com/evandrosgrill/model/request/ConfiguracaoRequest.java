@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
+// Corpo de PUT /api/configuracao.
 public record ConfiguracaoRequest(
 
         @NotNull(message = "Informe o percentual de retirada")

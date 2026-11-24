@@ -1,6 +1,7 @@
 // Regras do caixa (RN02 e RN03) num lugar só.
 // A conta é feita em centavos pra não aparecer 331,4999999 na tela.
 
+// Percentuais que vêm da Configuração.
 export interface RegrasCaixa {
     percentualRetirada: number; // RN02: 30 = 30% do total vendido no dia
     dividirRetirada: boolean; // RN03: a divisão é opcional

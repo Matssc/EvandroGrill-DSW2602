@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+// Gera o JWT do login.
 @Service
 @RequiredArgsConstructor
 public class TokenService {
@@ -23,6 +24,7 @@ public class TokenService {
     @Value("${app.jwt.expiracao-horas:8}")
     private long expiracaoHoras;
 
+    // Token com o id do usuário no subject, e-mail e validade de app.jwt.expiracao-horas (padrão 8h).
     public String gerar(Usuario usuario) {
         Instant agora = Instant.now();
 

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.YearMonth;
 import java.util.List;
 
+// Reserva da empresa: histórico, resumo do mês, entradas e saídas (RN04).
 @RestController
 @RequestMapping("/api/reserva")
 @RequiredArgsConstructor
@@ -55,6 +56,7 @@ public class MovimentoReservaController {
         return movimentoReservaService.registrar(Autenticacao.usuarioId(jwt), request);
     }
 
+    // Remove um movimento manual (os gerados pelo fechamento não podem ser removidos).
     @DeleteMapping("/movimentos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id) {

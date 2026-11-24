@@ -115,6 +115,7 @@ export class Reserva {
     this.carregar();
   }
 
+  // Busca o saldo, o histórico e a meta da reserva.
   protected carregar(): void {
     this.carregando.set(true);
     forkJoin({ reserva: this.api.reserva(), config: this.api.configuracao() }).subscribe({
@@ -131,12 +132,14 @@ export class Reserva {
     });
   }
 
+  // Texto da finalidade de uma saída.
   protected nomeDaFinalidade(finalidade: MovimentoReserva['finalidade']): string {
     return FINALIDADES.find((f) => f.valor === finalidade)?.texto ?? '—';
   }
 
   // ---- Modal
 
+  // Abre o modal de entrada ou saída (saída exige finalidade).
   protected abrir(modo: MovimentoReserva['tipo']): void {
     this.modo.set(modo);
     this.form.reset({ data: this.hoje, descricao: '', valor: '', finalidade: null });
@@ -147,10 +150,12 @@ export class Reserva {
     this.dialogo().nativeElement.showModal();
   }
 
+  // Fecha o <dialog>.
   protected fecharModal(): void {
     this.dialogo().nativeElement.close();
   }
 
+  // Valida (valor > 0; saída <= saldo) e registra o movimento.
   protected salvar(): void {
     const v = this.form.getRawValue();
     const valor = lerValor(v.valor);

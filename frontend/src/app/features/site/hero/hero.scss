@@ -1,6 +1,6 @@
 @use '../site';
 
-// Dois campos de cor lado a lado: o texto no carvão e a churrasqueira num campo de brasa que vai até a borda
+// Duas colunas no mesmo fundo carvão: o texto à esquerda e o card "Os mais pedidos" à direita
 .hero {
   position: relative;
   overflow: hidden;
@@ -12,9 +12,8 @@
 }
 
 .texto,
-.ilustracao { position: relative; }
-.texto { z-index: 2; }
-// as brasas passam por cima da churrasqueira e por baixo do texto
+.lado { position: relative; z-index: 2; }
+// as brasas ficam por baixo do texto e do card
 app-brasas { z-index: 1; }
 
 .texto {
@@ -45,50 +44,124 @@ h1 {
   .btn { @include site.botao-grande; }
 }
 
-.ilustracao {
+.lado {
   display: grid;
   place-items: center;
-  padding: 56px;
-  background: var(--brasa);
-  overflow: hidden;
+  padding: 56px max(80px, calc((100vw - 1280px) / 2)) 56px 40px;
 }
 
-// Medidas da ilustração de 560x540, em %, pra encolher junto com a tela
-.quadro {
+// Card em destaque: superfície mais clara que o fundo, borda de brasa e um brilho laranja atrás
+.mais-pedidos {
   position: relative;
-  width: min(100%, 600px);
-  aspect-ratio: 560 / 540;
+  display: grid;
+  gap: 12px;
+  width: min(460px, 100%);
+  padding: 32px 28px 24px;
+  border: 1px solid color-mix(in srgb, var(--ambar) 45%, transparent);
+  border-radius: 24px;
+  background: linear-gradient(160deg, var(--carvao-3), var(--carvao-2));
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--brasa) 18%, transparent),
+    0 30px 80px rgb(0 0 0 / 0.5);
 
-  img,
-  .espeto { position: absolute; }
-  .grelha { left: 7.14%; top: 5.56%; width: 85.7%; height: auto; animation: respirar 7s ease-in-out infinite; }
-  .espeto { left: 8.85%; width: 82.3%; }
-  .de-cima { top: 25.4%; animation: balancar 6s ease-in-out infinite; }
-  .de-baixo { top: 47.6%; left: 11%; animation: balancar 6s ease-in-out -3s infinite; }
+  // brilho de brasa atrás do card, pulsando devagar
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -12%;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--brasa) 45%, transparent), transparent);
+    animation: brilhar 5s ease-in-out infinite;
+  }
 }
 
-@keyframes respirar {
-  50% { transform: scale(1.025); }
+.rotulo {
+  margin-bottom: 4px;
+  font: 400 36px / 1 var(--fonte-display);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+
+  // traço âmbar embaixo do título do card
+  &::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 2px;
+    background: var(--ambar);
+  }
 }
-@keyframes balancar {
-  50% { transform: translateY(-6px); }
+
+.item {
+  display: grid;
+  grid-template-columns: 104px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px 10px 10px;
+  border-radius: 16px;
+  color: var(--creme);
+  text-decoration: none;
+  background: rgb(255 255 255 / 0.04);
+  transition: background 0.2s, transform 0.2s;
+
+  &:hover {
+    background: rgb(255 255 255 / 0.09);
+    transform: translateX(4px);
+  }
+}
+
+// foto do produto (quando tiver) ou o desenho do espeto
+.foto {
+  display: grid;
+  place-items: center;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--carvao);
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+  app-espeto { width: 92%; }
+}
+
+.nome { font-size: 17px; font-weight: 600; }
+.preco { font-size: 17px; font-weight: 700; color: var(--ambar); white-space: nowrap; }
+
+.todos {
+  justify-self: end;
+  margin-top: 6px;
+  font-weight: 600;
+  color: var(--creme);
+  text-underline-offset: 4px;
+
+  &:hover { color: var(--ambar); }
+}
+
+@keyframes brilhar {
+  50% { opacity: 0.55; transform: scale(0.96); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .quadro .grelha,
-  .quadro .espeto { animation: none; }
+  .mais-pedidos::before { animation: none; }
+  .item { transition: none; }
+  .item:hover { transform: none; }
 }
 
 @media (max-width: 960px) {
   .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; }
-  .texto { padding: 64px 40px 56px; }
-  .ilustracao { padding: 40px; }
+  .texto { padding: 64px 40px 32px; }
+  .lado { padding: 16px 40px 64px; }
 }
 
 @media (max-width: site.$celular) {
   .hero { min-height: 0; }
-  .texto { gap: 20px; padding: 44px 20px 40px; }
+  .texto { gap: 20px; padding: 44px 20px 24px; }
   h1 { font-size: clamp(56px, 17vw, 76px); }
   .acoes { display: grid; width: 100%; gap: 10px; }
-  .ilustracao { padding: 28px 20px; }
+  .lado { padding: 8px 20px 48px; }
+  .mais-pedidos { padding: 24px 16px 20px; }
+  .item { grid-template-columns: 80px 1fr auto; gap: 12px; }
+  .nome,
+  .preco { font-size: 15px; }
 }

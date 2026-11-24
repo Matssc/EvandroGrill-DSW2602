@@ -39,6 +39,7 @@ export class ApiService {
   configuracao() {
     return this.http.get<Configuracao>(`${this.url}/configuracao`);
   }
+  // PUT /configuracao com só os campos que o back aceita.
   salvarConfiguracao(c: Configuracao) {
     const corpo: Configuracao = {
       percentualRetirada: c.percentualRetirada,
@@ -54,12 +55,15 @@ export class ApiService {
   vendas(data: string) {
     return this.http.get<Venda[]>(`${this.url}/vendas`, { params: { data } });
   }
+  // POST /vendas.
   lancarVenda(venda: NovaVenda) {
     return this.http.post<Venda>(`${this.url}/vendas`, corpoDaVenda(venda));
   }
+  // PUT /vendas/{id}.
   editarVenda(id: number, venda: NovaVenda) {
     return this.http.put<Venda>(`${this.url}/vendas/${id}`, corpoDaVenda(venda));
   }
+  // DELETE /vendas/{id}.
   excluirVenda(id: number) {
     return this.http.delete<void>(`${this.url}/vendas/${id}`);
   }
@@ -74,6 +78,7 @@ export class ApiService {
   fechamentos(mes: string) {
     return this.http.get<FechamentoDiario[]>(`${this.url}/fechamentos`, { params: { mes } });
   }
+  // POST /fechamentos: fecha o dia e trava as vendas dele.
   fecharDia(data: string) {
     return this.http.post<FechamentoDiario>(`${this.url}/fechamentos`, { data });
   }
@@ -92,6 +97,7 @@ export class ApiService {
       .get<MovimentoReserva[]>(`${this.url}/reserva/movimentos`)
       .pipe(map((movimentos): Reserva => ({ saldo: movimentos[0]?.saldoApos ?? 0, movimentos })));
   }
+  // POST /reserva/movimentos (entrada ou saída).
   movimentarReserva(m: NovoMovimento) {
     const corpo: NovoMovimento = {
       data: m.data,
@@ -107,18 +113,22 @@ export class ApiService {
   compras(mes: string) {
     return this.http.get<Compra[]>(`${this.url}/compras`, { params: { mes } });
   }
+  // GET /compras/resumo do mês (totais por cartão, à vista e categoria).
   resumoDasCompras(mes: string) {
     return this.http.get<ComprasResumo>(`${this.url}/compras/resumo`, { params: { mes } });
   }
+  // Com id faz PUT, sem id faz POST.
   salvarCompra(compra: NovaCompra, id?: number) {
     const corpo = corpoDaCompra(compra);
     return id
       ? this.http.put<Compra>(`${this.url}/compras/${id}`, corpo)
       : this.http.post<Compra>(`${this.url}/compras`, corpo);
   }
+  // DELETE /compras/{id}.
   excluirCompra(id: number) {
     return this.http.delete<void>(`${this.url}/compras/${id}`);
   }
+  // GET /categorias filtrando pelo tipo (COMPRA ou PRODUTO).
   categorias(tipo: Categoria['tipo']) {
     return this.http.get<Categoria[]>(`${this.url}/categorias`, { params: { tipo } });
   }
@@ -127,12 +137,14 @@ export class ApiService {
   cartoes() {
     return this.http.get<CartaoPj[]>(`${this.url}/cartoes`);
   }
+  // Com id faz PUT, sem id faz POST.
   salvarCartao(cartao: NovoCartao, id?: number) {
     const corpo = corpoDoCartao(cartao);
     return id
       ? this.http.put<CartaoPj>(`${this.url}/cartoes/${id}`, corpo)
       : this.http.post<CartaoPj>(`${this.url}/cartoes`, corpo);
   }
+  // Gasto do mês por cartão + à vista, montado a partir do resumo das compras.
   gastosPorCartao(mes: string) {
     return this.resumoDasCompras(mes).pipe(map(gastosDoResumo));
   }
@@ -141,9 +153,11 @@ export class ApiService {
   produtosDoSite() {
     return this.http.get<ProdutoSite[]>(`${this.url}/publico/cardapio`);
   }
+  // GET /produtos (todos, para o painel).
   produtos() {
     return this.http.get<Produto[]>(`${this.url}/produtos`);
   }
+  // Com id faz PUT, sem id faz POST.
   salvarProduto(produto: NovoProduto, id?: number) {
     const corpo = corpoDoProduto(produto);
     return id
@@ -156,6 +170,7 @@ export class ApiService {
     corpo.append('arquivo', arquivo);
     return this.http.post<{ url: string }>(`${this.url}/produtos/foto`, corpo);
   }
+  // DELETE /produtos/{id}.
   excluirProduto(id: number) {
     return this.http.delete<void>(`${this.url}/produtos/${id}`);
   }

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+// Consultas de compra e totais do mês (por cartão, à vista e categoria).
 public interface CompraRepository extends JpaRepository<Compra, Long> {
 
     Optional<Compra> findByIdAndUsuarioId(Long id, Long usuarioId);

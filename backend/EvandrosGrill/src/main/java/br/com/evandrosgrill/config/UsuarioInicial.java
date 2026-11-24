@@ -35,6 +35,7 @@ public class UsuarioInicial implements ApplicationRunner {
     @Value("${app.admin.senha:}")
     private String senha;
 
+    // Executa uma vez na subida da aplicação.
     @Override
     public void run(ApplicationArguments args) {
         if (usuarioRepository.count() > 0) {

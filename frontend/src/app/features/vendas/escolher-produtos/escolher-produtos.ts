@@ -61,14 +61,17 @@ export class EscolherProdutos {
     somaDosItens(this.itens(), this.produtos(), this.precosDaVenda()),
   );
 
+  // Quantidade já escolhida do produto (0 se não estiver na venda).
   protected quantidadeDe(produtoId: number): number {
     return this.itens().find((i) => i.produtoId === produtoId)?.quantidade ?? 0;
   }
 
+  // Soma 1 unidade do produto.
   protected adicionar(produto: Produto): void {
     this.mudar(produto.id, 1);
   }
 
+  // Soma ou subtrai unidades (máx. 9999); chegando a 0, remove o item.
   protected mudar(produtoId: number, diferenca: number): void {
     const atual = this.quantidadeDe(produtoId);
     const nova = Math.min(9999, atual + diferenca);
@@ -83,6 +86,7 @@ export class EscolherProdutos {
     }
   }
 
+  // Tira o produto da venda.
   protected remover(produtoId: number): void {
     this.itens.update((itens) => itens.filter((i) => i.produtoId !== produtoId));
   }

@@ -5,6 +5,7 @@ import br.com.evandrosgrill.model.entity.Configuracao;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+// Configuração do caixa como a API devolve.
 public record ConfiguracaoResponse(
         Long id,
         BigDecimal percentualRetirada,
@@ -15,6 +16,7 @@ public record ConfiguracaoResponse(
         LocalDateTime atualizadoEm
 ) {
 
+    // Converte a entidade em resposta.
     public static ConfiguracaoResponse de(Configuracao c) {
         return new ConfiguracaoResponse(
                 c.getId(),

@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+// Corpo de POST/PUT /api/compras.
 public record CompraRequest(
 
         @NotNull(message = "Informe a categoria")

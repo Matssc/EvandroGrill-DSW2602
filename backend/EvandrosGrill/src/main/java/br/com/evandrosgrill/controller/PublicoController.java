@@ -24,6 +24,7 @@ public class PublicoController {
     private final ProdutoService produtoService;
     private final FotoService fotoService;
 
+    // Produtos marcados para o site, destaques primeiro.
     @GetMapping("/cardapio")
     public List<ProdutoPublicoResponse> cardapio() {
         return produtoService.listarCardapioPublico();

@@ -19,6 +19,7 @@ import lombok.Setter;
 @Table(
         name = "cartao_pj",
         uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "apelido"})
+// Tabela cartao_pj: cartões da empresa (apelido único por usuário).
 )
 @Getter
 @Setter

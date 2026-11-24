@@ -15,6 +15,7 @@ public record ProdutoPublicoResponse(
         Boolean destaque
 ) {
 
+    // Converte o produto para a versão pública (sem dados internos).
     public static ProdutoPublicoResponse de(Produto p) {
         return new ProdutoPublicoResponse(
                 p.getId(),

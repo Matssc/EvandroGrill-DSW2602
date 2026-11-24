@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
+// Regras da configuração do caixa (RN02 a RN04).
 @Service
 @RequiredArgsConstructor
 public class ConfiguracaoService {
@@ -21,11 +22,13 @@ public class ConfiguracaoService {
     private final ConfiguracaoRepository configuracaoRepository;
     private final UsuarioRepository usuarioRepository;
 
+    // Devolve a configuração do usuário.
     @Transactional
     public ConfiguracaoResponse buscar(Long usuarioId) {
         return ConfiguracaoResponse.de(obterOuCriar(usuarioId));
     }
 
+    // Salva os percentuais; com divisão ligada, salário + reserva = 100%.
     @Transactional
     public ConfiguracaoResponse atualizar(Long usuarioId, ConfiguracaoRequest request) {
         Configuracao config = obterOuCriar(usuarioId);
@@ -63,6 +66,7 @@ public class ConfiguracaoService {
                 .orElseGet(() -> criarPadrao(usuarioId));
     }
 
+    // Configuração inicial: 30% de retirada, 50% salário e 50% reserva.
     private Configuracao criarPadrao(Long usuarioId) {
         Configuracao config = new Configuracao();
         config.setUsuario(usuarioRepository.getReferenceById(usuarioId));

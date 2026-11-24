@@ -174,6 +174,7 @@ export class Compras {
     this.carregar();
   }
 
+  // Busca compras, gastos por cartão, cartões e categorias do mês em paralelo.
   protected carregar(): void {
     this.carregando.set(true);
     forkJoin({
@@ -196,6 +197,7 @@ export class Compras {
     });
   }
 
+  // Muda o mês exibido (não aceita mês futuro) e recarrega.
   protected trocarMes(mes: string): void {
     if (!mes || mes > this.mesAtual) return;
     this.mes.set(mes);
@@ -205,14 +207,17 @@ export class Compras {
     this.carregar();
   }
 
+  // Nome da categoria pelo id.
   protected nomeDaCategoria(id: number): string {
     return this.categorias().find((c) => c.id === id)?.nome ?? '—';
   }
 
+  // Cartão pelo id.
   protected cartao(id: number | null): CartaoPj | undefined {
     return this.cartoes().find((k) => k.id === id);
   }
 
+  // Meio à vista em minúsculo, para usar no meio da frase.
   protected meioNaFrase(meio: MeioAVista | null): string {
     return meioMinusculo(meio);
   }
@@ -226,6 +231,7 @@ export class Compras {
 
   // ---- Modal
 
+  // Abre o modal de compra nova com o primeiro cartão ativo sugerido.
   protected novaCompra(): void {
     const primeiroCartao = this.cartoesDoModal()[0]?.id ?? null;
     this.editando.set(null);
@@ -241,6 +247,7 @@ export class Compras {
     this.abrirModal();
   }
 
+  // Abre o modal preenchido com a compra.
   protected editar(compra: Compra): void {
     this.editando.set(compra);
     this.form.reset({
@@ -255,6 +262,7 @@ export class Compras {
     this.abrirModal();
   }
 
+  // Fecha o <dialog>.
   protected fecharModal(): void {
     this.dialogo().nativeElement.close();
   }
@@ -265,6 +273,7 @@ export class Compras {
     this.erroModal.set(null);
   }
 
+  // Valida (valor > 0, cartão ou meio à vista) e salva a compra.
   protected salvar(): void {
     const v = this.form.getRawValue();
     const valor = lerValor(v.valor);
@@ -302,6 +311,7 @@ export class Compras {
     });
   }
 
+  // Confirma e exclui a compra.
   protected excluir(compra: Compra): void {
     if (!confirm(`Excluir a compra "${compra.descricao}" de ${emReais(compra.valor)}?`)) return;
     this.api.excluirCompra(compra.id).subscribe({
@@ -310,6 +320,7 @@ export class Compras {
     });
   }
 
+  // Abre o <dialog> em modo modal.
   private abrirModal(): void {
     this.erroModal.set(null);
     this.dialogo().nativeElement.showModal();

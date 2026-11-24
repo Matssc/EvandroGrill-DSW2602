@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+// Dados de quem está logado e troca de senha.
 @RestController
 @RequestMapping("/api/usuario")
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class UsuarioController {
         return usuarioService.buscar(Autenticacao.usuarioId(jwt));
     }
 
+    // Confere a senha atual e grava a nova (204).
     @PutMapping("/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void trocarSenha(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody TrocarSenhaRequest request) {

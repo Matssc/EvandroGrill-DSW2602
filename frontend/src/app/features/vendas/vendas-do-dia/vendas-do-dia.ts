@@ -151,10 +151,12 @@ export class VendasDoDia {
     this.carregar();
   }
 
+  // Ícone e texto da forma de pagamento.
   protected forma(valor: FormaPagamentoVenda | null): Forma | undefined {
     return FORMAS.find((f) => f.valor === valor);
   }
 
+  // Busca vendas do dia, configuração, fechamentos do mês, produtos e categorias em paralelo.
   protected carregar(): void {
     this.carregando.set(true);
     forkJoin({
@@ -179,6 +181,7 @@ export class VendasDoDia {
     });
   }
 
+  // Muda o dia exibido (não aceita dia futuro) e recarrega.
   protected trocarDia(data: string): void {
     if (!data || data > this.hoje) return;
     this.data.set(data);
@@ -189,6 +192,7 @@ export class VendasDoDia {
     this.carregar();
   }
 
+  // Valida conforme o modo (Por venda: produtos; Total do dia: valor) e lança ou edita.
   protected salvar(): void {
     const porVenda = this.modo() === 'POR_VENDA';
     const itens = this.itens();
@@ -237,6 +241,7 @@ export class VendasDoDia {
     });
   }
 
+  // Carrega a venda no formulário para edição.
   protected editar(venda: Venda): void {
     this.editando.set(venda);
     this.modo.set(venda.tipoLancamento);
@@ -249,6 +254,7 @@ export class VendasDoDia {
     });
   }
 
+  // Limpa o formulário e sai do modo edição.
   protected cancelarEdicao(): void {
     this.editando.set(null);
     this.itens.set([]);
@@ -256,6 +262,7 @@ export class VendasDoDia {
     this.form.reset();
   }
 
+  // Confirma e exclui a venda.
   protected excluir(venda: Venda): void {
     if (!confirm(`Excluir a venda de ${emReais(venda.valor)}?`)) return;
     this.api.excluirVenda(venda.id).subscribe({
@@ -264,6 +271,7 @@ export class VendasDoDia {
     });
   }
 
+  // Confirma e fecha o dia: o back calcula retirada/salário/reserva e trava as vendas.
   protected fecharDia(): void {
     const pergunta = `Fechar o dia com ${emReais(this.total())} vendidos? Depois disso as vendas dele não mudam mais.`;
     if (!confirm(pergunta)) return;

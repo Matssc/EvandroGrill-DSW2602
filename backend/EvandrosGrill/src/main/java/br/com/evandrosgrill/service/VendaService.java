@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+// Regras das vendas (RN01): lançamento, edição, exclusão, resumo do dia e ranking.
 @Service
 @RequiredArgsConstructor
 public class VendaService {
@@ -89,6 +90,7 @@ public class VendaService {
                 .toList();
     }
 
+    // Lança uma venda; o dia não pode estar fechado.
     @Transactional
     public VendaResponse registrar(Long usuarioId, VendaRequest request) {
         LocalDate data = (request.data() != null) ? request.data() : Relogio.hoje();
@@ -101,6 +103,7 @@ public class VendaService {
         return VendaResponse.de(vendaRepository.save(venda));
     }
 
+    // Edita uma venda; nem a venda nem o dia de destino podem estar fechados.
     @Transactional
     public VendaResponse atualizar(Long usuarioId, Long id, VendaRequest request) {
         Venda venda = buscarEntidade(usuarioId, id);
@@ -113,6 +116,7 @@ public class VendaService {
         return VendaResponse.de(vendaRepository.save(venda));
     }
 
+    // Exclui uma venda que ainda não entrou num fechamento.
     @Transactional
     public void excluir(Long usuarioId, Long id) {
         Venda venda = buscarEntidade(usuarioId, id);
@@ -120,6 +124,7 @@ public class VendaService {
         vendaRepository.delete(venda);
     }
 
+    // Preenche a venda conforme o tipo: POR_VENDA soma os itens, TOTAL_DIA usa o valor digitado.
     private void preencher(Long usuarioId, Venda venda, VendaRequest request, LocalDate data) {
         venda.setData(data);
         venda.setTipoLancamento(request.tipoLancamento());
@@ -172,6 +177,7 @@ public class VendaService {
         }
     }
 
+    // Soma de preço unitário x quantidade de todos os itens.
     private BigDecimal somaDosItens(Venda venda) {
         return venda.getItens().stream()
                 .map(i -> i.getPrecoUnitario().multiply(BigDecimal.valueOf(i.getQuantidade())))
@@ -193,6 +199,7 @@ public class VendaService {
         }
     }
 
+    // Busca a venda garantindo que é do usuário (senão 404).
     private Venda buscarEntidade(Long usuarioId, Long id) {
         return vendaRepository.findByIdAndUsuarioId(id, usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Venda não encontrada"));

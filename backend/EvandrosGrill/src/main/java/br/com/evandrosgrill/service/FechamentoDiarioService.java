@@ -26,6 +26,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+// Regra central do caixa: fecha o dia, calcula retirada/salário/reserva e trava as vendas (RN02, RN03, RN05).
 @Service
 @RequiredArgsConstructor
 public class FechamentoDiarioService {
@@ -124,6 +125,7 @@ public class FechamentoDiarioService {
         return FechamentoDiarioResponse.de(fechamento);
     }
 
+    // Fechamento de um dia específico (404 se o dia não foi fechado).
     @Transactional(readOnly = true)
     public FechamentoDiarioResponse buscarPorData(Long usuarioId, LocalDate data) {
         return fechamentoDiarioRepository.findByUsuarioIdAndData(usuarioId, data)
@@ -143,6 +145,7 @@ public class FechamentoDiarioService {
                 .toList();
     }
 
+    // Retirada = % do total; salário = % da retirada; reserva = o resto da retirada.
     private Valores calcular(BigDecimal total, Configuracao config) {
         BigDecimal retirada = porcentagem(total, config.getPercentualRetirada());
         BigDecimal salario;
@@ -160,6 +163,7 @@ public class FechamentoDiarioService {
         return new Valores(retirada, salario, reserva, total.subtract(retirada));
     }
 
+    // base x percentual / 100, arredondado em 2 casas (HALF_UP).
     private BigDecimal porcentagem(BigDecimal base, BigDecimal percentual) {
         return base.multiply(percentual).divide(CEM, 2, RoundingMode.HALF_UP);
     }

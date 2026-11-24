@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+// Regras das compras e do resumo mensal (RN06 a RN08).
 @Service
 @RequiredArgsConstructor
 public class CompraService {
@@ -60,11 +61,13 @@ public class CompraService {
                 .toList();
     }
 
+    // Busca uma compra do usuário.
     @Transactional(readOnly = true)
     public CompraResponse buscar(Long usuarioId, Long id) {
         return CompraResponse.de(buscarEntidade(usuarioId, id));
     }
 
+    // Cria a compra depois de validar categoria e forma de pagamento.
     @Transactional
     public CompraResponse criar(Long usuarioId, CompraRequest request) {
         Compra compra = new Compra();
@@ -73,6 +76,7 @@ public class CompraService {
         return CompraResponse.de(compraRepository.save(compra));
     }
 
+    // Atualiza a compra com as mesmas validações da criação.
     @Transactional
     public CompraResponse atualizar(Long usuarioId, Long id, CompraRequest request) {
         Compra compra = buscarEntidade(usuarioId, id);
@@ -80,6 +84,7 @@ public class CompraService {
         return CompraResponse.de(compraRepository.save(compra));
     }
 
+    // Exclui a compra.
     @Transactional
     public void excluir(Long usuarioId, Long id) {
         compraRepository.delete(buscarEntidade(usuarioId, id));
@@ -168,6 +173,7 @@ public class CompraService {
         return parte.multiply(CEM).divide(todo, 1, RoundingMode.HALF_UP);
     }
 
+    // Busca a compra garantindo que é do usuário (senão 404).
     private Compra buscarEntidade(Long usuarioId, Long id) {
         return compraRepository.findByIdAndUsuarioId(id, usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Compra não encontrada"));

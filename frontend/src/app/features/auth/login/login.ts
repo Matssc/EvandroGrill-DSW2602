@@ -7,6 +7,7 @@ import { mensagemDeErro } from '../../../core/api/api.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { PainelMarca } from '../painel-marca/painel-marca';
 
+// Tela de login do painel (RN10).
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule, RouterLink, LucideAngularModule, PainelMarca],
@@ -30,6 +31,7 @@ export class Login {
   protected readonly apiFalsa = environment.useMock;
   protected readonly ChevronLeft = ChevronLeft;
 
+  // Valida o formulário, chama o login e redireciona para ?voltar ou para o dashboard.
   protected entrar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

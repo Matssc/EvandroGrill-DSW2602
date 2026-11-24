@@ -16,6 +16,7 @@ import { mockApiInterceptor } from './core/mock/mock-api.interceptor';
 // Datas e dinheiro no formato brasileiro: {{ 1480 | currency }} vira "R$ 1.480,00"
 registerLocaleData(localePt);
 
+// Providers globais: rotas, HttpClient com interceptors e locale pt-BR.
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),

@@ -103,6 +103,7 @@ function rota(
   });
 }
 
+// Roteia a requisição para o handler certo da API falsa e devolve status + corpo.
 export function responder(req: HttpRequest<unknown>): Resposta {
   const caminho = req.url.slice(environment.apiUrl.length).split('?')[0];
   for (const r of rotas) {

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+// Regras dos produtos do cardápio e da listagem pública do site.
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
@@ -53,6 +54,7 @@ public class ProdutoService {
         return produtos.stream().map(ProdutoResponse::de).toList();
     }
 
+    // Busca um produto do usuário.
     @Transactional(readOnly = true)
     public ProdutoResponse buscar(Long usuarioId, Long id) {
         return ProdutoResponse.de(buscarEntidade(usuarioId, id));
@@ -66,6 +68,7 @@ public class ProdutoService {
                 produtoRepository.countByUsuarioIdAndMostrarNoSiteTrue(usuarioId));
     }
 
+    // Cria o produto; o código não pode repetir.
     @Transactional
     public ProdutoResponse criar(Long usuarioId, ProdutoRequest request) {
         Categoria categoria = buscarCategoriaDeProduto(usuarioId, request.categoriaId());
@@ -82,6 +85,7 @@ public class ProdutoService {
         return ProdutoResponse.de(produtoRepository.save(produto));
     }
 
+    // Atualiza; o código novo não pode ser de outro produto.
     @Transactional
     public ProdutoResponse atualizar(Long usuarioId, Long id, ProdutoRequest request) {
         Produto produto = buscarEntidade(usuarioId, id);
@@ -105,6 +109,7 @@ public class ProdutoService {
         return ProdutoResponse.de(produtoRepository.save(produto));
     }
 
+    // Exclui; se já houver vendas com o produto, o banco recusa e vira mensagem de regra.
     @Transactional
     public void excluir(Long usuarioId, Long id) {
         Produto produto = buscarEntidade(usuarioId, id);
@@ -128,6 +133,7 @@ public class ProdutoService {
                 .toList();
     }
 
+    // Copia os campos do request para a entidade.
     private void preencher(Produto produto, ProdutoRequest request, Categoria categoria, String codigo) {
         produto.setCategoria(categoria);
         produto.setCodigo(codigo);
@@ -139,11 +145,13 @@ public class ProdutoService {
         produto.setDestaque(request.destaque());
     }
 
+    // Busca o produto garantindo que é do usuário (senão 404).
     private Produto buscarEntidade(Long usuarioId, Long id) {
         return produtoRepository.findByIdAndUsuarioId(id, usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
     }
 
+    // A categoria precisa existir, ser do usuário e ser do tipo PRODUTO.
     private Categoria buscarCategoriaDeProduto(Long usuarioId, Long categoriaId) {
         Categoria categoria = categoriaRepository.findByIdAndUsuarioId(categoriaId, usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Categoria não encontrada"));

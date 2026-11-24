@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+// Regras das categorias de compra e de produto.
 @Service
 @RequiredArgsConstructor
 public class CategoriaService {
@@ -49,6 +50,7 @@ public class CategoriaService {
         return categorias.stream().map(CategoriaResponse::de).toList();
     }
 
+    // Cria a categoria; nome único dentro do tipo.
     @Transactional
     public CategoriaResponse criar(Long usuarioId, CategoriaRequest request) {
         String nome = request.nome().trim();
@@ -65,6 +67,7 @@ public class CategoriaService {
         return CategoriaResponse.de(categoriaRepository.save(categoria));
     }
 
+    // Renomeia; o tipo não pode mudar.
     @Transactional
     public CategoriaResponse atualizar(Long usuarioId, Long id, CategoriaRequest request) {
         Categoria categoria = buscarEntidade(usuarioId, id);
@@ -84,6 +87,7 @@ public class CategoriaService {
         return CategoriaResponse.de(categoriaRepository.save(categoria));
     }
 
+    // Exclui; em uso por compra ou produto, o banco recusa e vira mensagem de regra.
     @Transactional
     public void excluir(Long usuarioId, Long id) {
         Categoria categoria = buscarEntidade(usuarioId, id);
@@ -96,11 +100,13 @@ public class CategoriaService {
         }
     }
 
+    // Busca a categoria garantindo que é do usuário (senão 404).
     private Categoria buscarEntidade(Long usuarioId, Long id) {
         return categoriaRepository.findByIdAndUsuarioId(id, usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Categoria não encontrada"));
     }
 
+    // Primeiro acesso: cria as categorias padrão do usuário.
     private void criarPadraoSeNaoTiver(Long usuarioId) {
         if (categoriaRepository.existsByUsuarioId(usuarioId)) {
             return;

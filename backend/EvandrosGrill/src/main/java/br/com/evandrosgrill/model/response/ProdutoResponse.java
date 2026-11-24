@@ -18,6 +18,7 @@ public record ProdutoResponse(
         Boolean destaque
 ) {
 
+    // Converte a entidade em resposta.
     public static ProdutoResponse de(Produto p) {
         return new ProdutoResponse(
                 p.getId(),

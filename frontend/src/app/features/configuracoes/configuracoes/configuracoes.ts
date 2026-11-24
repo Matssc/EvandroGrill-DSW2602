@@ -81,6 +81,7 @@ export class Configuracoes {
     this.carregar();
   }
 
+  // Busca a configuração e os cartões em paralelo.
   protected carregar(): void {
     this.carregando.set(true);
     forkJoin({ config: this.api.configuracao(), cartoes: this.api.cartoes() }).subscribe({
@@ -97,15 +98,18 @@ export class Configuracoes {
     });
   }
 
+  // Atalho dos botões de % de retirada.
   protected escolherRetirada(valor: number): void {
     this.form.controls.percentualRetirada.setValue(valor);
   }
 
+  // "Visa · fecha dia 5" para a lista de cartões.
   protected detalheDoCartao(cartao: CartaoPj): string {
     const partes = [cartao.bandeira, cartao.diaFechamento ? `fecha dia ${cartao.diaFechamento}` : null];
     return partes.filter(Boolean).join(' · ');
   }
 
+  // Valida a meta e salva a configuração.
   protected salvar(): void {
     const v = this.form.getRawValue();
     const meta = v.metaReserva.trim() ? lerValor(v.metaReserva) : null;
@@ -140,6 +144,7 @@ export class Configuracoes {
     });
   }
 
+  // Copia a configuração do back para o formulário.
   private preencher(config: Configuracao): void {
     // Com a divisão desligada o back guarda 100/0 (toda a retirada vira salário).
     // A tela mostra 50/50, que é a sugestão se a divisão for ligada de novo.

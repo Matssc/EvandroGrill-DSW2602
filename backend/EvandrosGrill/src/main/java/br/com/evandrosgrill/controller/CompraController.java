@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.YearMonth;
 import java.util.List;
 
+// Compras do negócio e resumo do mês por cartão, à vista e categoria (RN06 a RN08).
 @RestController
 @RequestMapping("/api/compras")
 @RequiredArgsConstructor
@@ -53,23 +54,27 @@ public class CompraController {
         return compraService.resumo(Autenticacao.usuarioId(jwt), mes);
     }
 
+    // Uma compra pelo id.
     @GetMapping("/{id}")
     public CompraResponse buscar(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id) {
         return compraService.buscar(Autenticacao.usuarioId(jwt), id);
     }
 
+    // Lança uma compra (201).
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompraResponse criar(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody CompraRequest request) {
         return compraService.criar(Autenticacao.usuarioId(jwt), request);
     }
 
+    // Altera uma compra.
     @PutMapping("/{id}")
     public CompraResponse atualizar(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id,
                                     @Valid @RequestBody CompraRequest request) {
         return compraService.atualizar(Autenticacao.usuarioId(jwt), id, request);
     }
 
+    // Remove uma compra (204).
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id) {

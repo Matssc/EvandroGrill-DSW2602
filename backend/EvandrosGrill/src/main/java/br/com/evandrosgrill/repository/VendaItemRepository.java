@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+// Consultas de venda_item (ranking de mais vendidos).
 public interface VendaItemRepository extends JpaRepository<VendaItem, Long> {
 
     // Mais vendidos no período: soma das quantidades e dos valores por produto (Vendas do dia, Dashboard, Fechamento)

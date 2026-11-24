@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+// Consultas de venda e totais do dia.
 public interface VendaRepository extends JpaRepository<Venda, Long> {
 
     Optional<Venda> findByIdAndUsuarioId(Long id, Long usuarioId);

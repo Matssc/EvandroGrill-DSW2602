@@ -8,6 +8,7 @@ public final class Autenticacao {
     private Autenticacao() {
     }
 
+    // Converte o subject do token no id do usuário.
     public static Long usuarioId(Jwt jwt) {
         return Long.valueOf(jwt.getSubject());
     }

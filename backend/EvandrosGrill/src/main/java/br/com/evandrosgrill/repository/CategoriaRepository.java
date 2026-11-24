@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+// Consultas de categoria. Toda busca filtra pelo usuário dono.
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 
     List<Categoria> findByUsuarioIdOrderByNomeAsc(Long usuarioId);
