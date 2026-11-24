@@ -126,6 +126,7 @@ export class ProLabore {
     this.carregar();
   }
 
+  // Busca os fechamentos do mês, os resumos deste mês e do anterior e as vendas de hoje.
   protected carregar(): void {
     this.carregando.set(true);
     forkJoin({
@@ -148,6 +149,7 @@ export class ProLabore {
     });
   }
 
+  // Muda o mês exibido (não aceita mês futuro) e recarrega.
   protected trocarMes(mes: string): void {
     if (!mes || mes > this.mesAtual) return;
     this.mes.set(mes);

@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+// Regra do login: confere e-mail e senha (BCrypt) e gera o token.
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -19,6 +20,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
+    // Login válido devolve token + usuário; inválido lança CredenciaisInvalidasException (401).
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
         // E-mail inexistente e senha errada dão exatamente a mesma resposta

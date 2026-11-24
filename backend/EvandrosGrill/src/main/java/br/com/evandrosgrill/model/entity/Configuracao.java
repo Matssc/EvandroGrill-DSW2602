@@ -20,6 +20,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+// Tabela configuracao: percentuais do caixa e meta da reserva (uma linha por usuário).
 @Entity
 @Table(name = "configuracao")
 @Getter

@@ -19,16 +19,19 @@ import java.util.List;
 @RestControllerAdvice
 public class TratadorDeExcecoes {
 
+    // 404: registro não existe ou não é do usuário logado.
     @ExceptionHandler(RecursoNaoEncontradoException.class)
     public ResponseEntity<ErroResponse> naoEncontrado(RecursoNaoEncontradoException e) {
         return responder(HttpStatus.NOT_FOUND, e.getMessage(), List.of());
     }
 
+    // 400: regra de negócio violada (mensagem pronta para a tela).
     @ExceptionHandler(RegraNegocioException.class)
     public ResponseEntity<ErroResponse> regraDeNegocio(RegraNegocioException e) {
         return responder(HttpStatus.BAD_REQUEST, e.getMessage(), List.of());
     }
 
+    // 401: e-mail ou senha errados no login.
     @ExceptionHandler(CredenciaisInvalidasException.class)
     public ResponseEntity<ErroResponse> credenciaisInvalidas(CredenciaisInvalidasException e) {
         return responder(HttpStatus.UNAUTHORIZED, e.getMessage(), List.of());
@@ -75,6 +78,7 @@ public class TratadorDeExcecoes {
                 "Não foi possível salvar: já existe um registro igual ou o dado está em uso", List.of());
     }
 
+    // Monta o corpo padrão { status, mensagem, detalhes, timestamp }.
     private ResponseEntity<ErroResponse> responder(HttpStatus status, String mensagem, List<String> detalhes) {
         ErroResponse corpo = new ErroResponse(status.value(), mensagem, detalhes, Relogio.agora());
         return ResponseEntity.status(status).body(corpo);

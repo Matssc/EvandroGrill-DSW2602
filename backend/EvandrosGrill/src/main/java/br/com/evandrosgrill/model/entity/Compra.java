@@ -21,6 +21,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+// Tabela compra: gasto do negócio, no cartão PJ ou à vista.
 @Entity
 @Table(name = "compra")
 @Getter

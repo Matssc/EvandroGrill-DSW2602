@@ -72,6 +72,7 @@ public class FotoService {
         return CAMINHO_PUBLICO + nome;
     }
 
+    // Abre a foto pelo nome; recusa nomes fora do padrão UUID e caminhos fora da pasta.
     public Resource carregar(String nome) {
         if (!NOME_VALIDO.matcher(nome).matches()) {
             throw new RecursoNaoEncontradoException("Foto não encontrada");
@@ -83,11 +84,13 @@ public class FotoService {
         return new PathResource(arquivo);
     }
 
+    // Content-Type da resposta a partir da extensão.
     public MediaType tipoDe(String nome) {
         String extensao = nome.substring(nome.lastIndexOf('.') + 1);
         return Formato.daExtensao(extensao).map(f -> f.tipo).orElse(MediaType.APPLICATION_OCTET_STREAM);
     }
 
+    // Identifica JPEG, PNG ou WebP pelos bytes iniciais (assinatura do arquivo).
     private Formato detectar(MultipartFile arquivo) {
         byte[] inicio = new byte[12];
         int lidos;

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// CRUD dos cartões PJ do usuário logado (RN07). O id do usuário vem do token.
 @RestController
 @RequestMapping("/api/cartoes")
 @RequiredArgsConstructor
@@ -36,23 +37,27 @@ public class CartaoPjController {
         return cartaoPjService.listar(Autenticacao.usuarioId(jwt), apenasAtivos);
     }
 
+    // Um cartão pelo id (404 se não for do usuário).
     @GetMapping("/{id}")
     public CartaoPjResponse buscar(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id) {
         return cartaoPjService.buscar(Autenticacao.usuarioId(jwt), id);
     }
 
+    // Cadastra um cartão novo (201).
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CartaoPjResponse criar(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody CartaoPjRequest request) {
         return cartaoPjService.criar(Autenticacao.usuarioId(jwt), request);
     }
 
+    // Altera os dados do cartão.
     @PutMapping("/{id}")
     public CartaoPjResponse atualizar(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id,
                                       @Valid @RequestBody CartaoPjRequest request) {
         return cartaoPjService.atualizar(Autenticacao.usuarioId(jwt), id, request);
     }
 
+    // Remove o cartão; com compras lançadas, o service recusa (204 quando dá certo).
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id) {

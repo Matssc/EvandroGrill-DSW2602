@@ -13,6 +13,7 @@ function tela(path: string, titulo: string, figma: string, carregar: Carregar = 
   return { path, title: `${titulo} · Evandro's Grill`, data: { titulo, figma }, loadComponent: carregar };
 }
 
+// Mapa de rotas: site público em '', login, relatório e painel /admin (protegido pelo authGuard).
 export const routes: Routes = [
   // Site público
   {

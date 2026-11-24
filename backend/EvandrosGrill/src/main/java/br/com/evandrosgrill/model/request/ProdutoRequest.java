@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
+// Corpo de POST/PUT /api/produtos.
 public record ProdutoRequest(
 
         @NotNull(message = "Informe a categoria")

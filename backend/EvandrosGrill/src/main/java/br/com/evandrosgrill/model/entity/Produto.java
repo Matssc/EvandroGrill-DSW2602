@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 @Table(
         name = "produto",
         uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "codigo"})
+// Tabela produto: item do cardápio (código único por usuário).
 )
 @Getter
 @Setter

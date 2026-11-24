@@ -7,6 +7,7 @@ import br.com.evandrosgrill.model.enums.TipoMovimento;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+// Movimento da reserva com o saldo logo depois dele.
 public record MovimentoReservaResponse(
         Long id,
         LocalDate data,

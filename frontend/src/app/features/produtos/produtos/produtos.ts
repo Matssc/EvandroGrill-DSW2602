@@ -89,6 +89,7 @@ export class Produtos {
     });
   }
 
+  // Busca produtos e categorias de produto em paralelo.
   protected carregar(): void {
     this.carregando.set(true);
     this.erro.set(null);
@@ -108,6 +109,7 @@ export class Produtos {
     });
   }
 
+  // Nome da categoria pelo id.
   protected nomeDaCategoria(id: number): string {
     return this.categorias().find((c) => c.id === id)?.nome ?? '—';
   }
@@ -129,6 +131,7 @@ export class Produtos {
     });
   }
 
+  // Confirma e exclui o produto (o back recusa se ele já tiver vendas).
   protected excluir(produto: Produto): void {
     if (!confirm(`Excluir o produto "${produto.nome}"? Ele sai do cardápio da landing page.`)) return;
     this.api.excluirProduto(produto.id).subscribe({
@@ -137,10 +140,12 @@ export class Produtos {
     });
   }
 
+  // Troca o produto na lista sem recarregar tudo.
   private atualizarNaLista(produto: Produto): void {
     this.produtos.update((lista) => lista.map((p) => (p.id === produto.id ? produto : p)));
   }
 
+  // Libera a chave "No site" depois que a API respondeu.
   private destravar(id: number): void {
     this.salvandoNoSite.update((ids) => ids.filter((x) => x !== id));
   }
@@ -158,6 +163,7 @@ export class Produtos {
 
   // ---- Modal
 
+  // Abre o modal de produto novo com código sugerido.
   protected novoProduto(): void {
     // filtrando uma categoria, o produto novo já entra nela
     const categoriaId = this.filtro() ?? this.categorias()[0]?.id ?? null;
@@ -175,6 +181,7 @@ export class Produtos {
     this.abrirModal();
   }
 
+  // Abre o modal preenchido com o produto.
   protected editar(produto: Produto): void {
     this.editando.set(produto);
     this.form.reset({
@@ -190,6 +197,7 @@ export class Produtos {
     this.abrirModal();
   }
 
+  // Fecha o <dialog>.
   protected fecharModal(): void {
     this.dialogo().nativeElement.close();
   }
@@ -231,11 +239,13 @@ export class Produtos {
     });
   }
 
+  // Tira a foto do formulário (volta a mostrar o desenho do espeto).
   protected removerFoto(): void {
     this.form.controls.fotoUrl.setValue('');
     this.erroFoto.set(null);
   }
 
+  // Valida (preço > 0) e salva o produto.
   protected salvar(): void {
     const v = this.form.getRawValue();
     const preco = lerValor(v.preco);
@@ -271,6 +281,7 @@ export class Produtos {
     });
   }
 
+  // Abre o <dialog> em modo modal.
   private abrirModal(): void {
     this.erroModal.set(null);
     this.dialogo().nativeElement.showModal();

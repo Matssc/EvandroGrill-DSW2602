@@ -147,6 +147,7 @@ export class Cartoes {
     this.carregar();
   }
 
+  // Busca os cartões e os gastos dos últimos 3 meses em paralelo (forkJoin).
   protected carregar(): void {
     this.carregando.set(true);
     forkJoin({
@@ -165,6 +166,7 @@ export class Cartoes {
     });
   }
 
+  // Texto do prazo até o fechamento da fatura.
   protected quandoFecha(dias: number): string {
     if (dias === 0) return 'Fecha hoje';
     if (dias === 1) return 'Fecha amanhã';
@@ -173,12 +175,14 @@ export class Cartoes {
 
   // ---- Modal
 
+  // Abre o modal com o formulário vazio.
   protected novoCartao(): void {
     this.editando.set(null);
     this.form.reset({ apelido: '', bandeira: '', finalCartao: '', diaFechamento: null, diaVencimento: null, ativo: true });
     this.abrirModal();
   }
 
+  // Abre o modal preenchido com o cartão.
   protected editar(cartao: CartaoPj): void {
     this.editando.set(cartao);
     this.form.reset({
@@ -192,15 +196,18 @@ export class Cartoes {
     this.abrirModal();
   }
 
+  // Fecha o <dialog>.
   protected fecharModal(): void {
     this.dialogo().nativeElement.close();
   }
 
+  // Evento close do <dialog>: limpa a edição e o erro.
   protected aoFecharModal(): void {
     this.editando.set(null);
     this.erroModal.set(null);
   }
 
+  // Valida e salva o cartão (POST ou PUT) e recarrega a lista.
   protected salvar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -231,6 +238,7 @@ export class Cartoes {
     });
   }
 
+  // Abre o <dialog> em modo modal.
   private abrirModal(): void {
     this.erroModal.set(null);
     this.dialogo().nativeElement.showModal();

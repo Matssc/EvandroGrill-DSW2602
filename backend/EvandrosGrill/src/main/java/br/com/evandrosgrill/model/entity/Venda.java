@@ -27,6 +27,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Tabela venda: lançamento de venda; os itens ficam em venda_item.
 @Entity
 @Table(name = "venda")
 @Getter

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
+// Consultas de usuario (busca por e-mail no login).
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     // Login

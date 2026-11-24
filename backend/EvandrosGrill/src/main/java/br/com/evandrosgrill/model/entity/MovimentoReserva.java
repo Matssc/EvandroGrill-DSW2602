@@ -22,6 +22,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+// Tabela movimento_reserva: entradas e saídas da reserva (manuais ou geradas pelo fechamento).
 @Entity
 @Table(name = "movimento_reserva")
 @Getter

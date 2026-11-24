@@ -18,6 +18,7 @@ export class AuthService {
   readonly usuario = computed(() => this.sessao()?.usuario ?? null);
   readonly logado = computed(() => this.sessao() !== null);
 
+  // Token da sessão atual (null se não estiver logado).
   token(): string | null {
     return this.sessao()?.token ?? null;
   }
@@ -29,6 +30,7 @@ export class AuthService {
       .pipe(tap((sessao) => this.guardar(sessao, lembrar)));
   }
 
+  // Limpa a sessão dos dois storages e volta para o login.
   sair(): void {
     this.sessao.set(null);
     try {
@@ -40,6 +42,7 @@ export class AuthService {
     this.router.navigate(['/admin/login']);
   }
 
+  // Guarda a sessão: localStorage com "Lembrar de mim", senão sessionStorage.
   private guardar(sessao: Sessao, lembrar: boolean): void {
     this.sessao.set(sessao);
     try {

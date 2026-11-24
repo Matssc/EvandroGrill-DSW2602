@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+// Consultas de fechamento_diario (por dia e por período).
 public interface FechamentoDiarioRepository extends JpaRepository<FechamentoDiario, Long> {
 
     Optional<FechamentoDiario> findByIdAndUsuarioId(Long id, Long usuarioId);

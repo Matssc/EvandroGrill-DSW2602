@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+// Corpo de POST/PUT /api/vendas.
 public record VendaRequest(
 
         // Se não vier, o service usa a data de hoje

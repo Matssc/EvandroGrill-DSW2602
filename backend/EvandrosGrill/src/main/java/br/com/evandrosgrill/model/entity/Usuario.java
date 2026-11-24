@@ -15,6 +15,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+// Tabela usuario: dono dos dados. Todas as outras tabelas apontam para ele (RN10).
 @Entity
 @Table(name = "usuario")
 @Getter

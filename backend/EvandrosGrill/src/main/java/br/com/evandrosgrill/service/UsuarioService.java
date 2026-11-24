@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+// Dados do usuário logado e troca de senha.
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
@@ -18,11 +19,13 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Dados de quem está logado.
     @Transactional(readOnly = true)
     public UsuarioResponse buscar(Long usuarioId) {
         return UsuarioResponse.de(buscarEntidade(usuarioId));
     }
 
+    // Só troca se a senha atual conferir.
     @Transactional
     public void trocarSenha(Long usuarioId, TrocarSenhaRequest request) {
         Usuario usuario = buscarEntidade(usuarioId);
@@ -36,6 +39,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
+    // Busca o usuário pelo id do token (senão 404).
     private Usuario buscarEntidade(Long usuarioId) {
         return usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));

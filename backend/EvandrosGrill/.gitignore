@@ -32,4 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-src/main/resources/application-local.propertiesuploads/
+# Configuração local de cada um (senha do banco, segredo do JWT): nunca vai pro Git
+src/main/resources/application-local.properties
+# Fotos enviadas pelo painel quando o back roda fora do Docker
+uploads/

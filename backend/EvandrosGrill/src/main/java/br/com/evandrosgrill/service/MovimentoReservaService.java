@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// Regras da reserva da empresa (RN04): saldo, entradas, saídas e meta.
 @Service
 @RequiredArgsConstructor
 public class MovimentoReservaService {
@@ -110,6 +111,7 @@ public class MovimentoReservaService {
         return MovimentoReservaResponse.de(salvo, saldoApos);
     }
 
+    // Exclui um movimento manual sem deixar o saldo negativo.
     @Transactional
     public void excluir(Long usuarioId, Long id) {
         MovimentoReserva movimento = movimentoReservaRepository.findByIdAndUsuarioId(id, usuarioId)

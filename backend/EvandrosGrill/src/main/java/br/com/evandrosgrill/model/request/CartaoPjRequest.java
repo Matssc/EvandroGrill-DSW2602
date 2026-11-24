@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+// Corpo de POST/PUT /api/cartoes.
 public record CartaoPjRequest(
 
         @NotBlank(message = "Informe o apelido do cartão")

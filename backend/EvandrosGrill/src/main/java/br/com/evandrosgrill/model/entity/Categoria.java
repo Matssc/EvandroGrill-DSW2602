@@ -22,6 +22,7 @@ import lombok.Setter;
 @Table(
         name = "categoria",
         uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "tipo", "nome"})
+// Tabela categoria: classifica compras e produtos (nome único por usuário e tipo).
 )
 @Getter
 @Setter

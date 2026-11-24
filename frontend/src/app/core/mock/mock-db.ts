@@ -17,6 +17,7 @@ import { calcularFechamento, somar } from '../regras/caixa';
 // Outubro é igual ao protótipo do Figma. Agosto e setembro só aparecem como totais
 // no protótipo, então aqui eles são espalhados pelos dias do mês, batendo com esses totais.
 
+// Tipos do "banco" em memória da API falsa: cada registro carrega o usuarioId (RN10).
 export type DoUsuario<T> = T & { usuarioId: number };
 
 export type UsuarioNoBanco = Usuario & { senha: string };
@@ -35,6 +36,7 @@ export type VendaNoBanco = DoUsuario<Omit<NovaVenda, 'valor' | 'itens'>> & {
 };
 export type MovimentoNoBanco = DoUsuario<Omit<MovimentoReserva, 'saldoApos'>>;
 
+// Todas as "tabelas" da API falsa.
 export interface Banco {
   usuarios: UsuarioNoBanco[];
   configuracoes: ConfigNoBanco[];
@@ -71,6 +73,7 @@ const CATEGORIAS: [Categoria['tipo'], string][] = [
   ['PRODUTO', 'Bebidas'],
 ];
 
+// Mesmas categorias padrão que o back cria no primeiro acesso.
 export function categoriasPadrao(usuarioId: number, primeiroId: number): DoUsuario<Categoria>[] {
   return CATEGORIAS.map(([tipo, nome], i) => ({ id: primeiroId + i, usuarioId, tipo, nome }));
 }
@@ -242,6 +245,7 @@ const FOLGAS_SETEMBRO = [7, 14, 15, 21, 22, 28];
 const VENDAS_SETEMBRO = 38920;
 const PESO_DO_DIA = [1.25, 0.7, 0.75, 0.85, 0.95, 1.3, 1.45]; // domingo a sábado
 
+// Dados iniciais da API falsa (outubro/2026 do protótipo).
 export function criarBanco(): Banco {
   const config: ConfigNoBanco = {
     id: 1,

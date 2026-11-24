@@ -17,6 +17,7 @@ const NO_MAPA =
   "Espetaria artesanal Evandro's Grill, R. Alziro de Oliveira, 2590, Bragança Paulista - SP";
 const ID_NO_GOOGLE = 'ChIJQ9LWP4_LzpQRq2rVoZKssWE';
 
+// Link do perfil do Instagram usado no site.
 export const LINK_INSTAGRAM = `https://www.instagram.com/${CONTATO.instagram}/`;
 
 /** Link que abre a conversa no WhatsApp, já com a mensagem escrita. */

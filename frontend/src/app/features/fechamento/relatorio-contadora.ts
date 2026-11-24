@@ -26,6 +26,7 @@ const DATA = 'dd/mm/yyyy';
 
 const MEIOS: Record<MeioAVista, string> = { PIX: 'Pix', DINHEIRO: 'Dinheiro', DEBITO: 'Débito' };
 
+// Tudo o que o .xlsx da contadora precisa (RN09).
 export interface DadosDoRelatorio {
   mes: string; // '2026-09'
   mesPorExtenso: string; // 'Setembro de 2026'

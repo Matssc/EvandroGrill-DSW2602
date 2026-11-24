@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+// Consultas de movimento_reserva e cálculo de saldo.
 public interface MovimentoReservaRepository extends JpaRepository<MovimentoReserva, Long> {
 
     Optional<MovimentoReserva> findByIdAndUsuarioId(Long id, Long usuarioId);

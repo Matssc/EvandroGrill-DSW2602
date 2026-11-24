@@ -1,72 +1,95 @@
 import { Component } from '@angular/core';
-import { Espeto, Peca } from '../../../shared/espeto/espeto';
+import { Brasas } from '../../../shared/brasas/brasas';
 
-// Lado escuro do login (o mesmo do Figma)
+// Lado escuro do login: a logo em destaque com um brilho de brasa
+// e as mesmas brasas subindo da landing page.
 @Component({
   selector: 'app-painel-marca',
-  imports: [Espeto],
+  imports: [Brasas],
   template: `
+    <app-brasas />
     <div class="conteudo">
-      <img src="logo.jpg" alt="Evandro's Grill" width="128" height="128" />
+      <span class="logo">
+        <img src="logo.jpg" alt="Evandro's Grill" width="260" height="260" />
+      </span>
       <h2 class="t-display">Painel administrativo</h2>
-      <p class="texto">Espetaria artesanal. Vendas do dia, compras, pró-labore e reserva da empresa num lugar só.</p>
-    </div>
-    <div class="espetos" aria-hidden="true">
-      <app-espeto [pecas]="espetoDeCima" [quantidade]="5" [inclinacao]="-8" />
-      <app-espeto [pecas]="espetoDeBaixo" [quantidade]="5" [inclinacao]="-8" />
+      <p class="texto">
+        Espetaria artesanal. Vendas do dia, compras, pró-labore e reserva da empresa num lugar só.
+      </p>
     </div>
   `,
   styles: `
     :host {
+      position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      padding: 48px 32px 24px;
+      padding: 48px 32px;
       text-align: center;
       color: var(--creme);
       background: var(--carvao);
     }
-    // logo e textos no meio do espaço que sobra; os espetos ficam embaixo, sem nunca passar por cima do texto
+    // brasas mais discretas que na landing, pra não brigar com o texto
+    app-brasas {
+      opacity: 0.6;
+    }
+    // logo e textos no centro do painel, acima das brasas
     .conteudo {
+      position: relative;
+      z-index: 1;
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
     }
-    img {
+    // logo grande; diminui em tela baixa pra caber com o texto
+    .logo {
+      position: relative;
+      display: block;
+      width: min(260px, 60%, 36vh);
+      margin-bottom: 28px;
+    }
+    .logo img {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: auto;
       border-radius: 50%;
-      margin-bottom: 16px;
+      box-shadow: 0 0 0 5px rgb(242 163 58 / 0.3);
+    }
+    // brilho de brasa atrás da logo, pulsando devagar (só o brilho anima, a logo fica firme)
+    .logo::before {
+      content: '';
+      position: absolute;
+      inset: -18%;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, rgb(255 122 61 / 0.45), transparent);
+      animation: brilhar 4s ease-in-out infinite;
     }
     h2 {
-      font-size: 64px;
-      line-height: 0.95;
+      font-size: 36px;
+      line-height: 1;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
     }
     .texto {
-      max-width: 360px;
-      font-size: 16px;
+      max-width: 340px;
+      font-size: 15px;
       color: var(--n-200);
     }
-    // os espetos do Figma no pé do painel, saindo pela esquerda; em tela baixa eles diminuem
-    .espetos {
-      display: grid;
-      align-self: flex-start;
-      width: min(78%, 560px, 55vh);
-      margin: 32px 0 0 calc(-32px - 2%);
+    @keyframes brilhar {
+      50% {
+        opacity: 0.55;
+        transform: scale(0.96);
+      }
     }
-    .espetos app-espeto:last-child {
-      margin: -8% 0 0 4%;
-    }
-    @media (max-width: 900px), (max-height: 620px) {
-      .espetos {
-        display: none;
+    @media (prefers-reduced-motion: reduce) {
+      .logo::before {
+        animation: none;
       }
     }
   `,
 })
-export class PainelMarca {
-  protected readonly espetoDeCima: Peca[] = ['carne', 'pimentao', 'carne', 'cebola', 'carne'];
-  protected readonly espetoDeBaixo: Peca[] = ['frango', 'bacon', 'frango', 'queijo', 'frango'];
-}
+export class PainelMarca {}

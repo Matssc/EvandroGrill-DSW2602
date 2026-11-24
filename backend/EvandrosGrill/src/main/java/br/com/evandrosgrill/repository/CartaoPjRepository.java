@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+// Consultas de cartao_pj. Toda busca filtra pelo usuário dono.
 public interface CartaoPjRepository extends JpaRepository<CartaoPj, Long> {
 
     List<CartaoPj> findByUsuarioIdOrderByApelidoAsc(Long usuarioId);

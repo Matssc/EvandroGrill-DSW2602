@@ -64,6 +64,7 @@ export interface ItemEscolhido {
   produtoId: number;
   quantidade: number;
 }
+// Corpo de POST/PUT /vendas.
 export interface NovaVenda {
   data: string;
   hora: string | null;
@@ -106,6 +107,7 @@ export interface MovimentoReserva {
   saldoApos: number; // saldo da reserva logo depois deste movimento
   fechamentoDiarioId: number | null; // preenchido na entrada que veio de um fechamento do dia
 }
+// Corpo de POST /reserva/movimentos.
 export type NovoMovimento = Omit<MovimentoReserva, 'id' | 'saldoApos' | 'fechamentoDiarioId'>;
 
 // Saldo + histórico da reserva (montado no ApiService a partir de GET /api/reserva/movimentos)
@@ -124,6 +126,7 @@ export interface CartaoPj {
   diaVencimento: number | null;
   ativo: boolean;
 }
+// Corpo de POST/PUT /cartoes.
 export type NovoCartao = Omit<CartaoPj, 'id'>;
 
 // Gasto do mês por forma de pagamento (RN07, RN09): uma linha por cartão usado no mês,
@@ -172,6 +175,7 @@ export interface Compra {
   cartaoPjId: number | null;
   categoriaId: number;
 }
+// Corpo de POST/PUT /compras.
 export type NovaCompra = Omit<Compra, 'id'>;
 
 // produto (cardápio da landing page)
@@ -186,6 +190,7 @@ export interface Produto {
   destaque: boolean;
   categoriaId: number;
 }
+// Corpo de POST/PUT /produtos.
 export type NovoProduto = Omit<Produto, 'id'>;
 
 // GET /api/publico/cardapio: o que a landing page mostra (sem login)

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+// Consultas de produto, busca por nome/código e cardápio público.
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findByUsuarioIdOrderByNomeAsc(Long usuarioId);

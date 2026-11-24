@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+// Fechamento do dia: prévia, confirmação e consulta por dia e por mês (RN02, RN03, RN05).
 @RestController
 @RequestMapping("/api/fechamentos")
 @RequiredArgsConstructor

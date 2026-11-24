@@ -33,6 +33,7 @@ export class Revelar implements OnDestroy {
     });
   }
 
+  // Para de observar o elemento quando o componente sai da tela.
   ngOnDestroy(): void {
     this.observador?.disconnect();
   }

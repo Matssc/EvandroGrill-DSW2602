@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+// CRUD dos produtos do cardápio, upload de foto e liga/desliga "No site".
 @RestController
 @RequestMapping("/api/produtos")
 @RequiredArgsConstructor
@@ -51,6 +52,7 @@ public class ProdutoController {
         return produtoService.resumo(Autenticacao.usuarioId(jwt));
     }
 
+    // Um produto pelo id.
     @GetMapping("/{id}")
     public ProdutoResponse buscar(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id) {
         return produtoService.buscar(Autenticacao.usuarioId(jwt), id);
@@ -63,12 +65,14 @@ public class ProdutoController {
         return new FotoResponse(fotoService.salvar(arquivo));
     }
 
+    // Cadastra um produto (código único por usuário).
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoResponse criar(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody ProdutoRequest request) {
         return produtoService.criar(Autenticacao.usuarioId(jwt), request);
     }
 
+    // Altera um produto.
     @PutMapping("/{id}")
     public ProdutoResponse atualizar(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id,
                                      @Valid @RequestBody ProdutoRequest request) {
@@ -82,6 +86,7 @@ public class ProdutoController {
         return produtoService.alterarMostrarNoSite(Autenticacao.usuarioId(jwt), id, valor);
     }
 
+    // Remove o produto; se já tiver vendas, o service recusa.
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id) {

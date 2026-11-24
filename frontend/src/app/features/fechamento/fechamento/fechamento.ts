@@ -120,6 +120,7 @@ export class Fechamento {
   /** Tabela "Produtos vendidos": o que mais saiu no mês, com a parte de cada um no valor. */
   protected readonly unidadesVendidas = computed(() => this.produtosVendidos().reduce((n, p) => n + p.quantidade, 0));
   protected readonly valorDosProdutos = computed(() => somar(this.produtosVendidos().map((p) => p.total)));
+  // Participação do produto no valor total vendido em produtos.
   protected percentualDoProduto(p: MaisVendido): number {
     return porcentagem(p.total, this.valorDosProdutos());
   }
@@ -128,6 +129,7 @@ export class Fechamento {
     this.carregar();
   }
 
+  // Busca o resumo do mês, o do mês anterior, os gastos por cartão e o ranking de produtos.
   protected carregar(): void {
     this.carregando.set(true);
     forkJoin({
@@ -150,6 +152,7 @@ export class Fechamento {
     });
   }
 
+  // Muda o mês exibido (não aceita mês futuro) e recarrega.
   protected trocarMes(mes: string): void {
     if (!mes || mes > this.mesAtual) return;
     this.mes.set(mes);

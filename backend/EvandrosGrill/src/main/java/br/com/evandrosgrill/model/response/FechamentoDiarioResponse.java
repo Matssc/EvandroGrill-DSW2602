@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+// Fechamento de um dia como a API devolve.
 public record FechamentoDiarioResponse(
         Long id,
         LocalDate data,
@@ -18,6 +19,7 @@ public record FechamentoDiarioResponse(
         LocalDateTime fechadoEm
 ) {
 
+    // Converte a entidade em resposta.
     public static FechamentoDiarioResponse de(FechamentoDiario f) {
         return new FechamentoDiarioResponse(
                 f.getId(),

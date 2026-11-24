@@ -4,6 +4,7 @@ import br.com.evandrosgrill.model.entity.VendaItem;
 
 import java.math.BigDecimal;
 
+// Item de uma venda: produto, quantidade, preço da época e subtotal.
 public record ItemVendaResponse(
         Long produtoId,
         String produtoNome,
@@ -12,6 +13,7 @@ public record ItemVendaResponse(
         BigDecimal subtotal
 ) {
 
+    // Converte o item em resposta (subtotal = preço x quantidade).
     public static ItemVendaResponse de(VendaItem i) {
         return new ItemVendaResponse(
                 i.getProduto().getId(),

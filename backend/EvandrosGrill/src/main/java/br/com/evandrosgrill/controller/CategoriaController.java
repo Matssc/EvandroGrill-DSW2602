@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// CRUD das categorias de compra e de produto do usuário logado.
 @RestController
 @RequestMapping("/api/categorias")
 @RequiredArgsConstructor
@@ -37,18 +38,21 @@ public class CategoriaController {
         return categoriaService.listar(Autenticacao.usuarioId(jwt), tipo);
     }
 
+    // Cria uma categoria (nome único por tipo).
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoriaResponse criar(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody CategoriaRequest request) {
         return categoriaService.criar(Autenticacao.usuarioId(jwt), request);
     }
 
+    // Renomeia a categoria (o tipo não pode mudar).
     @PutMapping("/{id}")
     public CategoriaResponse atualizar(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id,
                                        @Valid @RequestBody CategoriaRequest request) {
         return categoriaService.atualizar(Autenticacao.usuarioId(jwt), id, request);
     }
 
+    // Remove a categoria se não estiver em uso.
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") Long id) {

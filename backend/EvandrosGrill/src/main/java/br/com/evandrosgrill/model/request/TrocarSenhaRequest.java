@@ -3,6 +3,7 @@ package br.com.evandrosgrill.model.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+// Corpo de PUT /api/usuario/senha.
 public record TrocarSenhaRequest(
 
         @NotBlank(message = "Informe a senha atual")
