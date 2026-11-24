@@ -1,0 +1,36 @@
+<section id="inicio" class="hero">
+  <app-brasas />
+  <div class="texto">
+    <h1 revelar>Espeto na brasa</h1>
+    <p class="descricao" revelar [atraso]="90">
+      Espetaria artesanal em Bragança Paulista. Espetos feitos à mão, assados na brasa e servidos do
+      jeito que Bragança gosta. Venha nos visitar.
+    </p>
+    <div class="acoes" revelar [atraso]="180">
+      <a class="btn btn-primario" href="#cardapio">Ver o cardápio</a>
+      <a class="btn btn-contorno" [href]="comoChegar" target="_blank" rel="noopener">Como chegar</a>
+    </div>
+  </div>
+
+  <div class="lado">
+    @if (maisPedidos().length > 0) {
+      <div class="mais-pedidos" revelar [atraso]="240">
+        <p class="rotulo">Os mais pedidos</p>
+        @for (p of maisPedidos(); track p.id) {
+          <a class="item" href="#cardapio">
+            <span class="foto" aria-hidden="true">
+              @if (p.fotoUrl) {
+                <img [src]="p.fotoUrl" alt="" />
+              } @else {
+                <app-espeto [produto]="p.nome" [quantidade]="3" [inclinacao]="-8" />
+              }
+            </span>
+            <span class="nome">{{ p.nome }}</span>
+            <span class="preco">{{ p.preco | currency }}</span>
+          </a>
+        }
+        <a class="todos" href="#cardapio">Ver o cardápio completo →</a>
+      </div>
+    }
+  </div>
+</section>

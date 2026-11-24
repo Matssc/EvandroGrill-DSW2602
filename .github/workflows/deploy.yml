@@ -1,0 +1,51 @@
+# Atualiza a VM do Azure a cada push na main: git pull e docker compose up --build.
+# Precisa de três segredos no GitHub (Settings > Secrets and variables > Actions):
+#   VM_HOST     o IP público da VM
+#   VM_USER     o usuário do SSH (azureuser)
+#   VM_SSH_KEY  o conteúdo inteiro do arquivo .pem da chave
+name: Deploy na VM do Azure
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # também dá pra rodar na mão, na aba Actions
+
+# dois deploys nunca rodam ao mesmo tempo
+concurrency:
+  group: deploy-azure
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Conectar na VM e atualizar
+        env:
+          VM_HOST: ${{ secrets.VM_HOST }}
+          VM_USER: ${{ secrets.VM_USER }}
+          VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          for v in VM_HOST VM_USER VM_SSH_KEY; do
+            if [ -z "${!v}" ]; then echo "Falta o segredo $v no GitHub."; exit 1; fi
+          done
+
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$VM_SSH_KEY" > ~/.ssh/vm_key
+          chmod 600 ~/.ssh/vm_key
+          ssh-keyscan -H "$VM_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+          ssh -i ~/.ssh/vm_key "$VM_USER@$VM_HOST" 'bash -se' <<'REMOTO'
+          set -euo pipefail
+          cd ~/EvandroGrill-DSW2602
+          git fetch origin main
+          git checkout main
+          git pull --ff-only origin main
+          cd deploy
+          docker compose up --build -d
+          docker compose ps
+          REMOTO

@@ -1,0 +1,61 @@
+@if (!produtos().length) {
+  <p class="sem-produtos">
+    Nenhum produto cadastrado. Cadastre o cardápio em <a routerLink="/admin/produtos">Produtos do site</a>.
+  </p>
+} @else {
+  @if (categoriasComProduto().length > 1) {
+    <div class="filtros" role="group" aria-label="Filtrar produtos por categoria">
+      <button type="button" class="pilula" [class.ativa]="filtro() === null" (click)="filtro.set(null)">Todos</button>
+      @for (c of categoriasComProduto(); track c.id) {
+        <button type="button" class="pilula" [class.ativa]="filtro() === c.id" (click)="filtro.set(c.id)">{{ c.nome }}</button>
+      }
+    </div>
+  }
+
+  <div class="produtos">
+    @for (p of visiveis(); track p.id) {
+      <button
+        type="button"
+        class="produto"
+        [class.escolhido]="quantidadeDe(p.id) > 0"
+        [attr.aria-label]="'Adicionar ' + p.nome"
+        (click)="adicionar(p)"
+      >
+        <span class="nome">{{ p.nome }}</span>
+        <span class="preco">{{ p.preco | currency }}</span>
+        @if (quantidadeDe(p.id) > 0) {
+          <span class="quantidade" aria-hidden="true">{{ quantidadeDe(p.id) }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  @if (linhas().length) {
+    <ul class="escolhidos">
+      @for (l of linhas(); track l.produtoId) {
+        <li>
+          <span class="nome">
+            <strong>{{ l.nome }}</strong>
+            <small>{{ l.preco | currency }} cada</small>
+          </span>
+          <span class="contador">
+            <button type="button" [attr.aria-label]="'Tirar um ' + l.nome" (click)="mudar(l.produtoId, -1)">
+              <lucide-icon [img]="icones.Minus" [size]="14" />
+            </button>
+            <span class="numero">{{ l.quantidade }}</span>
+            <button type="button" [attr.aria-label]="'Mais um ' + l.nome" (click)="mudar(l.produtoId, 1)">
+              <lucide-icon [img]="icones.Plus" [size]="14" />
+            </button>
+          </span>
+          <strong class="subtotal">{{ l.subtotal | currency }}</strong>
+          <button type="button" class="tirar" [attr.aria-label]="'Remover ' + l.nome" (click)="remover(l.produtoId)">
+            <lucide-icon [img]="icones.X" [size]="16" />
+          </button>
+        </li>
+      }
+    </ul>
+    <p class="soma"><span>Soma dos produtos</span><strong>{{ soma() | currency }}</strong></p>
+  } @else {
+    <p class="dica">Toque nos produtos pra montar a venda.</p>
+  }
+}

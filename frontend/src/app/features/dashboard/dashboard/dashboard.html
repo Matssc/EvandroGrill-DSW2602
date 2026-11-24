@@ -1,0 +1,193 @@
+<header class="cabecalho-pagina">
+  <div>
+    <h1 class="t-h1">Dashboard</h1>
+    <p class="t-sub">
+      {{ diaDaSemana }}, {{ hoje | date: "dd 'de' MMMM 'de' yyyy" }} ·
+      {{ fechamentoDeHoje() ? 'o caixa de hoje já foi fechado' : 'o dia de hoje ainda está aberto' }}
+    </p>
+  </div>
+  <div class="acoes">
+    <span class="btn btn-secundario periodo">{{ mesPorExtenso }}</span>
+    <a class="btn btn-primario" routerLink="/admin/compras"><lucide-icon [img]="icones.Plus" [size]="16" /> Nova compra</a>
+  </div>
+</header>
+
+@if (erro(); as mensagem) {
+  <p class="aviso aviso-perigo erro-geral" role="alert">{{ mensagem }}</p>
+}
+
+<!-- RN08: Vendeu − Gastou − Retirou = Sobrou -->
+@if (resumo(); as r) {
+  <div class="conta-do-mes">
+    <section class="painel kpi">
+      <div class="kpi-topo">
+        <span>Vendeu em {{ nomeDoMes }}</span>
+        <span class="kpi-icone"><lucide-icon [img]="icones.CircleDollarSign" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.vendas | currency }}</p>
+      <p class="kpi-rodape"><span class="selo">{{ r.diasTrabalhados }} {{ r.diasTrabalhados === 1 ? 'dia' : 'dias' }}</span> fechados no mês</p>
+    </section>
+    <span class="operador" aria-label="menos">−</span>
+    <section class="painel kpi">
+      <div class="kpi-topo">
+        <span>Gastou em compras</span>
+        <span class="kpi-icone"><lucide-icon [img]="icones.ShoppingCart" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.compras | currency }}</p>
+      <p class="kpi-rodape"><span class="selo">{{ quantidadeDeCompras() }} {{ quantidadeDeCompras() === 1 ? 'compra' : 'compras' }}</span> cartões PJ e à vista</p>
+    </section>
+    <span class="operador" aria-label="menos">−</span>
+    <section class="painel kpi">
+      <div class="kpi-topo">
+        <span>Retirou ({{ percentualRetirada() }}%)</span>
+        <span class="kpi-icone"><lucide-icon [img]="icones.Percent" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.retiradas | currency }}</p>
+      <p class="kpi-rodape"><span class="selo">{{ percentualRetirada() }}%</span> salário + reserva</p>
+    </section>
+    <span class="operador" aria-label="igual a">=</span>
+    <section class="painel kpi">
+      <div class="kpi-topo">
+        <span>Sobrou no caixa</span>
+        <span class="kpi-icone"><lucide-icon [img]="icones.Wallet" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.sobrou | currency }}</p>
+      <p class="kpi-rodape">
+        <span class="selo" [class.bom]="r.sobrou >= 0" [class.ruim]="r.sobrou < 0">{{ percentualSobrou() }}%</span>
+        do que vendeu
+      </p>
+    </section>
+  </div>
+}
+
+<div class="grade">
+  <section class="painel">
+    <app-vendas-por-dia [dias]="dias()" [nomeDoMes]="nomeDoMes" />
+  </section>
+
+  <section class="painel-escuro hoje">
+    <div class="topo-hoje">
+      <div>
+        <h2 class="t-h2">Hoje · {{ hoje | date: 'dd/MM' }}</h2>
+        <p class="t-xs">{{ diaDaSemana }} · {{ vendasLancadas() }} {{ vendasLancadas() === 1 ? 'venda lançada' : 'vendas lançadas' }}</p>
+      </div>
+      @if (fechamentoDeHoje()) {
+        <span class="badge badge-sucesso">Fechado</span>
+      } @else {
+        <span class="badge badge-alerta">Em aberto</span>
+      }
+    </div>
+    <div>
+      <p class="t-xs">{{ fechamentoDeHoje() ? 'Vendido no dia' : 'Vendido até agora' }}</p>
+      <p class="t-display total">{{ vendidoHoje() | currency }}</p>
+    </div>
+    @if (previa(); as p) {
+      <dl class="conta">
+        <div class="forte">
+          <dt>Retirada ({{ p.percentualRetirada }}%)</dt>
+          <dd>{{ p.retirada | currency }}</dd>
+        </div>
+        <div>
+          <dt><span class="ponto fechado"></span>Salário ({{ p.percentualSalario }}%)</dt>
+          <dd>{{ p.salario | currency }}</dd>
+        </div>
+        @if (p.percentualSalario < 100) {
+          <div>
+            <dt><span class="ponto aberto"></span>Reserva ({{ 100 - p.percentualSalario }}%)</dt>
+            <dd>{{ p.reserva | currency }}</dd>
+          </div>
+        }
+      </dl>
+    }
+    <div class="botoes">
+      <a class="btn btn-claro" routerLink="/admin/vendas">Lançar venda</a>
+      <a class="btn btn-primario" routerLink="/admin/vendas">{{ fechamentoDeHoje() ? 'Ver o dia' : 'Fechar o dia' }}</a>
+    </div>
+  </section>
+</div>
+
+<div class="cards">
+  <!-- O que mais saiu no mês (itens das vendas) -->
+  <section class="painel">
+    <div class="topo-card linha">
+      <h2 class="t-h2">Mais vendidos de {{ nomeDoMes }}</h2>
+      <a class="link" routerLink="/admin/vendas">Ver vendas</a>
+    </div>
+    <app-mais-vendidos [itens]="maisVendidos()" vazio="Nenhum produto lançado no mês." />
+  </section>
+
+  <!-- RN04 -->
+  <section class="painel">
+    <div class="topo-card linha">
+      <h2 class="t-h2">Reserva da empresa</h2>
+      <a class="link" routerLink="/admin/reserva">Ver reserva</a>
+    </div>
+    <p class="t-kpi">{{ reserva()?.saldo ?? 0 | currency }}</p>
+    <p class="entrou">+ {{ entrouNaReserva() | currency }} {{ entrouNaReserva() === 0 ? 'entrou' : 'entraram' }} em {{ nomeDoMes }}</p>
+    @if (config()?.metaReserva; as meta) {
+      <div class="meta">
+        <p class="rotulos"><span>Meta: {{ meta | currency }}</span><strong>{{ percentualDaMeta() }}%</strong></p>
+        <span class="trilho"><span class="reserva" [style.width.%]="percentualDaMeta()"></span></span>
+      </div>
+    }
+    @if (regraDaReserva()) {
+      <p class="aviso aviso-info nota"><lucide-icon [img]="icones.Info" [size]="18" /> {{ regraDaReserva() }}</p>
+    }
+  </section>
+
+  <!-- RN05 -->
+  <section class="painel">
+    <div class="topo-card linha">
+      <h2 class="t-h2">Pró-labore</h2>
+      <a class="link" routerLink="/admin/pro-labore">Ver pró-labore</a>
+    </div>
+    @if (resumo(); as r) {
+      <p class="t-kpi">{{ r.salario | currency }}</p>
+      <p class="t-xs detalhe">
+        {{ r.diasTrabalhados }} {{ r.diasTrabalhados === 1 ? 'dia trabalhado' : 'dias trabalhados' }} · média de {{ mediaSalario() | currency }} por dia
+      </p>
+    }
+    <div class="chips">
+      @for (d of dias(); track d.data) {
+        <span [class]="'chip ' + d.estado">
+          <strong>{{ d.numero }}</strong>
+          @switch (d.estado) {
+            @case ('fechado') { <lucide-icon [img]="icones.Check" [size]="14" /> }
+            @case ('folga') { <small>folga</small> }
+            @case ('aberto') { <small>hoje</small> }
+          }
+        </span>
+      }
+    </div>
+    <p class="legenda">
+      <span><span class="ponto fechado"></span>Trabalhado</span>
+      <span><span class="ponto folga"></span>Folga</span>
+      <span><span class="ponto aberto"></span>Hoje</span>
+    </p>
+  </section>
+
+  <!-- RN06 e RN07 -->
+  <section class="painel">
+    <div class="topo-card linha">
+      <h2 class="t-h2">Compras de {{ nomeDoMes }}</h2>
+      <a class="link" routerLink="/admin/compras">Ver compras</a>
+    </div>
+    @if (!formas().length) {
+      <p class="t-sub vazio">Nenhuma compra lançada no mês.</p>
+    } @else {
+      <ul class="formas">
+        @for (f of formas(); track f.cartaoPjId) {
+          <li>
+            <p class="rotulos">
+              <strong>{{ f.forma }}</strong>
+              <small>{{ f.detalhe }}</small>
+              <strong>{{ f.total | currency }}</strong>
+            </p>
+            <span class="trilho"><span [class]="f.cor" [style.width.%]="f.largura"></span></span>
+          </li>
+        }
+      </ul>
+      <p class="total-compras"><span>Total do mês</span><strong>{{ resumo()?.compras ?? 0 | currency }}</strong></p>
+    }
+  </section>
+</div>

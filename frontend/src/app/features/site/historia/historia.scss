@@ -1,0 +1,83 @@
+@use '../site';
+
+.historia {
+  @include site.secao;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 80px;
+  background: var(--carvao);
+  color: var(--creme);
+}
+
+.texto {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 32px;
+}
+
+h2 { @include site.titulo; }
+
+.paragrafos {
+  display: grid;
+  gap: 16px;
+  max-width: 560px;
+  @include site.texto-grande;
+}
+
+.diferenciais {
+  display: grid;
+  gap: 0;
+  width: 100%;
+  max-width: 560px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: grid;
+    gap: 2px;
+    padding: 18px 0;
+    background: none;
+  }
+  li + li { margin-top: 2px; }
+  strong { font: 400 32px/1 var(--fonte-display); letter-spacing: 0.01em; }
+  span { font-size: 16px; line-height: 24px; color: color-mix(in srgb, var(--creme) 82%, transparent); }
+}
+
+// Campo de madeira com espetos grandes: o que existe no mundo da casa quando ainda não há foto do ambiente
+.foto {
+  display: grid;
+  place-items: center;
+  min-height: 480px;
+  margin: 0;
+  overflow: hidden;
+  background: var(--carvao-3);
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.mesa {
+  position: relative;
+  display: grid;
+  gap: 8%;
+  width: 118%;
+  padding: 8% 0;
+  transform: translateX(6%);
+
+  .espeto { width: 100%; }
+  .dois { transform: translateX(-9%); }
+}
+
+@media (max-width: site.$computador) {
+  .historia { grid-template-columns: minmax(0, 1fr); gap: 56px; }
+  .foto { min-height: 360px; }
+}
+
+@media (max-width: site.$celular) {
+  .historia { gap: 40px; }
+  .texto { gap: 24px; }
+  .foto { min-height: 280px; }
+  .mesa { width: 130%; gap: 4%; }
+}

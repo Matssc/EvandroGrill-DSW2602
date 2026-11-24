@@ -1,0 +1,124 @@
+.erro-geral { margin-bottom: 20px; }
+.salvo { align-self: center; }
+
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 20px;
+  align-items: start;
+}
+.coluna { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+
+.topo-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+// título à esquerda e o interruptor sempre na mesma linha, até no celular
+.com-interruptor {
+  flex-wrap: nowrap;
+
+  > div { flex: 1; min-width: 0; }
+}
+
+.linha { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; }
+.campo-retirada { width: 200px; }
+.campo-meta { width: 220px; }
+.rotulo { margin-bottom: 6px; font-weight: 600; }
+.grupo-opcoes { flex: 1; padding-bottom: 8px; }
+.opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+span.pilula { display: inline-block; font-weight: 600; cursor: default; }
+
+// "30%": o símbolo fica dentro da caixa, depois do número
+.com-sufixo {
+  position: relative;
+
+  input { padding-right: 36px; appearance: textfield; }
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+  span { position: absolute; top: 50%; right: 14px; transform: translateY(-50%); color: var(--n-600); pointer-events: none; }
+  input[readonly] { background: var(--n-50); color: var(--n-600); }
+}
+
+.campos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.erro-campo { margin: -8px 0 12px; font-size: 12px; color: var(--perigo); }
+
+.barra {
+  display: flex;
+  height: 12px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  overflow: hidden;
+
+  .salario { background: var(--brasa); }
+  .reserva { background: var(--ambar); }
+  .salario:not(:last-child) { border-right: 2px solid var(--branco); }
+}
+
+.rodape-divisao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+
+  .legenda { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--n-600); }
+  .dica { flex: 1; color: var(--n-500); text-align: right; white-space: nowrap; }
+}
+
+.ponto { width: 8px; height: 8px; border-radius: 50%; }
+.ponto.salario { background: var(--brasa); }
+.ponto.reserva { background: var(--ambar); }
+
+.simulacao {
+  display: grid;
+  gap: 16px;
+
+  .t-xs { color: var(--n-300); }
+  .total { font-size: 48px; line-height: 1; }
+}
+
+.conta {
+  margin: 0;
+  padding: 4px 14px;
+  border-radius: var(--raio-12);
+  background: var(--carvao-2);
+
+  div { display: flex; justify-content: space-between; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--carvao-3); }
+  div:last-child { border-bottom: 0; }
+  dt { display: flex; align-items: center; gap: 8px; color: var(--n-200); }
+  dd { margin: 0; }
+  .forte dt { color: var(--branco); font-weight: 600; }
+  .forte dd { font-weight: 600; }
+  .ambar { color: var(--ambar); }
+}
+
+.link { color: var(--brasa); font-weight: 600; text-decoration: none; }
+.vazio { padding: 16px 0; text-align: center; }
+
+.itens {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--n-100); }
+  li:last-child { border-bottom: 0; }
+  .icone { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: var(--raio-10); background: var(--n-100); }
+  .icone.sucesso { background: var(--sucesso-bg); color: var(--sucesso); }
+  .textos { display: grid; gap: 2px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  small { font-size: 12px; color: var(--n-600); }
+  .final { color: var(--n-600); white-space: nowrap; }
+}
+
+@media (max-width: 1100px) {
+  .grade { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .campos { grid-template-columns: 1fr; }
+  .campo-retirada,
+  .campo-meta { width: 100%; }
+  .rodape-divisao .dica { flex-basis: 100%; text-align: left; white-space: normal; }
+}

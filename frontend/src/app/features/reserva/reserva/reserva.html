@@ -1,0 +1,223 @@
+<header class="cabecalho-pagina">
+  <div>
+    <h1 class="t-h1">Reserva da empresa</h1>
+    <p class="t-sub">O caixa da empresa pra emergência e investimento, separado do seu dinheiro</p>
+  </div>
+  <div class="acoes">
+    <button class="btn btn-secundario" type="button" [disabled]="carregando() || saldo() <= 0" (click)="abrir('SAIDA')">Registrar saída</button>
+    <button class="btn btn-primario" type="button" [disabled]="carregando()" (click)="abrir('ENTRADA')">
+      <lucide-icon [img]="icones.Plus" [size]="16" /> Guardar valor
+    </button>
+  </div>
+</header>
+
+@if (erro(); as mensagem) {
+  <p class="aviso aviso-perigo erro-geral" role="alert">{{ mensagem }}</p>
+}
+
+<div class="grade">
+  <section class="painel-escuro saldo">
+    <div class="topo-saldo">
+      <span class="icone escuro"><lucide-icon [img]="icones.PiggyBank" [size]="22" /></span>
+      <span class="titulos">
+        <strong>Saldo da reserva</strong>
+        @if (ultimoFechamento(); as data) {
+          <small>Atualizado no fechamento de {{ data | date: 'dd/MM' }}</small>
+        }
+      </span>
+      @if (variacaoDoMes() !== 0) {
+        <span class="badge" [class.badge-sucesso]="variacaoDoMes() > 0" [class.badge-perigo]="variacaoDoMes() < 0">
+          {{ variacaoDoMes() > 0 ? '+' : '−' }} {{ (variacaoDoMes() > 0 ? variacaoDoMes() : -variacaoDoMes()) | currency }} em {{ nomeDoMes }}
+        </span>
+      }
+    </div>
+
+    <p class="t-display valor-saldo">{{ saldo() | currency }}</p>
+
+    <div class="resumo">
+      <div>
+        <small>Entrou em {{ nomeDoMes }}</small>
+        <strong class="entrou">+ {{ entrouNoMes() | currency }}</strong>
+      </div>
+      <div>
+        <small>Saiu em {{ nomeDoMes }}</small>
+        <strong>{{ saiuNoMes() ? '− ' : '' }}{{ saiuNoMes() | currency }}</strong>
+      </div>
+      <div>
+        <small>Saldo em {{ fimDoMesAnterior | date: 'dd/MM' }}</small>
+        <strong>{{ saldoNoFimDoMesAnterior() | currency }}</strong>
+      </div>
+    </div>
+
+    @if (meta(); as m) {
+      <div class="meta">
+        <p class="rotulos">
+          <span>Meta da reserva: {{ m | currency }}</span>
+          <strong>{{ percentualDaMeta() }}%</strong>
+        </p>
+        <span class="barra" aria-hidden="true"><span [style.width.%]="percentualDaMeta()"></span></span>
+        <small>
+          @if (faltaPraMeta() > 0) {
+            Faltam {{ faltaPraMeta() | currency }} pra chegar na meta
+          } @else {
+            Meta atingida!
+          }
+        </small>
+      </div>
+    } @else {
+      <p class="sem-meta">Sem meta definida. <a routerLink="/admin/configuracoes">Definir em Configurações</a></p>
+    }
+  </section>
+
+  <section class="painel">
+    <h2 class="t-h2 titulo-card">Pra que serve</h2>
+    <ul class="usos">
+      <li>
+        <span class="icone perigo"><lucide-icon [img]="icones.ShieldCheck" [size]="18" /></span>
+        <span class="textos">
+          <strong>Emergência</strong>
+          <small>Conserto, equipamento quebrado ou um mês mais fraco</small>
+        </span>
+      </li>
+      <li>
+        <span class="icone sucesso"><lucide-icon [img]="icones.TrendingUp" [size]="18" /></span>
+        <span class="textos">
+          <strong>Investimento</strong>
+          <small>Churrasqueira nova, reforma, compra grande no atacado</small>
+        </span>
+      </li>
+    </ul>
+    <p class="aviso aviso-info nota">
+      <lucide-icon [img]="icones.Info" [size]="18" />
+      A reserva é da empresa, não é salário. Assim o dinheiro pessoal não se mistura com o do negócio.
+    </p>
+  </section>
+</div>
+
+<section class="painel">
+  <div class="topo-card">
+    <h2 class="t-h2">Movimentações</h2>
+    <div class="filtros" role="group" aria-label="Filtrar movimentações">
+      @for (f of filtros; track f.valor) {
+        <button type="button" class="pilula" [class.ativa]="filtro() === f.valor" (click)="filtro.set(f.valor)">{{ f.texto }}</button>
+      }
+    </div>
+  </div>
+
+  @if (carregando() && !movimentos().length) {
+    <p class="t-sub vazio">Carregando...</p>
+  } @else if (!lista().length) {
+    <p class="t-sub vazio">Nenhuma movimentação {{ filtro() === 'TODAS' ? 'ainda' : 'desse tipo' }}.</p>
+  } @else {
+    <div class="rolagem-x">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th class="col-data">Data</th>
+            <th>Descrição</th>
+            <th class="col-tipo">Tipo</th>
+            <th class="col-uso">Uso</th>
+            <th class="num col-valor">Valor</th>
+            <th class="num col-valor">Saldo</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of lista(); track m.id) {
+            <tr>
+              <td>{{ m.data | date: 'dd/MM' }}</td>
+              <td>{{ m.descricao }}</td>
+              <td>
+                @if (m.tipo === 'ENTRADA') {
+                  <span class="badge badge-sucesso">Entrada</span>
+                } @else {
+                  <span class="badge badge-perigo">Saída</span>
+                }
+              </td>
+              <td>{{ nomeDaFinalidade(m.finalidade) }}</td>
+              <td class="num valor" [class.entrada]="m.tipo === 'ENTRADA'" [class.saida]="m.tipo === 'SAIDA'">
+                {{ m.tipo === 'ENTRADA' ? '+' : '−' }} {{ m.valor | currency }}
+              </td>
+              <td class="num">{{ m.saldoDepois | currency }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+<!-- Modal: Registrar saída / Guardar valor -->
+<dialog #dialogo class="modal" aria-labelledby="titulo-modal">
+  <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+    <div class="topo-modal">
+      <div>
+        <h2 id="titulo-modal" class="t-h2">{{ modo() === 'SAIDA' ? 'Registrar saída' : 'Guardar valor' }}</h2>
+        <p class="t-sub">
+          @if (modo() === 'SAIDA') {
+            Toda saída diz pra que foi. Saldo disponível: {{ saldo() | currency }}
+          } @else {
+            Dinheiro guardado fora do fechamento do dia
+          }
+        </p>
+      </div>
+      <button type="button" class="fechar" aria-label="Fechar" (click)="fecharModal()">
+        <lucide-icon [img]="icones.X" [size]="16" />
+      </button>
+    </div>
+
+    @if (erroModal(); as mensagem) {
+      <p class="aviso aviso-perigo" role="alert">{{ mensagem }}</p>
+    }
+
+    <div class="campo">
+      <label for="descricao">Descrição</label>
+      <input id="descricao" formControlName="descricao" autocomplete="off" [placeholder]="modo() === 'SAIDA' ? 'Conserto da churrasqueira' : 'Sobra do mês'" />
+      @if (form.controls.descricao.touched && form.controls.descricao.invalid) {
+        <span class="erro">Diga do que se trata.</span>
+      }
+    </div>
+
+    <div class="duas-colunas">
+      <div class="campo">
+        <label for="data">Data</label>
+        <input id="data" type="date" formControlName="data" [max]="hoje" />
+        @if (form.controls.data.touched && form.controls.data.invalid) {
+          <span class="erro">Escolha a data.</span>
+        }
+      </div>
+      <div class="campo">
+        <label for="valor">Valor</label>
+        <input id="valor" formControlName="valor" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off" />
+        @if (form.controls.valor.touched && form.controls.valor.hasError('semSaldo')) {
+          <span class="erro">A reserva só tem {{ saldo() | currency }}.</span>
+        } @else if (form.controls.valor.touched && form.controls.valor.invalid) {
+          <span class="erro">Digite um valor maior que zero.</span>
+        }
+      </div>
+    </div>
+
+    @if (modo() === 'SAIDA') {
+      <fieldset>
+        <legend class="rotulo">Pra que é a saída?</legend>
+        <div class="opcoes">
+          @for (f of finalidades; track f.valor) {
+            <label class="opcao" [class.ativa]="form.controls.finalidade.value === f.valor">
+              <input type="radio" formControlName="finalidade" [value]="f.valor" />
+              <strong>{{ f.texto }}</strong>
+            </label>
+          }
+        </div>
+        @if (form.controls.finalidade.touched && form.controls.finalidade.invalid) {
+          <span class="erro-campo">Escolha emergência ou investimento.</span>
+        }
+      </fieldset>
+    }
+
+    <div class="rodape-modal">
+      <button type="button" class="btn btn-secundario" (click)="fecharModal()">Cancelar</button>
+      <button type="submit" class="btn btn-primario" [disabled]="salvando()">
+        {{ modo() === 'SAIDA' ? 'Registrar saída' : 'Guardar valor' }}
+      </button>
+    </div>
+  </form>
+</dialog>

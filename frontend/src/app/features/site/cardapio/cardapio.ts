@@ -1,0 +1,52 @@
+import { CurrencyPipe } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
+import { ApiService } from '../../../core/api/api.service';
+import { ProdutoSite } from '../../../core/models';
+import { Espeto } from '../../../shared/espeto/espeto';
+import { Revelar } from '../../../shared/revelar/revelar';
+
+// Cardápio da landing page (frame 15-1703): o que o Evandro deixou "No site" em Produtos do site.
+@Component({
+  selector: 'app-cardapio',
+  imports: [CurrencyPipe, Espeto, Revelar],
+  templateUrl: './cardapio.html',
+  styleUrl: './cardapio.scss',
+})
+export class Cardapio {
+  private api = inject(ApiService);
+
+
+  protected readonly produtos = signal<ProdutoSite[]>([]);
+  protected readonly carregando = signal(true);
+  protected readonly falhou = signal(false);
+  protected readonly categoria = signal<string | null>(null); // null = Todos
+  /** No celular aparecem 4 espetos, e o resto com o botão "Ver cardápio completo". */
+  protected readonly verTudo = signal(false);
+
+  /** Pílulas: só as categorias que têm produto no site, na ordem em que aparecem. */
+  protected readonly categorias = computed(() => [...new Set(this.produtos().map((p) => p.categoria))]);
+
+  protected readonly lista = computed(() => {
+    const categoria = this.categoria();
+    return categoria ? this.produtos().filter((p) => p.categoria === categoria) : this.produtos();
+  });
+
+  constructor() {
+    this.api.produtosDoSite().subscribe({
+      next: (produtos) => {
+        this.produtos.set(produtos);
+        this.carregando.set(false);
+      },
+      error: () => {
+        this.falhou.set(true);
+        this.carregando.set(false);
+      },
+    });
+  }
+
+  // Filtra o cardápio por categoria (null = todas).
+  protected filtrar(categoria: string | null): void {
+    this.categoria.set(categoria);
+    this.verTudo.set(false);
+  }
+}

@@ -1,0 +1,64 @@
+@use '../site';
+
+// O rodapé fecha a página com o nome da casa em largura total
+.rodape {
+  @include site.secao(80px);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 56px;
+  padding-bottom: 32px;
+  background: var(--carvao-2);
+  color: var(--creme);
+}
+
+.colunas,
+.nome-grande,
+.creditos { position: relative; }
+
+.colunas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 40px 96px;
+}
+
+.coluna {
+  display: grid;
+  gap: 12px;
+  font-size: 16px;
+  line-height: 24px;
+
+  a,
+  p:not(.titulo) { color: inherit; text-decoration: none; }
+  a:hover { color: var(--branco); text-decoration: underline; text-underline-offset: 4px; }
+  a:focus-visible { outline: 2px solid var(--ambar); outline-offset: 3px; }
+  .link-painel { text-decoration: underline; text-underline-offset: 4px; }
+}
+.titulo { font-size: 14px; font-weight: 600; color: color-mix(in srgb, var(--creme) 70%, transparent); }
+
+.nome-grande {
+  font: 400 clamp(40px, 10.5vw, 150px) / 0.85 var(--fonte-display);
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--brasa);
+}
+
+.creditos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+
+  p { font-size: 14px; line-height: 20px; color: color-mix(in srgb, var(--creme) 70%, transparent); }
+}
+
+@media (max-width: site.$celular) {
+  .rodape { gap: 36px; padding-top: 56px; }
+  .colunas { display: grid; gap: 24px; }
+  // no celular fica só o contato e o link do painel
+  .navegacao { display: none; }
+  .creditos p:last-child { display: none; }
+}

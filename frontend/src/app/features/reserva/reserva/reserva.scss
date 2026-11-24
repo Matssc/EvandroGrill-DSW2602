@@ -1,0 +1,111 @@
+.erro-geral { margin-bottom: 20px; }
+small { font-size: 12px; }
+
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 20px;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+.icone { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: var(--raio-10); }
+.icone.perigo { background: var(--perigo-bg); color: var(--perigo); }
+.icone.sucesso { background: var(--sucesso-bg); color: var(--sucesso); }
+
+// Card escuro do saldo (frame 34-1440)
+.saldo { display: grid; gap: 18px; padding: 24px; align-content: start; }
+.topo-saldo { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.icone.escuro { width: 40px; height: 40px; background: var(--carvao-3); color: var(--ambar); }
+.titulos { display: grid; gap: 2px; flex: 1 1 180px; }
+.saldo small { color: var(--n-300); }
+.valor-saldo { font-size: 68px; line-height: 66px; }
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+
+  div { display: grid; gap: 4px; padding: 12px 14px; border-radius: var(--raio-12); background: var(--carvao-2); }
+  .entrou { color: var(--sucesso-bg); }
+}
+.meta { display: grid; gap: 8px; }
+.rotulos { display: flex; justify-content: space-between; gap: 8px; color: var(--n-200); strong { color: var(--ambar); } }
+.barra {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--carvao-3);
+  overflow: hidden;
+
+  span { display: block; height: 100%; border-radius: 5px; background: var(--ambar); }
+}
+.sem-meta { color: var(--n-200); a { color: var(--ambar); font-weight: 600; text-decoration: none; } }
+
+.titulo-card { margin-bottom: 16px; }
+.usos {
+  display: grid;
+  gap: 16px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+
+  li { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+  .textos { display: grid; gap: 2px; }
+  small { color: var(--n-600); }
+}
+.nota { color: var(--n-900); }
+
+.topo-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; }
+.vazio { padding: 24px 0; text-align: center; }
+.tabela {
+  td { white-space: nowrap; }
+  .col-data { width: 84px; }
+  .col-tipo { width: 110px; }
+  .col-uso,
+  .col-valor { width: 120px; }
+  .valor { font-weight: 600; }
+  .entrada { color: var(--sucesso); }
+  .saida { color: var(--perigo); }
+}
+
+// Modal
+.modal {
+  width: min(520px, calc(100% - 32px));
+  padding: 28px;
+  border: 0;
+  border-radius: var(--raio-20);
+  box-shadow: var(--sombra-elevada);
+  color: var(--n-900);
+
+  &::backdrop { background: color-mix(in srgb, var(--carvao) 55%, transparent); }
+  form { display: grid; gap: 20px; }
+  fieldset { margin: 0; padding: 0; border: 0; }
+}
+.topo-modal { display: flex; align-items: flex-start; gap: 12px; > div { flex: 1; } }
+.fechar { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--n-200); border-radius: var(--raio-8); background: var(--branco); cursor: pointer; }
+.duas-colunas,
+.opcoes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rotulo { margin-bottom: 8px; padding: 0; font-weight: 600; }
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--n-200);
+  border-radius: var(--raio-12);
+  cursor: pointer;
+
+  input { width: 18px; height: 18px; margin: 0; accent-color: var(--brasa); }
+  &.ativa { border-color: var(--brasa); background: var(--brasa-clara); }
+}
+.erro-campo { display: block; margin-top: 6px; font-size: 12px; color: var(--perigo); }
+.rodape-modal { display: flex; justify-content: flex-end; gap: 12px; }
+
+@media (max-width: 1100px) {
+  .grade { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .valor-saldo { font-size: 52px; line-height: 1; }
+  .resumo,
+  .duas-colunas { grid-template-columns: 1fr; }
+  .modal { padding: 20px; }
+}

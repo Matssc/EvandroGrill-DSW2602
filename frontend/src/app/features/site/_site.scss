@@ -1,0 +1,40 @@
+// O que se repete nas seções da landing page.
+// Em cada componente: @use '../site'; e depois @include site.secao; etc.
+
+$computador: 1100px;
+$celular: 600px;
+
+// Fundo de ponta a ponta e o conteúdo em 1280px no meio (80px de margem)
+@mixin secao($vertical: 128px) {
+  padding: $vertical max(80px, calc((100% - 1280px) / 2));
+  scroll-margin-top: 72px; // a âncora não fica escondida atrás da navbar fixa
+
+  @media (max-width: $computador) { padding-inline: 40px; }
+  @media (max-width: $celular) { padding: 72px 20px; }
+}
+
+// Título de seção: uma linha ou duas, nunca mais
+@mixin titulo {
+  font-family: var(--fonte-display);
+  font-weight: 400;
+  font-size: clamp(48px, 6.4vw, 92px);
+  line-height: 0.95;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+// Texto corrido da landing: 18px no computador, 16px no celular
+@mixin texto-grande {
+  font-size: 18px;
+  line-height: 1.6;
+
+  @media (max-width: $celular) { font-size: 16px; }
+}
+
+// Botão grande da landing page
+@mixin botao-grande {
+  padding: 18px 28px;
+  font-size: 16px;
+  line-height: 24px;
+  gap: 10px;
+}

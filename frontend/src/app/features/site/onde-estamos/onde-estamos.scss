@@ -1,0 +1,52 @@
+@use '../site';
+
+.onde-estamos {
+  @include site.secao;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: stretch;
+  gap: 64px;
+  background: var(--carvao);
+  color: var(--creme);
+}
+
+.informacoes { display: grid; align-content: center; justify-items: start; gap: 36px; }
+h2 { @include site.titulo; }
+
+.itens {
+  display: grid;
+  gap: 24px;
+  margin: 0;
+
+  dt { margin-bottom: 4px; font-size: 14px; font-weight: 600; color: color-mix(in srgb, var(--creme) 70%, transparent); }
+  dd { margin: 0; font-size: 20px; line-height: 1.45; }
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .btn { @include site.botao-grande; }
+}
+
+// Mapa do Google
+.mapa {
+  min-height: 460px;
+  overflow: hidden;
+  border-radius: var(--raio-8);
+  background: var(--mapa-fundo);
+
+  iframe { display: block; width: 100%; height: 100%; min-height: 460px; border: 0; }
+}
+
+@media (max-width: site.$computador) {
+  .onde-estamos { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+}
+
+@media (max-width: site.$celular) {
+  .informacoes { gap: 28px; }
+  .itens dd { font-size: 18px; }
+  .acoes { display: grid; width: 100%; }
+  .mapa, .mapa iframe { min-height: 300px; }
+}

@@ -1,0 +1,239 @@
+<header class="cabecalho-pagina">
+  <div>
+    <h1 class="t-h1">Fechamento do mês</h1>
+    <p class="t-sub">
+      {{ mesPorExtenso() }}
+      @if (resumo(); as r) {
+        · {{ r.diasTrabalhados }} {{ r.diasTrabalhados === 1 ? 'dia trabalhado' : 'dias trabalhados' }}
+      }
+      @if (fechadoEm(); as data) {
+        · fechado em {{ data | date: 'dd/MM' }}
+      } @else {
+        · mês em andamento
+      }
+    </p>
+  </div>
+  <div class="acoes">
+    @if (escolhendoMes()) {
+      <input #mesEscolhido class="escolher-mes" type="month" aria-label="Escolher o mês" [max]="mesAtual" [value]="mes()" (change)="trocarMes(mesEscolhido.value)" />
+    }
+    <button class="btn btn-secundario" type="button" (click)="escolhendoMes.set(!escolhendoMes())">{{ mesPorExtenso() }}</button>
+    <button class="btn btn-secundario" type="button" [disabled]="!resumo()" (click)="exportarResumo()">Exportar planilha</button>
+    <a class="btn btn-primario" routerLink="/admin/fechamento/relatorio" [queryParams]="{ mes: mes() }">Relatório da contadora</a>
+  </div>
+</header>
+
+@if (erro(); as mensagem) {
+  <p class="aviso aviso-perigo erro-geral" role="alert">{{ mensagem }}</p>
+}
+
+@if (resumo(); as r) {
+  <div class="indicadores">
+    <section class="painel indicador">
+      <div class="topo-indicador">
+        <span>Vendas</span>
+        <span class="icone"><lucide-icon [img]="icones.CircleDollarSign" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.vendas | currency }}</p>
+      <p class="linha-selo"><span class="selo">{{ r.diasTrabalhados }} {{ r.diasTrabalhados === 1 ? 'dia' : 'dias' }}</span> trabalhados</p>
+    </section>
+    <section class="painel indicador">
+      <div class="topo-indicador">
+        <span>Retiradas ({{ percentualRetirada() }}%)</span>
+        <span class="icone"><lucide-icon [img]="icones.Percent" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.retiradas | currency }}</p>
+      <p class="linha-selo"><span class="selo">{{ divisao() }}</span> salário e reserva</p>
+    </section>
+    <section class="painel indicador">
+      <div class="topo-indicador">
+        <span>Compras</span>
+        <span class="icone"><lucide-icon [img]="icones.ShoppingCart" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.compras | currency }}</p>
+      @if (variacaoCompras(); as v) {
+        <!-- comprar mais que no mês anterior é sinal de atenção (vermelho); comprar menos, verde -->
+        <p class="linha-selo">
+          <span class="selo" [class.ruim]="v > 0" [class.bom]="v < 0">{{ v > 0 ? '+' : '−' }}{{ (v > 0 ? v : -v) | number: '1.1-1' }}%</span>
+          vs. {{ nomeDoMesAnterior() }}
+        </p>
+      }
+    </section>
+    <section class="painel indicador">
+      <div class="topo-indicador">
+        <span>Sobrou no caixa</span>
+        <span class="icone"><lucide-icon [img]="icones.Wallet" [size]="18" /></span>
+      </div>
+      <p class="t-kpi">{{ r.sobrou | currency }}</p>
+      <p class="linha-selo">
+        <span class="selo" [class.bom]="r.sobrou >= 0" [class.ruim]="r.sobrou < 0">{{ percentualSobrou() | number: '1.1-1' }}%</span>
+        das vendas
+      </p>
+    </section>
+  </div>
+
+  <section class="painel destino">
+    <div class="topo-card">
+      <h2 class="t-h2">Para onde foi o dinheiro de {{ nomeDoMes() }}</h2>
+      <p class="t-xs">Tudo o que entrou com as vendas, dividido entre compras, retiradas e o que sobrou</p>
+    </div>
+    <div class="barra" aria-hidden="true">
+      @for (p of destino(); track p.chave) {
+        @if (p.largura > 0) {
+          <span [class]="p.chave" [style.width.%]="p.largura"></span>
+        }
+      }
+    </div>
+    <ul class="legenda">
+      @for (p of destino(); track p.chave) {
+        <li>
+          <span class="rotulo"><span [class]="'ponto ' + p.chave"></span>{{ p.nome }}</span>
+          <span class="valor" [class.negativo]="p.valor < 0">
+            <strong>{{ p.valor | currency }}</strong>
+            <small>{{ p.percentual | number: '1.1-1' }}%</small>
+          </span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <div class="grade">
+    <!-- RN09: o que a contadora precisa -->
+    <section class="painel">
+      <h2 class="t-h2 titulo-card">Compras por forma de pagamento</h2>
+      @if (!formas().length) {
+        <p class="t-sub vazio">Nenhuma compra lançada em {{ nomeDoMes() }}.</p>
+      } @else {
+        <div class="rolagem-x">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Forma</th>
+                <th class="num">Compras</th>
+                <th class="num">Valor</th>
+                <th class="num">%</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (f of formas(); track f.cartaoPjId) {
+                <tr>
+                  <td>
+                    <span class="forma">
+                      <lucide-icon [img]="f.formaPagamento === 'CARTAO' ? icones.CreditCard : icones.Banknote" [size]="16" />
+                      {{ f.nome }}
+                    </span>
+                  </td>
+                  <td class="num">{{ f.qtdCompras }}</td>
+                  <td class="num">{{ f.total | currency }}</td>
+                  <td class="num">{{ f.percentual | number: '1.1-1' }}%</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>Total de compras</td>
+                <td class="num">{{ quantidadeDeCompras() }}</td>
+                <td class="num">{{ r.compras | currency }}</td>
+                <td class="num">100%</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      }
+      <div class="total-pj">
+        <lucide-icon [img]="icones.CreditCard" [size]="20" />
+        <span class="textos">
+          <strong>Total no cartão PJ em {{ nomeDoMes() }}</strong>
+          <small>É esse o valor que vai na declaração do Imposto de Renda</small>
+        </span>
+        <strong class="valor-pj">{{ r.comprasCartaoPj | currency }}</strong>
+      </div>
+    </section>
+
+    <div class="coluna">
+      <section class="painel">
+        <h2 class="t-h2 titulo-card">Retiradas de {{ nomeDoMes() }}</h2>
+        <dl class="conta">
+          <div class="forte">
+            <dt>Retirada total ({{ percentualRetirada() }}%)</dt>
+            <dd>{{ r.retiradas | currency }}</dd>
+          </div>
+          <div>
+            <dt><span class="ponto salario"></span>Salário · pró-labore</dt>
+            <dd>{{ r.salario | currency }}</dd>
+          </div>
+          <div>
+            <dt><span class="ponto reserva"></span>Reserva da empresa</dt>
+            <dd>{{ r.reserva | currency }}</dd>
+          </div>
+          <div>
+            <dt>Média de salário por dia</dt>
+            <dd>{{ mediaSalario() | currency }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="painel-escuro contadora">
+        <div>
+          <h2 class="t-h2">Relatório da contadora</h2>
+          <p class="t-xs">Compras do mês por cartão PJ e à vista, prontas pra mandar.</p>
+        </div>
+        <div class="botoes">
+          <button class="btn btn-claro" type="button" [disabled]="gerandoPlanilha()" (click)="exportarContadora()">
+            {{ gerandoPlanilha() ? 'Gerando...' : 'Planilha' }}
+          </button>
+          <a class="btn btn-primario" routerLink="/admin/fechamento/relatorio" [queryParams]="{ mes: mes() }">Ver PDF</a>
+        </div>
+      </section>
+    </div>
+  </div>
+  <!-- O que saiu no mês, pelos itens das vendas -->
+  <section class="painel produtos-vendidos">
+    <div class="topo-card">
+      <h2 class="t-h2">Produtos vendidos em {{ nomeDoMes() }}</h2>
+      <p class="t-xs">Quantidade e valor de cada produto lançado nas vendas do mês</p>
+    </div>
+    @if (!produtosVendidos().length) {
+      <p class="t-sub vazio">Nenhum produto lançado em {{ nomeDoMes() }}.</p>
+    } @else {
+      <div class="rolagem-x">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Produto</th>
+              <th class="num">Quantidade</th>
+              <th class="num">Valor</th>
+              <th class="num">% do valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of produtosVendidos(); track p.produtoId; let i = $index) {
+              <tr>
+                <td>{{ i + 1 }}</td>
+                <td>{{ p.nome }}</td>
+                <td class="num">{{ p.quantidade | number }}</td>
+                <td class="num">{{ p.total | currency }}</td>
+                <td class="num">{{ percentualDoProduto(p) | number: '1.1-1' }}%</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td>Total dos produtos</td>
+              <td class="num">{{ unidadesVendidas() | number }}</td>
+              <td class="num">{{ valorDosProdutos() | currency }}</td>
+              <td class="num">100%</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p class="t-xs nota-produtos">
+        No "Total do dia" os produtos são opcionais, então essa soma pode ficar abaixo do que foi vendido no mês.
+      </p>
+    }
+  </section>
+} @else if (carregando()) {
+  <p class="t-sub vazio">Carregando...</p>
+}

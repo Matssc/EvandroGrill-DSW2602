@@ -1,0 +1,131 @@
+@use '../site';
+
+// O cardápio é um campo claro com cartões escuros: lembra o cardápio impresso da casa
+.cardapio {
+  @include site.secao;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
+  background: var(--creme);
+  color: var(--carvao);
+}
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+.titulos { display: grid; gap: 16px; min-width: 0; }
+h2 { @include site.titulo; }
+.sub { @include site.texto-grande; color: var(--n-600); }
+
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.chip {
+  padding: 11px 18px;
+  border: 0;
+  border-radius: var(--raio-botao);
+  background: color-mix(in srgb, var(--carvao) 9%, transparent);
+  font: 600 15px/20px var(--fonte-texto);
+  color: var(--carvao);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+
+  &:hover { background: color-mix(in srgb, var(--carvao) 16%, transparent); }
+  &.ativo { background: var(--carvao); color: var(--creme); }
+  &:focus-visible { outline: 2px solid var(--brasa); outline-offset: 2px; }
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--raio-8);
+  background: var(--carvao);
+  color: var(--creme);
+  transition: transform 0.2s ease-out;
+
+  &:hover { transform: translateY(-4px); }
+}
+
+// Área da imagem: espeto num campo liso, ou a foto do produto quando tiver
+.imagem {
+  position: relative;
+  height: 188px;
+  background: var(--carvao-3);
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+  app-espeto { position: absolute; left: 50%; top: 50%; width: 79%; transform: translate(-50%, -50%); }
+}
+.mais-pedido {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  border-radius: var(--raio-botao);
+  background: var(--brasa);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--branco);
+}
+
+.conteudo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+}
+h3 { font: 400 32px/1 var(--fonte-display); letter-spacing: 0.01em; }
+.categoria { font-size: 14px; line-height: 20px; color: color-mix(in srgb, var(--creme) 70%, transparent); }
+.descricao { font-size: 15px; line-height: 22px; color: color-mix(in srgb, var(--creme) 85%, transparent); }
+.preco { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--creme); }
+.rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.chamada {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 32px;
+  border-radius: var(--raio-8);
+  background: color-mix(in srgb, var(--carvao) 9%, transparent);
+
+  p { @include site.texto-grande; }
+}
+.recado { @include site.texto-grande; color: var(--n-600); }
+.ver-tudo { display: none; }
+
+@media (max-width: site.$computador) {
+  .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: site.$celular) {
+  .cardapio { gap: 28px; }
+  .filtros { flex: 1 1 100%; }
+  .chip { padding: 10px 14px; font-size: 14px; }
+  .grade { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .grade:not(.completa) .card:nth-child(n + 5) { display: none; }
+  .ver-tudo { @include site.botao-grande; display: inline-flex; width: 100%; background: var(--carvao); color: var(--creme); }
+  .sub { display: none; }
+  .so-computador { display: none; }
+}

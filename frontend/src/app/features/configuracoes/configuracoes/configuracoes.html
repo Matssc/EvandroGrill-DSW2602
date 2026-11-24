@@ -1,0 +1,214 @@
+<header class="cabecalho-pagina">
+  <div>
+    <h1 class="t-h1">Configurações</h1>
+    <p class="t-sub">As regras do seu caixa: quanto retirar, como dividir e onde guardar</p>
+  </div>
+  <div class="acoes">
+    @if (salvo()) {
+      <span class="badge badge-sucesso salvo" role="status">Alterações salvas</span>
+    }
+    <button class="btn btn-primario" type="submit" form="form-configuracoes" [disabled]="!carregou() || salvando()">
+      Salvar alterações
+    </button>
+  </div>
+</header>
+
+@if (erro(); as mensagem) {
+  <p class="aviso aviso-perigo erro-geral" role="alert">{{ mensagem }}</p>
+}
+
+<div class="grade">
+  <form id="form-configuracoes" class="coluna" [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+    <!-- RN02: percentual tirado do total vendido -->
+    <section class="painel">
+      <div class="topo-card">
+        <div>
+          <h2 class="t-h2">Retirada sobre a venda</h2>
+          <p class="t-xs">Percentual tirado do total vendido em cada dia fechado</p>
+        </div>
+      </div>
+      <div class="linha">
+        <div class="campo campo-retirada">
+          <label for="percentualRetirada">Percentual de retirada</label>
+          <div class="com-sufixo">
+            <input id="percentualRetirada" type="number" min="0" max="100" inputmode="numeric" formControlName="percentualRetirada" />
+            <span>%</span>
+          </div>
+          @if (form.controls.percentualRetirada.touched && form.controls.percentualRetirada.invalid) {
+            <span class="erro">Digite um percentual de 0 a 100.</span>
+          }
+        </div>
+        <div class="grupo-opcoes">
+          <p class="rotulo">Atalhos</p>
+          <div class="opcoes" role="group" aria-label="Atalhos de retirada">
+            @for (a of atalhos; track a) {
+              <button
+                type="button"
+                class="pilula"
+                [class.ativa]="regras().percentualRetirada === a"
+                (click)="escolherRetirada(a)"
+              >
+                {{ a }}%
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RN03: divisão opcional entre salário e reserva -->
+    <section class="painel">
+      <div class="topo-card com-interruptor">
+        <div>
+          <h2 class="t-h2">Divisão da retirada</h2>
+          <p class="t-xs">Opcional: separe parte da retirada pra reserva da empresa</p>
+        </div>
+        <label class="interruptor">
+          <input type="checkbox" role="switch" formControlName="dividirRetirada" aria-label="Dividir a retirada" />
+          <span></span>
+        </label>
+      </div>
+      <div class="campos">
+        <div class="campo">
+          <label for="percentualSalario">Salário (pró-labore)</label>
+          <div class="com-sufixo">
+            <input id="percentualSalario" type="number" min="0" max="100" inputmode="numeric" formControlName="percentualSalario" [readOnly]="!regras().dividirRetirada" />
+            <span>%</span>
+          </div>
+        </div>
+        <div class="campo">
+          <label for="percentualReserva">Reserva da empresa</label>
+          <div class="com-sufixo">
+            <input id="percentualReserva" type="number" min="0" max="100" inputmode="numeric" formControlName="percentualReserva" [readOnly]="!regras().dividirRetirada" />
+            <span>%</span>
+          </div>
+        </div>
+      </div>
+      @if ((form.controls.percentualSalario.touched && form.controls.percentualSalario.invalid) || (form.controls.percentualReserva.touched && form.controls.percentualReserva.invalid)) {
+        <p class="erro-campo">Salário e reserva vão de 0 a 100 e somam 100%.</p>
+      }
+      <div class="barra" aria-hidden="true">
+        @if (regras().percentualSalario > 0) {
+          <span class="salario" [style.width.%]="regras().percentualSalario"></span>
+        }
+        @if (regras().percentualSalario < 100) {
+          <span class="reserva" [style.width.%]="100 - regras().percentualSalario"></span>
+        }
+      </div>
+      <div class="rodape-divisao">
+        <span class="legenda"><span class="ponto salario"></span>Salário · {{ regras().percentualSalario }}%</span>
+        <span class="legenda"><span class="ponto reserva"></span>Reserva · {{ 100 - regras().percentualSalario }}%</span>
+        <span class="t-xs dica">Desligado: toda a retirada vira salário</span>
+      </div>
+    </section>
+
+    <!-- RN04: meta e uso da reserva -->
+    <section class="painel">
+      <div class="topo-card">
+        <div>
+          <h2 class="t-h2">Reserva da empresa</h2>
+          <p class="t-xs">Meta e uso do caixa da empresa</p>
+        </div>
+      </div>
+      <div class="linha">
+        <div class="campo campo-meta">
+          <label for="metaReserva">Meta da reserva</label>
+          <input id="metaReserva" formControlName="metaReserva" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off" />
+          @if (form.controls.metaReserva.invalid) {
+            <span class="erro">Digite um valor válido ou deixe em branco.</span>
+          }
+        </div>
+        <div class="grupo-opcoes">
+          <p class="rotulo">Usar a reserva para</p>
+          <div class="opcoes">
+            <span class="pilula ativa">Emergência</span>
+            <span class="pilula ativa">Investimento</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+
+  <div class="coluna">
+    <section class="painel-escuro simulacao">
+      <div>
+        <h2 class="t-h2">Simulação</h2>
+        <p class="t-xs">Exemplo com as regras de hoje</p>
+      </div>
+      <div>
+        <p class="t-xs">Se vender no dia</p>
+        <p class="t-display total">{{ vendaSimulada | currency }}</p>
+      </div>
+      <dl class="conta">
+        <div class="forte">
+          <dt>Retirada ({{ regras().percentualRetirada }}%)</dt>
+          <dd>{{ simulacao().retirada | currency }}</dd>
+        </div>
+        <div>
+          <dt><span class="ponto salario"></span>Salário ({{ regras().percentualSalario }}%)</dt>
+          <dd>{{ simulacao().salario | currency }}</dd>
+        </div>
+        @if (regras().percentualSalario < 100) {
+          <div>
+            <dt><span class="ponto reserva"></span>Reserva ({{ 100 - regras().percentualSalario }}%)</dt>
+            <dd>{{ simulacao().reserva | currency }}</dd>
+          </div>
+        }
+        <div class="forte">
+          <dt>Fica no caixa</dt>
+          <dd class="ambar">{{ simulacao().ficaNoCaixa | currency }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="painel">
+      <div class="topo-card">
+        <h2 class="t-h2">Cartões PJ</h2>
+        <a class="link" routerLink="/admin/cartoes">Gerenciar</a>
+      </div>
+      @if (carregando() && !cartoes().length) {
+        <p class="t-sub vazio">Carregando...</p>
+      } @else if (!cartoes().length) {
+        <p class="t-sub vazio">Nenhum cartão cadastrado.</p>
+      } @else {
+        <ul class="itens">
+          @for (c of cartoes(); track c.id) {
+            <li>
+              <span class="icone"><lucide-icon [img]="icones.CreditCard" [size]="18" /></span>
+              <span class="textos">
+                <strong>{{ c.apelido }}</strong>
+                <small>{{ detalheDoCartao(c) }}</small>
+              </span>
+              <span class="final">final {{ c.finalCartao }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <!-- RN10: cada um só vê os próprios dados -->
+    <section class="painel">
+      <div class="topo-card">
+        <h2 class="t-h2">Conta e privacidade</h2>
+      </div>
+      <ul class="itens">
+        <li>
+          <span class="icone sucesso"><lucide-icon [img]="icones.ShieldCheck" [size]="18" /></span>
+          <span class="textos">
+            <strong>Seus dados são só seus</strong>
+            <small>Cada empreendedor acessa apenas os próprios lançamentos.</small>
+          </span>
+        </li>
+        @if (usuario(); as u) {
+          <li>
+            <span class="icone"><lucide-icon [img]="icones.Mail" [size]="18" /></span>
+            <span class="textos">
+              <strong>{{ u.email }}</strong>
+              <small>E-mail de acesso · trocar senha</small>
+            </span>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+</div>

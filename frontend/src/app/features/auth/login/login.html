@@ -1,0 +1,41 @@
+<app-painel-marca />
+
+<main class="lado-form">
+  <form class="cartao" [formGroup]="form" (ngSubmit)="entrar()" novalidate>
+    <h1 class="t-h1">Entrar no painel</h1>
+    <p class="t-sub">Acesse pra lançar as vendas e fechar o caixa do dia.</p>
+
+    <div class="campo">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" formControlName="email" autocomplete="email" />
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <span class="erro">Informe um e-mail válido.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" formControlName="senha" autocomplete="current-password" />
+      @if (form.controls.senha.touched && form.controls.senha.invalid) {
+        <span class="erro">Informe a senha.</span>
+      }
+    </div>
+
+    <label class="lembrar"><input type="checkbox" formControlName="lembrar" /> Lembrar de mim</label>
+
+    @if (erro(); as mensagem) {
+      <p class="aviso aviso-perigo" role="alert">{{ mensagem }}</p>
+    }
+
+    <button class="btn btn-primario btn-g btn-bloco" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+    <a class="voltar" routerLink="/"><lucide-icon [img]="ChevronLeft" [size]="16" /> Voltar para o site</a>
+
+    @if (apiFalsa) {
+      <p class="dica">API falsa ligada: evandro&#64;evandrosgrill.com.br / grill123</p>
+    }
+  </form>
+  <p class="rodape">© 2026 Evandro's Grill · Acesso restrito à equipe</p>
+</main>

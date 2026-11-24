@@ -1,0 +1,24 @@
+<footer class="rodape">
+  <app-brasas />
+  <div class="colunas">
+    <nav class="coluna navegacao" aria-label="Navegação do rodapé">
+      <p class="titulo">Navegação</p>
+      @for (s of secoes; track s.ancora) {
+        <a [href]="'#' + s.ancora">{{ s.texto }}</a>
+      }
+    </nav>
+
+    <div class="coluna">
+      <p class="titulo">Contato</p>
+      <a [href]="whatsapp" target="_blank" rel="noopener">WhatsApp: {{ contato.whatsappNaTela }}</a>
+      <a [href]="instagram" target="_blank" rel="noopener">&#64;{{ contato.instagram }}</a>
+      <p>{{ contato.cidade }}</p>
+    </div>
+  </div>
+
+  <p class="nome-grande" aria-hidden="true">Evandro's Grill</p>
+
+  <div class="creditos">
+    <p>© {{ ano }} Evandro's Grill · Espetaria artesanal. Todos os direitos reservados.</p>
+  </div>
+</footer>

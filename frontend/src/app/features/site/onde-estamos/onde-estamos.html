@@ -1,0 +1,42 @@
+<section id="onde-estamos" class="onde-estamos">
+  <div class="informacoes">
+    <h2 revelar>Vem pra brasa</h2>
+
+    <dl class="itens">
+      <div revelar [atraso]="80">
+        <dt>Endereço</dt>
+        <dd>{{ contato.endereco }}<br />{{ contato.bairro }} · {{ contato.cidade }}</dd>
+      </div>
+      <div revelar [atraso]="160">
+        <dt>Horário</dt>
+        <dd>
+          @for (h of contato.horarios; track h; let ultimo = $last) {
+            {{ h }}
+            @if (!ultimo) {
+              <br />
+            }
+          }
+        </dd>
+      </div>
+      <div revelar [atraso]="240">
+        <dt>WhatsApp</dt>
+        <dd>{{ contato.whatsappNaTela }}</dd>
+      </div>
+    </dl>
+
+    <div class="acoes" revelar [atraso]="320">
+      <a class="btn btn-primario" [href]="comoChegar" target="_blank" rel="noopener">Como chegar</a>
+    </div>
+  </div>
+
+  <!-- Mapa do Google com o pino da espetaria -->
+  <div class="mapa" revelar [atraso]="120">
+    <iframe
+      [src]="mapa"
+      title="Mapa do Google com a localização da Evandro's Grill"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen
+    ></iframe>
+  </div>
+</section>

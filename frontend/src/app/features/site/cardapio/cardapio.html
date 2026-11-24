@@ -1,0 +1,56 @@
+<section id="cardapio" class="cardapio">
+  <div class="cabecalho">
+    <div class="titulos">
+      <h2 revelar>Escolha seu espeto</h2>
+      <p class="sub" revelar [atraso]="80">Preços e disponibilidade atualizados direto pelo painel da casa.</p>
+    </div>
+    @if (categorias().length > 1) {
+      <div class="filtros" role="group" aria-label="Filtrar o cardápio por categoria">
+        <button type="button" class="chip" [class.ativo]="categoria() === null" (click)="filtrar(null)">Todos</button>
+        @for (c of categorias(); track c) {
+          <button type="button" class="chip" [class.ativo]="categoria() === c" (click)="filtrar(c)">{{ c }}</button>
+        }
+      </div>
+    }
+  </div>
+
+  @if (carregando()) {
+    <p class="recado">Carregando o cardápio...</p>
+  } @else if (falhou() || !produtos().length) {
+    <div class="chamada">
+      <p>{{ falhou() ? 'Não deu pra carregar o cardápio agora.' : 'O cardápio está sendo atualizado.' }} Volte daqui a pouco!</p>
+    </div>
+  } @else {
+    <ul class="grade" [class.completa]="verTudo()">
+      @for (p of lista(); track p.id; let i = $index) {
+        <li class="card" revelar [atraso]="(i % 4) * 70">
+          <div class="imagem">
+            @if (p.fotoUrl) {
+              <img [src]="p.fotoUrl" [alt]="p.nome" loading="lazy" />
+            } @else {
+              <app-espeto [produto]="p.nome" />
+            }
+            @if (p.destaque) {
+              <span class="mais-pedido">Mais pedido</span>
+            }
+          </div>
+          <div class="conteudo">
+            <h3>{{ p.nome }}</h3>
+            <p class="categoria">{{ p.categoria }}</p>
+            @if (p.descricao) {
+              <p class="descricao">{{ p.descricao }}</p>
+            }
+            <div class="rodape">
+              <strong class="preco">{{ p.preco | currency }}</strong>
+            </div>
+          </div>
+        </li>
+      }
+    </ul>
+
+    @if (!verTudo() && lista().length > 4) {
+      <button type="button" class="btn btn-contorno ver-tudo" (click)="verTudo.set(true)">Ver cardápio completo</button>
+    }
+
+  }
+</section>

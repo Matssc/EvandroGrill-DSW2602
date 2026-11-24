@@ -1,0 +1,37 @@
+@use '../site';
+
+// O perfil vira o título da seção, grande, num campo cheio de brasa
+.instagram {
+  @include site.secao(112px);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  background: var(--brasa);
+  color: var(--creme);
+}
+
+h2 {
+  position: relative;
+  font: 400 clamp(28px, 5.2vw, 76px) / 1 var(--fonte-display);
+  letter-spacing: -0.005em;
+  overflow-wrap: anywhere;
+}
+
+.rodape-secao {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  p { @include site.texto-grande; max-width: 520px; color: var(--branco); }
+  .btn { @include site.botao-grande; color: var(--carvao); }
+}
+
+@media (max-width: site.$celular) {
+  .instagram { gap: 28px; }
+  .rodape-secao .btn { width: 100%; }
+}
