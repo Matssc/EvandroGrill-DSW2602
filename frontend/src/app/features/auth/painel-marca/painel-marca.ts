@@ -10,7 +10,7 @@ import { Brasas } from '../../../shared/brasas/brasas';
     <app-brasas />
     <div class="conteudo">
       <span class="logo">
-        <img src="logo.jpg" alt="Evandro's Grill" width="260" height="260" />
+        <img src="logo.svg" alt="Evandro's Grill" width="260" height="260" />
       </span>
       <h2 class="t-display">Painel administrativo</h2>
       <p class="texto">
