@@ -3,10 +3,9 @@ import { Espeto, Peca } from '../../../shared/espeto/espeto';
 import { Revelar } from '../../../shared/revelar/revelar';
 
 /**
- * Foto do ambiente ou da churrasqueira. Enquanto não há foto, a seção mostra os espetos desenhados.
- * Quando tiver a foto, ponha o arquivo em public/ e troque null pelo nome dele (ex.: 'ambiente.jpg').
+ * Foto do salão (fica em public/). Com null, a seção volta a mostrar os espetos desenhados.
  */
-const FOTO_DO_AMBIENTE: string | null = null;
+const FOTO_DO_AMBIENTE: string | null = 'ambiente.jpg';
 
 // Seção "Nossa história" (frame 15-1665)
 @Component({
